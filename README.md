@@ -1,48 +1,55 @@
-# kirbychanmarkham.com
+# kirbychantoronto.com
 
-Hyperlocal Markham real estate site for Kirby Chan &amp; Co. Real Estate Team, eXp Realty Brokerage.
+Hyperlocal Toronto real estate site for Kirby Chan &amp; Co. Real Estate Team, eXp Realty Brokerage.
+Started as a copy of kirbychanmarkham.com and rebuilt for the City of Toronto in U of T Blue.
 
-Astro, static output, no client framework. Deploys to Cloudflare Pages through the GitHub
-integration: every commit to `main` builds and goes live.
+Astro, static output, no client framework, plus a few Cloudflare Pages Functions under
+`functions/api/`. The code lives in the private GitHub repository `KCDryan/kirbychan-toronto` and
+deploys to Cloudflare Pages through the GitHub integration: every push to `main` builds and goes
+live.
 
 ---
 
 ## Quick start
 
-You need Node 22, which is what `.nvmrc` pins and what this project is tested on. Get it from
-[nodejs.org](https://nodejs.org) or run `winget install OpenJS.NodeJS.LTS` on Windows, then reopen
-your terminal.
-
-Keep `package-lock.json` committed. Without it Cloudflare falls back to Bun and its own default
-Node version, which is not the combination this was tested on.
+You need Node 22, which is what `.nvmrc` pins and what this project is tested on. Keep
+`package-lock.json` committed. Without it Cloudflare falls back to Bun and its own default Node
+version, which is not the combination this was tested on.
 
 ```bash
 npm install
 npm run dev
 ```
 
-The dev server prints a local URL. Other commands:
+The dev server prints a local URL. Every npm script in `package.json`:
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` | Local dev server with hot reload |
-| `npm run build` | Production build into `dist/` |
+| `npm run dev` / `npm start` | Local dev server with hot reload |
+| `npm run dev:cms` | Dev server with the TinaCMS editor at `/admin/index.html`, saving to local files |
+| `npm run build` | Production build into `dist/` (`scripts/build.mjs`, which also builds Tina when its credentials are set) |
 | `npm run preview` | Serve the built `dist/` locally |
 | `npm run check` | `astro check`, types and content schemas |
+| `npm run check:style` | House style: dashes, commas before "and" or "or", American spellings |
+| `npm run check:blog` | Blog SEO rules (titles, lengths, word count, headings, links, sources) |
+| `npm run check:translations` | Translated guides use only their own script and only figures found in the English source |
+| `npm run check:tina-lock` | `tina/tina-lock.json` matches `tina/config.ts` |
 | `npm run check:links` | Scan `dist/` for broken internal links |
-| `npm run verify` | check, then build, then link check. Run this before you commit |
+| `npm run check:thin` | Fail any indexable English page under 300 words |
+| `npm run clean:cache` | Delete `.astro`, `node_modules/.astro` and `dist` |
+| `npm run verify` | clean:cache, style, blog, translations, tina-lock, check, build, links, thin. Run this before you push |
 
-To test the lead form endpoint locally you need Wrangler, because `/api/lead` is a Cloudflare
-Pages Function rather than part of the Astro build:
+The Functions (`/api/lead`, `/api/listings`, `/api/sold`, `/api/vow/*`, `/api/listing-counts`) are
+not part of the Astro build. To try them locally, build and serve with Wrangler, putting any
+secrets you need in a `.dev.vars` file that is never committed:
 
 ```bash
-cp wrangler.example.toml wrangler.toml && npm run build && npx wrangler pages dev dist
+npm run build && npx wrangler pages dev dist
 ```
 
-**Delete `wrangler.toml` again before you commit.** A real `wrangler.toml` in the repo root makes
-Cloudflare Pages read build configuration from the file instead of from the dashboard and a Pages
-build command cannot be set there. The build step then gets skipped and the deploy fails with
-`Output directory "dist" not found`. That is why the file ships as `wrangler.example.toml`.
+Do not add a `wrangler.toml` to the repository. Cloudflare Pages would then read its build
+configuration from the file instead of the dashboard and the deploy would fail with
+`Output directory "dist" not found`.
 
 ---
 
@@ -51,22 +58,25 @@ build command cannot be set there. The build step then gets skipped and the depl
 ```
 src/
   content/          all editable page content, as MDX
-    neighbourhoods/ 12 pillar pages
-    services/       9 situation pages
-    blog/           blog posts, served at /blog/<slug>/
+    neighbourhoods/ 12 neighbourhood guides, served at /<slug>-toronto/
+    guides/         9 pillar guides at /<slug>/, with fa/, fr/ and zh/ translations
+    services/       9 situation pages at /services/<slug>/
+    blog/           blog posts at /blog/<slug>/, agents' quick posts in blog/quick/
     videos/         video pages
-    market-reports/ monthly reports
-  data/             site settings, market figures, testimonials, client stories, photo credits, nav
+    market-reports/ market reports
+    news/           news roundups (template only until the first run)
+  data/             site settings, market figures, TRREB monthly figures, map, testimonials, credits, nav
   i18n/             translations: en.json is the source, one file per language, index.ts routing
   views/            pages shared by every language (home, Meet Kirby)
   components/       reusable pieces
   layouts/          page shells
   pages/            routes
-  lib/              SEO helpers, JSON-LD builders, formatters
+  lib/              SEO and JSON-LD helpers, land transfer tax, comparisons, hubs, VOW accounts
   styles/           tokens.css (design system) and global.css
-functions/api/      the /api/lead Cloudflare Pages Function
-public/             fonts, images, favicon, OG image, _headers, _redirects, robots.txt
-scripts/            link checker used locally and in CI
+functions/api/      Cloudflare Pages Functions: lead form, PropTx IDX and VOW, listing counts
+public/             fonts, favicon, OG image, _headers, _redirects, robots.txt, IndexNow key
+scripts/            build, checks, Toronto map builder, IndexNow ping
+tina/               TinaCMS config for agents' quick posts
 ```
 
 `src/content.config.ts` defines the schema for every content type. If a required field is missing
@@ -74,300 +84,258 @@ or a title is too long, the build fails with a message naming the file. That is 
 
 ---
 
+## The pages
+
+| URL | Source |
+| --- | --- |
+| `/<slug>-toronto/` | `src/content/neighbourhoods/<slug>.mdx`. Slugs: `leaside`, `lawrence-park`, `yonge-eglinton`, `don-mills`, `the-annex`, `bayview-village`, `willowdale`, `downtown-waterfront`, `high-park`, `the-beaches`, `riverdale`, `islington-village` |
+| `/<slug>/` | `src/content/guides/<slug>.mdx`: `downsizing-toronto`, `first-time-home-buyers-toronto`, `investment-property-toronto`, `luxury-homes-toronto`, `new-construction-toronto`, `relocating-to-toronto`, `selling-a-home-after-separation-toronto`, `selling-an-estate-home-toronto`, `upsizing-toronto` |
+| `/land-transfer-tax-calculator-toronto/` | Ontario plus City of Toronto municipal land transfer tax, from `src/lib/ltt.ts` |
+| `/mortgage-calculator-toronto/` | Mortgage calculator |
+| `/toronto-house-prices/` | City of Toronto figures from `src/data/trreb-monthly.json` (`toronto` and `torontoByType`) |
+| `/toronto-vs-markham/`, `/toronto-vs-mississauga/`, `/toronto-vs-vaughan/` | `src/lib/comparisons.ts`, reading `toronto` and `cities.markham`, `cities.mississauga`, `cities.vaughan` in `src/data/trreb-monthly.json` |
+| `/best-toronto-neighbourhoods-for-downsizing/`, `-families/`, `-commuters/` | `src/lib/neighbourhood-hubs.ts` |
+| `/map-of-toronto/` | `src/data/toronto-map.json`, built by `scripts/build-toronto-map.mjs` from the City of Toronto Open Data neighbourhood boundaries |
+| `/homes-for-sale/` | PropTx IDX search through `/api/listings` |
+| `/sold/` | Sold prices for registered, verified accounts (PropTx VOW) through `/api/vow/*` and `/api/sold` |
+
+`public/_redirects` sends short forms such as `/leaside/` and `/neighbourhoods/leaside/` to the
+`-toronto` URL.
+
+---
+
 ## Editing content
 
 ### Site-wide settings
 
-`src/data/site.json` holds the phone number, email, office address, brokerage details, the Lofty
-search URL, the booking link and social URLs. Almost everything marked TODO across the site is
-fixed by filling in this one file.
+`src/data/site.json` holds the site URL, phone number, public email, office address, brokerage
+details, social URLs, the GA4 measurement ID (`ga4`) and the inbox that receives leads
+(`leadsEmail`). The address is the real registered office in Richmond Hill. Never replace it with an
+invented Toronto address.
 
-Leaving `links.loftySearch` or `links.booking` empty is safe. Buttons fall back to `/contact/`
-rather than breaking.
+Leaving `links.booking` empty is safe. Booking buttons fall back to `/contact/`.
 
-### A neighbourhood page
+### A neighbourhood guide
 
-Edit the matching file in `src/content/neighbourhoods/`. The frontmatter drives the hero, the
-quick stats table, the price bands table, the nearby neighbourhood links, the related services and
-the FAQ. The body below the frontmatter is the prose.
+Edit the matching file in `src/content/neighbourhoods/`. The frontmatter drives the hero, the quick
+stats table, the price bands table, the nearby neighbourhood links, the related services, the FAQ
+and the sources. The body below it is the prose. The URL comes from the file name plus `-toronto`:
+`leaside.mdx` becomes `/leaside-toronto/`.
 
-URLs come from the filename: `unionville.mdx` becomes `/unionville-markham/`. The one exception is
-`downtown.mdx`, which becomes `/downtown-markham/` so the slug does not read as
-"downtown-markham-markham".
+Each guide is tied to one or two TRREB communities in `src/data/market.json`. Guides that span two
+communities list both under TRREB's own names:
 
-If you add a thirteenth neighbourhood, add a matching entry to `src/data/market.json` as well.
+| Guide | TRREB community | Report |
+| --- | --- | --- |
+| leaside | Leaside | Toronto Central |
+| lawrence-park | Lawrence Park North, Lawrence Park South | Toronto Central |
+| yonge-eglinton | Yonge-Eglinton, Mount Pleasant West | Toronto Central |
+| don-mills | Banbury-Don Mills | Toronto Central |
+| the-annex | Annex | Toronto Central |
+| bayview-village | Bayview Village | Toronto Central |
+| willowdale | Willowdale East, Willowdale West | Toronto Central |
+| downtown-waterfront | Waterfront Communities C1, Waterfront Communities C8 | Toronto Central |
+| high-park | High Park-Swansea, High Park North | Toronto West |
+| islington-village | Islington-City Centre West | Toronto West |
+| the-beaches | The Beaches | Toronto East |
+| riverdale | North Riverdale, South Riverdale | Toronto East |
+
+If you add a thirteenth guide, add its communities to `src/data/market.json`, add it to
+`scripts/build-toronto-map.mjs` and rebuild the map.
 
 ### A blog post
 
 Blog posts live in `src/content/blog/` and are served at `/blog/<file-name>/`, with a paginated
 index at `/blog/`, category pages at `/blog/category/<category>/` and an RSS feed at
-`/blog/rss.xml`. Follow `BLOG-PLAYBOOK.md` for every post. `npm run check:blog` enforces the SEO rules
-(unique titles, lengths, word count, headings, internal links and sources) and runs inside
-`npm run verify`.
+`/blog/rss.xml`. Categories are in `src/lib/blog.ts`. Follow `BLOG-PLAYBOOK.md` for every post.
+Topics wait in `BLOG-TOPICS.md` and every run is recorded in `BLOG-LOG.md`.
 
-A scheduled Claude routine publishes one new post every Monday, Wednesday and Friday. It takes the
-next topic from `BLOG-TOPICS.md`, researches it from primary sources, fact checks it, passes
-`npm run verify`, records the run in `BLOG-LOG.md` and pushes to `main`. Add or reorder topics in
-`BLOG-TOPICS.md` to steer it.
+Agents can publish shorter quick posts through TinaCMS. See `TINA-CMS.md`, `AGENT-BLOG-GUIDE.md`
+and `AGENT-BLOG-PROMPT.md`.
+
+### Market figures
+
+- `src/data/market.json`: TRREB median sale price, all property types, per community, from the
+  quarterly Toronto Central, Toronto East and Toronto West community reports. Currently Q2 2026.
+  It feeds the homepage ticker. A `null` price is skipped and the band hides if every price is
+  `null`, so the homepage never shows an empty or invented figure.
+- `src/data/trreb-monthly.json`: one month of TRREB Market Watch figures for the City of Toronto,
+  Toronto by home type and Markham, Mississauga and Vaughan. It feeds `/toronto-house-prices/` and
+  the three comparison pages, which write their sentences from the numbers.
+- `src/data/why-toronto.json`: the four sourced city facts on the homepage band.
+
+`UPDATE-PLAYBOOK.md` says how each is refreshed.
 
 ### A market report
 
-Copy `src/content/market-reports/template.mdx`, rename it to something like `august-2026.mdx`, set
-`period` and `published`, fill in the figures and delete the `draft: true` line. While `draft` is
-true the report is not built.
-
-### The market ticker on the homepage
-
-`src/data/market.json`. Add a real number to a neighbourhood and it appears. Leave it `null` and
-that neighbourhood is skipped. If every price is `null` the whole ticker band is hidden, so the
-homepage never shows an empty or invented figure. Set `source` to `TRREB` and `period` to the month
-and year before you publish any figure.
+Copy `src/content/market-reports/template.mdx`, rename it for the period (for example
+`september-2026.mdx`), set `period` and `published`, fill in the figures and delete the
+`draft: true` line. While `draft` is true the report is not built.
 
 ### Stats, testimonials and client stories
 
-The four homepage figures (Google reviews, rating, languages, guides) are the ones the team
-publishes on kirbychanandco.com. They live in `home.stats` in `src/i18n/en.json` and in each
-translation file, so change every file when a count changes. `src/data/testimonials.json` holds
-exact excerpts from public Google reviews and `src/data/client-stories.json` the client stories
-published on kirbychanandco.com. Never add an invented quote or figure.
+The homepage figures (Google reviews, rating, languages, guides) are the ones the team publishes on
+kirbychanandco.com. They live in `home.stats` in `src/i18n/en.json` and in each translation file,
+so change every file when a count changes. `src/data/testimonials.json` holds exact excerpts from
+public Google reviews and `src/data/client-stories.json` the client stories published on
+kirbychanandco.com. Never add an invented quote or figure.
 
 ### Languages
 
-The site is published in English plus Simplified Chinese (`/zh/`), French (`/fr/`), Farsi
-(`/fa/`, right to left), Russian (`/ru/`), Spanish (`/es/`), Greek (`/el/`) and Japanese
-(`/ja/`). The home, Meet Kirby, services, neighbourhoods and contact pages exist in every language,
-with hreflang tags and sitemap alternates. Neighbourhood guides, blog posts, news and legal pages are
-English only and the language menu says so.
+The site is published in English plus Simplified Chinese (`/zh/`), French (`/fr/`), Farsi (`/fa/`,
+right to left), Russian (`/ru/`), Spanish (`/es/`), Greek (`/el/`) and Japanese (`/ja/`). The home,
+Meet Kirby, services, neighbourhoods index and contact pages exist in every language. The pillar
+guides are also translated into Chinese, French and Farsi. Neighbourhood guides, blog posts, news
+and legal pages are English only.
 
-All translated text lives in `src/i18n/<code>.json`, with the same keys as `en.json`. When you
-change English text in `en.json`, update the same key in the seven other files. Translated pages
-say which languages the team actually works in: Mandarin, Russian and Farsi are among them; French,
-Spanish, Greek and Japanese are not, and those pages say so plainly.
+All translated interface text lives in `src/i18n/<code>.json`, with the same keys as `en.json`.
+When you change English text in `en.json`, update the same key in the seven other files.
 
-Visitors whose browser prefers one of these languages see a small, dismissible bar on English
-pages offering their language. Nobody is redirected automatically.
+### Photos and the logo
 
-### Neighbourhood photos
-
-`src/assets/photos/neighbourhoods/<slug>.jpg` are freely licensed photos from Wikimedia Commons.
-Their authors and licences are in `src/data/photo-credits.json` and each photo carries its credit
-on the page, as the licences require. Replace any of them with your own photo by saving over the
-file and removing its entry from the credits file.
-
-### Videos
-
-Add an `.mdx` file to `src/content/videos/` with the YouTube ID. Leave `youtubeId` empty until the
-video is live and the page shows a labelled placeholder instead of a broken embed. Video embeds use
-a click to load facade, so nothing from YouTube is requested until a visitor presses play.
+Drop a file into the right folder with the right name, commit it and it replaces the old one on the
+next deploy. The build creates AVIF and WebP versions at several sizes. The names and crops are in
+`src/assets/photos/README.md`. Photos from Wikimedia Commons carry their credit from
+`src/data/photo-credits.json`, as their licences require.
 
 ---
 
-## Adding photos and the logo
+## Automated updates
 
-No code changes needed. Drop a file into the right folder with the right name, commit it and it
-replaces the placeholder on the next deploy. The build creates fast AVIF and WebP versions at several
-sizes automatically, so upload the largest original you have.
+A scheduled Claude agent follows `UPDATE-PLAYBOOK.md` every two weeks and pushes straight to
+`main`. Each run:
 
-| File | Where it shows |
-| --- | --- |
-| `src/assets/photos/home-hero.jpg` | Homepage hero |
-| `src/assets/photos/kirby-portrait.jpg` | Homepage team section and /about/ |
-| `src/assets/photos/neighbourhoods/<slug>.jpg` | That neighbourhood's page, its homepage card and its social share image |
-| `src/assets/logo/logo.svg` | Header |
-| `src/assets/logo/logo-light.svg` | Footer on the dark background |
+1. **Market figures.** Refreshes `market.json` from TRREB's quarterly Toronto community reports and
+   publishes a market report when TRREB has something newer.
+2. **Toronto news.** Publishes a sourced roundup at `/news/` from toronto.ca, the TTC, Metrolinx and
+   the school boards.
+3. **Fact check.** Re-verifies three neighbourhood guides, oldest first, and stamps them with a
+   review date and their sources.
+4. **Monthly figures.** Refreshes `trreb-monthly.json` from the newest TRREB Market Watch.
 
-Slugs: `unionville`, `markham-village`, `cornell`, `berczy-village`, `cathedraltown`,
-`wismer`, `greensborough`, `angus-glen`, `box-grove`, `thornhill`, `milliken-mills`,
-`downtown`. JPG, PNG and WebP all work. Names must be lower case. The full list with crop shapes
-is in `src/assets/photos/README.md`.
+A separate blog routine follows `BLOG-PLAYBOOK.md` and publishes at most one post a day.
 
-On github.com: open the folder, choose **Add file > Upload files**, drag the photo in and commit.
+Guardrails built into the repository, not just the instructions:
 
----
+- Every news item and cited fact must carry a full https source URL. The schema rejects anything
+  without one and the build fails.
+- `npm run verify` must pass before an agent may push.
+- Each playbook lists the only files its agent may touch.
+- Every run writes to `UPDATE-LOG.md` or `BLOG-LOG.md` with its sources and anything that needs
+  your attention.
 
-## Automated updates every two weeks
-
-A scheduled Claude cloud agent updates the site on the 8th and 22nd of each month. It follows
-`UPDATE-PLAYBOOK.md` exactly and commits straight to `main`, so changes go live without review.
-
-Each run:
-
-1. **Market figures.** When TRREB has published newer community level figures, updates the homepage
-   ticker and publishes a market report page.
-2. **Markham news.** Publishes a sourced roundup at /news/ and shows relevant items on each
-   neighbourhood page.
-3. **Fact check.** Re-verifies three neighbourhood pages, oldest first then stamps them with a
-   "last reviewed" date and their sources.
-
-Guardrails built into the repo, not just the instructions:
-
-- Every news item and every cited fact must carry a full https source URL. The schema rejects
-  anything without one and the build fails.
-- `npm run verify` (style, types, build, links) must pass before the agent may push.
-- The agent may only touch the content files listed in the playbook. Brokerage details, business
-  statistics, testimonials, services, photos and all code are off limits.
-- Every run writes an entry to `UPDATE-LOG.md` with its sources and anything that needs your
-  attention.
-
-**After each run, skim `UPDATE-LOG.md`.** If something published is wrong, revert that commit in
-GitHub or use **Rollback** in Cloudflare, then fix the playbook so it does not happen again.
+**After each run, skim the log.** If something published is wrong, revert that commit on GitHub or
+use **Rollback** in Cloudflare, then fix the playbook so it does not happen again.
 
 ---
 
 ## House style
 
-These are enforced, not suggestions. The CI workflow fails the build on an em dash.
+Enforced by `npm run check:style` in CI and in the Cloudflare build.
 
-- Canadian English. Neighbourhood, colour, centre, programme, organise.
-- No em dashes anywhere. No en dashes either.
-- No comma before "and" or "or". This is applied strictly, including between independent clauses.
-- Never publish a number you cannot point to a source for. Use a `TODO` marker instead.
+- Canadian English: neighbourhood, colour, centre, licence (noun), cheque.
+- No em dashes and no en dashes anywhere, including number ranges.
+- No comma directly before "and" or "or", including between independent clauses.
+- No exclamation marks and no emoji.
+- Never publish a number you cannot point to a source for.
 - Never publish a client story without written permission.
-
-Check your work before committing:
-
-```bash
-grep -rnP '\x{2014}|\x{2013}' src/ && echo "dashes found"
-grep -rnP ',\s+(and|or)\b' src/ && echo "commas found"
-```
 
 ---
 
 ## Design system
 
-`src/styles/tokens.css` holds every colour, type step and spacing value. Change a token there and
-it changes everywhere.
-
-Contrast rules that matter:
-
-The palette is an evergreen sister to the crimson kirbychanandco.com brand. The logo is the same
-Kirby Chan & Co. mark, recoloured: evergreen on light backgrounds, brass on the dark footer.
+`src/styles/tokens.css` holds every colour, type step and spacing value. Change a token there and it
+changes everywhere. The palette is U of T Blue (Pantone 655) on the same light paper and brass
+used across the Kirby Chan &amp; Co. sites.
 
 | Token | Hex | Use |
 | --- | --- | --- |
-| `--brand` | `#1F5045` | Primary buttons, links, italic accents, logo panel |
-| `--ground` | `#10251F` | Utility bar, footer, dark bands |
-| `--brass` | `#C2A06A` | Small accents, numerals, rules, footer logo |
-| `--paper` / `--mist` | `#F8F8F5` / `#ECF1EE` | Page and alternate section backgrounds |
-| `--ink` | `#1B2320` | Body text |
+| `--brand` | `#1E3765` | Primary buttons, links, eyebrows, accents |
+| `--brand-dark` | `#152747` | Primary button hover |
+| `--ground` | `#0F1C33` | Utility bar, footer, dark bands |
+| `--ground-lift` | `#1A2D4F` | Raised surfaces on dark bands |
+| `--brass` / `--brass-soft` | `#C2A06A` / `#E0CDA8` | Small accents, numerals, rules |
+| `--paper` / `--mist` | `#F8F8F5` / `#EDF1F7` | Page and alternate section backgrounds |
+| `--ink` | `#1A2130` | Body text |
+
+Contrast, computed with the WCAG 2.1 relative luminance formula:
 
 | Combination | Ratio | Use |
 | --- | --- | --- |
 | ink on paper | 15.1:1 | Body text |
-| brand on paper | 8.6:1 | Links and small accents |
-| paper on brand | 8.6:1 | Primary button text |
-| brass on ground | 6.5:1 | Accents on the dark footer |
+| muted `#4D586B` on paper / mist | 6.8:1 / 6.3:1 | Secondary text |
+| brand on paper / white | 11.0:1 / 11.7:1 | Links, eyebrows, accents |
+| paper on brand | 11.0:1 | Primary button text |
+| paper on brand-dark | 14.0:1 | Primary button hover |
+| brass on ground | 6.9:1 | Small accents on the dark footer |
+| ground on brass | 6.9:1 | Brass button text |
+| on-dark `#EEF2F8` on ground | 15.1:1 | Text on dark bands |
+| on-dark-muted `#AAB6C9` on ground | 8.3:1 | Secondary text on dark bands |
+| footer `#8E9BB0` on ground | 6.1:1 | Footer small print |
 | brass on paper | 2.3:1 | **Fails.** Decorative only on light backgrounds: rules, numerals, borders |
 
-Typefaces are Montserrat (headings) and Lato (body), the same pair as kirbychanandco.com. No
-italics are used anywhere. Both are self hosted from `public/fonts` under the SIL Open Font License. No third party font request is
-made.
+Typefaces are Montserrat (headings) and Lato (body), self hosted from `public/fonts` under the SIL
+Open Font License. No third party font request is made.
 
 ---
 
 ## Environment variables
 
-Copy `.env.example` to `.env` for local work. Never commit `.env`.
+Set these in the Cloudflare Pages project under **Settings > Variables and secrets**, for
+Production and Preview. For local work, copy `.env.example` to `.env` (build time values) and use
+`.dev.vars` for Functions. Never commit either file.
 
-| Variable | Where it is needed | Public? |
+| Variable | Used by | Type |
 | --- | --- | --- |
-| `LEAD_WEBHOOK_URL` | Runtime, Pages Function | No. Secret |
-| `TURNSTILE_SECRET_KEY` | Runtime, Pages Function | No. Secret |
-| `TURNSTILE_SITE_KEY` | Build time, rendered into the form | Yes, public by design |
+| `PROPTX_IDX_TOKEN` | `/api/listings`, `/api/listing-counts` (PropTx IDX feed) | Secret |
+| `PROPTX_VOW_TOKEN` | `/api/sold` and the VOW sign up (PropTx VOW feed) | Secret |
+| `VOW_SECRET` | Encryption and signing for VOW accounts. **Never change or delete it**: every account becomes unreadable | Secret |
+| `RESEND_API_KEY` | Emails: leads to `leadsEmail` and VOW confirmation and reset messages | Secret |
+| `VOW_EMAIL_FROM` | The sender address for those emails, on a domain verified in Resend | Plain |
+| `TURNSTILE_SITE_KEY` | Rendered into the forms at build time | Plain, public by design |
+| `TURNSTILE_SECRET_KEY` | Turnstile check in the Functions | Secret |
+| `TINA_CLIENT_ID` | Build of the TinaCMS editor at `/admin/` | Plain |
+| `TINA_TOKEN` | Build of the TinaCMS editor at `/admin/` | Secret |
+| `LEAD_WEBHOOK_URL` | Optional. `/api/lead` also POSTs each lead there as JSON (for example a Zapier hook into Lofty) | Secret |
+| `NODE_VERSION` | Build image | Plain, `22` |
 
-`TURNSTILE_SITE_KEY` must be set as a build variable in Cloudflare, not only a runtime one, because
-it is baked into the HTML at build. The other two are read only inside `functions/api/lead.ts` and
-never reach the browser.
+`TURNSTILE_SITE_KEY` must be available at build time because it is baked into the HTML. The sold
+section stays switched off until `VOW_DB`, `VOW_SECRET`, `PROPTX_VOW_TOKEN`, `RESEND_API_KEY`,
+`VOW_EMAIL_FROM` and `TURNSTILE_SECRET_KEY` are all present. The editor is only built when both Tina
+variables are set, so a build without them is the plain site.
 
-Without `TURNSTILE_SECRET_KEY` the form still works and the honeypot plus timing checks still run.
-The payload records `turnstile: "not-configured"` so you can tell. Without `LEAD_WEBHOOK_URL` the
-endpoint refuses the submission and tells the visitor to phone instead, rather than pretending the
-message was delivered.
+### D1 database
 
----
-
-## Uploading to GitHub
-
-You upload. Nothing in this project pushes for you.
-
-### Option A, GitHub Desktop. Recommended
-
-1. In GitHub Desktop choose **File > New repository**. Name it `kirbychanmarkham` and set it to
-   **Private**. Note the local path it creates.
-2. Unzip the delivered zip and copy its **contents** into that local repository folder. The folder
-   should end up containing `package.json` at the top level, not a nested folder.
-3. GitHub Desktop lists the changes. Write a commit message, click **Commit to main**, then click
-   **Publish repository** or **Push origin**.
-
-This handles hidden files such as `.gitignore` and `.github/` correctly. Use it if you can.
-
-### Option B, github.com web upload
-
-1. Create a new **private** repository named `kirbychanmarkham` on github.com.
-2. Unzip first. Then open **Add file > Upload files** and drag the **contents** of the unzipped
-   folder in, not the parent folder itself.
-3. Two warnings that catch people out:
-   - The browser uploader is limited to **100 files per upload**. This project is over that, so
-     upload in batches: `src/` first, then `public/`, then `functions/`, `scripts/`, `.github/` and
-     the loose root files.
-   - macOS Finder **hides dotfiles**. Press **Cmd+Shift+.** to show them, otherwise `.gitignore`
-     and `.github/` are silently skipped.
-4. After uploading, confirm that both `.gitignore` and `.github/workflows/ci.yml` appear in the
-   repository. If they do not, the upload missed them.
-
-### Updating later
-
-`CHANGES-vX.md` lists every file added, changed or deleted since the previous zip. Uploading only
-adds and overwrites. **Deleted files must be deleted in GitHub manually**, otherwise they stay live.
+VOW accounts, sessions and the search audit trail are stored in a Cloudflare D1 database named
+`kirbychan-toronto-vow`. Create it under **Storage and Databases > D1**, then in the Pages project
+add a D1 binding under **Settings > Bindings** with the variable name `VOW_DB`, for Production and
+Preview. The Functions create the tables on first use.
 
 ---
 
 ## Deploying to Cloudflare Pages
 
-One time setup, done by you in the Cloudflare dashboard.
+One time setup in the Cloudflare dashboard. This must be a **Pages** project, not a Worker. If the
+build log contains `Executing user deploy command`, you are on a Worker: delete it and start again
+on the Pages tab.
 
-This must be a **Pages** project, not a Worker. On the create screen Cloudflare now defaults to
-Workers and a Workers project runs `npx wrangler deploy` as its deploy command, which fails on a
-static Astro site with `Missing entry-point to Worker script or to assets directory`. If you see
-the line `Executing user deploy command` anywhere in your build log, you are on a Worker. Delete it
-and start again on the Pages tab.
-
-1. Sign in at [dash.cloudflare.com](https://dash.cloudflare.com), go to **Workers &amp; Pages**,
-   then **Create** and choose the **Pages** tab, then **Connect to Git**.
-2. Authorise GitHub and pick the repository.
-3. Build settings. **The build command is the one people miss.** Without it Pages skips the build
-   entirely and fails with `Output directory "dist" not found`:
+1. **Workers &amp; Pages > Create > Pages > Connect to Git**, authorise GitHub and pick
+   `KCDryan/kirbychan-toronto`. Name the project anything clear, for example `kirbychan-toronto`.
+2. Build settings:
    - Production branch: `main`
    - Framework preset: **Astro**
    - Build command: `npm run build`
    - Build output directory: `dist`
    - Root directory: leave blank
-4. Under **Environment variables**, add for **Production** and **Preview**:
-   - `LEAD_WEBHOOK_URL` as a secret
-   - `TURNSTILE_SECRET_KEY` as a secret
-   - `TURNSTILE_SITE_KEY` as a plain variable
-   - `NODE_VERSION` set to `22`
-5. Save and deploy. The first build takes a few minutes.
+3. Add the variables and secrets above and the `VOW_DB` binding.
+4. Save and deploy.
+5. **Custom domain.** Put `kirbychantoronto.com` on Cloudflare DNS, then in the Pages project go to
+   **Custom domains** and add `kirbychantoronto.com` and `www.kirbychantoronto.com`.
+6. **Turnstile.** Add a widget for `kirbychantoronto.com`, copy both keys into the variables and
+   redeploy so the site key is baked in.
 
-A healthy build log contains all four of these lines in order. If any is missing, the setting above
-it is wrong:
-
-```
-Installing project dependencies: npm clean-install
-Executing user build command: npm run build
-[build] 42 page(s) built
-Found Functions directory at /functions. Uploading.
-```
-6. **Custom domain.** In the Pages project go to **Custom domains > Set up a custom domain** and
-   add `kirbychanmarkham.com`, then `www.kirbychanmarkham.com`. The domain's nameservers must point
-   at Cloudflare. If the domain is registered elsewhere, add the site under **Websites** in
-   Cloudflare first and change the nameservers at the registrar.
-7. Set up Turnstile at **Turnstile > Add widget** for `kirbychanmarkham.com`. Copy the site key and
-   the secret key into the environment variables above, then redeploy so the site key is baked in.
-
-**Every commit you push to `main` deploys straight to production.** There is no staging gate. Only
-upload a zip you have reviewed. If you want a safety net, push to a branch first and let Cloudflare
-build a preview URL for it.
+**Every push to `main` deploys straight to production.** If you want a safety net, push to a branch
+first and let Cloudflare build a preview URL for it.
 
 ### Rolling back
 
@@ -376,22 +344,17 @@ deployment**. That is faster than fixing forward under pressure.
 
 ---
 
-## What runs in CI
+## What runs in GitHub Actions
 
-`.github/workflows/ci.yml` runs on every push to `main` and on pull requests:
+`.github/workflows/ci.yml` runs on every push to `main`, on pull requests and on demand: quick post
+preparation, blog rules, translations, `astro check`, build, link check, thin page check and house
+style. It runs independently of Cloudflare, so a red CI run does not block a deploy. Watch both.
 
-1. `npm run check`, types and content schemas
-2. `npm run build`
-3. the internal link checker
-4. an em dash check on `src/`
-
-GitHub emails you when a workflow fails, provided notifications are on for the repository. This
-runs independently of Cloudflare, so a red CI run does not block a deploy. Watch both.
+`.github/workflows/refresh-listing-counts.yml` runs every morning, fetches `/api/listing-counts`
+from the live site and commits `src/data/listing-counts.json` when it changed.
 
 ---
 
 ## Before launch
 
-See **TODO-CHECKLIST.md** for the full list of everything that still needs real information. The
-items marked **blocking** must be done before the site is public, because they are compliance
-requirements rather than polish.
+See `TODO-CHECKLIST.md` for everything still needed before the site is public.

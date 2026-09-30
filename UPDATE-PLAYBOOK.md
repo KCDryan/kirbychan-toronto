@@ -1,6 +1,6 @@
 # Update playbook
 
-Instructions for the automated update that runs every two weeks on kirbychanmarkham.com. The agent
+Instructions for the automated update that runs every two weeks on kirbychantoronto.com. The agent
 running it starts with no memory of previous runs. Everything it needs is in this file and in the
 repository.
 
@@ -32,8 +32,8 @@ the log and continue with the next.
 
 | Task | Where | Frequency |
 | --- | --- | --- |
-| A. Market figures | `src/data/market.json`, `src/content/market-reports/` | Only when TRREB has published something newer than what the site shows |
-| B. Markham news roundup | `src/content/news/` | Every run, if there is enough real news |
+| A. Community figures | `src/data/market.json`, `src/content/market-reports/` | Only when TRREB has published Toronto community reports newer than the file's `period` |
+| B. Toronto news roundup | `src/content/news/` | Every run, if there is enough real news |
 | C. Neighbourhood fact check | `src/content/neighbourhoods/` | Three neighbourhoods per run, oldest reviewed first |
 | D. Monthly city figures | `src/data/trreb-monthly.json` | Only when TRREB has published a Market Watch newer than the file's `period` |
 
@@ -48,9 +48,9 @@ Then verify, log, commit and push. See sections 6 to 8.
 
 **You may edit or create only:**
 
-- `src/data/market.json`
+- `src/data/market.json`, only as described in task A
 - `src/data/trreb-monthly.json`, only as described in task D
-- `src/data/why-markham.json`, to fill a `TODO` value with a verified, sourced figure
+- `src/data/why-toronto.json`, to replace a figure with a newer verified, sourced one
 - `src/content/market-reports/*.mdx`, new files copied from `template.mdx`
 - `src/content/news/*.mdx`, new files copied from `_template.mdx`
 - `src/content/neighbourhoods/*.mdx`, only as described in task C
@@ -59,15 +59,16 @@ Then verify, log, commit and push. See sections 6 to 8.
 **Never change, even if something there looks wrong or unfinished:**
 
 - Any file under `src/components/`, `src/layouts/`, `src/pages/`, `src/lib/`, `src/styles/`,
-  `functions/`, `scripts/`, `public/`, `.github/`
+  `functions/`, `scripts/`, `public/`, `.github/`, `tina/`
 - `package.json`, `package-lock.json`, `astro.config.mjs`, `tsconfig.json`, `src/content.config.ts`
 - `src/data/site.json`, `src/data/testimonials.json`, `src/data/client-stories.json`,
-  `src/data/nav.json`, `src/data/photo-credits.json`
+  `src/data/nav.json`, `src/data/photo-credits.json`, `src/data/toronto-map.json`,
+  `src/data/listing-counts.json`
 - `src/i18n/` (the translations and the team's published statistics) and `src/views/`
-- `src/content/services/`, `src/content/blog/`, `src/content/videos/`
+- `src/content/guides/`, `src/content/services/`, `src/content/blog/`, `src/content/videos/`
 - `BLOG-PLAYBOOK.md`, `BLOG-TOPICS.md`, `BLOG-LOG.md` (the separate blog routine owns these)
 - `src/assets/` (photos and logo belong to the owner)
-- `README.md`, `TODO-CHECKLIST.md`, `CHANGES-*.md`, this file
+- `README.md`, `TODO-CHECKLIST.md`, `SEO-PLAYBOOK.md`, `KEYWORDS.md`, this file
 
 Those hold the brokerage's legal disclosure, its own business statistics, client testimonials and
 design. Only the owner may change them. If you notice a problem in one, mention it in the log entry
@@ -81,17 +82,21 @@ Prefer primary sources. Use a secondary source only when no primary one exists a
 
 | Topic | Primary sources |
 | --- | --- |
-| Market figures | Toronto Regional Real Estate Board, `trreb.ca` (Market Watch and community level housing market reports) |
-| City decisions, parks, facilities, planning | City of Markham, `markham.ca` (news releases, council and committee agendas) |
-| Regional roads, regional planning | York Region, `york.ca` |
-| GO trains and stations | Metrolinx `metrolinx.com`, GO Transit `gotransit.com` |
-| Buses and Viva | York Region Transit, `yrt.ca` |
-| Public schools and boundaries | York Region District School Board `yrdsb.ca`, York Catholic District School Board `ycdsb.ca` |
+| Market figures | Toronto Regional Real Estate Board, `trreb.ca`: Market Watch (`mwYYMM.pdf`) and the quarterly community reports (`TorontoCentralQ#YYYY.pdf`, `TorontoEastQ#YYYY.pdf`, `TorontoWestQ#YYYY.pdf`) |
+| City decisions, property tax, land transfer tax, Vacant Home Tax, parks, facilities, planning, neighbourhood profiles | City of Toronto, `toronto.ca` (news releases, council and committee decisions, service pages) |
+| Subway, streetcar and bus service | TTC, `ttc.ca` |
+| Line 5 Eglinton, Line 6 Finch West, Ontario Line and other rapid transit projects | Metrolinx, `metrolinx.com` |
+| GO trains and stations | GO Transit, `gotransit.com` |
+| Public schools and boundaries | Toronto District School Board `tdsb.on.ca`, Toronto Catholic District School Board `tcdsb.org` |
+| Libraries | Toronto Public Library, `torontopubliclibrary.ca` (also `tpl.ca`) |
 | Housing supply and rents | CMHC, `cmhc-schl.gc.ca` |
-| Provincial rules affecting buyers and sellers | Government of Ontario `ontario.ca`, RECO `reco.on.ca` |
+| Census and population | Statistics Canada, `statcan.gc.ca` |
+| Provincial and federal rules affecting buyers and sellers | `ontario.ca`, `canada.ca`, RECO `reco.on.ca` |
 
-Acceptable secondary sources: `yorkregion.com` (Markham Economist and Sun), CBC Toronto, the Toronto
-Star, the Globe and Mail.
+Two transit facts to keep straight: Line 5 Eglinton opened on February 8, 2026 and Line 6 Finch
+West opened on December 7, 2025. Confirm any newer change on `ttc.ca` or `metrolinx.com`.
+
+Acceptable secondary sources: CBC Toronto, the Toronto Star, the Globe and Mail.
 
 Not acceptable: social media posts, forums, other real estate agents' or brokerages' blogs or
 listings, AI generated summaries, press releases from developers presented as fact, any page you
@@ -104,31 +109,40 @@ unavailable.
 
 ## 4. Tasks
 
-### Task A. Market figures
+### Task A. Community figures
 
-1. Open `src/data/market.json` and note the current `period`. An empty period means no figures have
-   ever been published.
-2. Find the most recent TRREB publication that reports **Markham prices at the community
-   (neighbourhood) level**. TRREB publishes community level housing market reports as well as the
-   monthly Market Watch. Open the actual report.
-3. If nothing newer than the current `period` exists, skip to task B.
-4. If community level figures exist for the new period:
-   - Set `source` to `"TRREB"`, `period` to the period exactly as TRREB labels it, for example
-     `"August 2026"` or `"Q2 2026"` and `sourceUrl` to the report URL.
-   - Keep `metric` accurate. If you use median sale price, `metric` is `"Median sale price"`. If the
-     report only gives average, set it to `"Average sale price"`. Every neighbourhood must use the
-     same metric and the same period.
-   - For each neighbourhood, set `price` to the figure TRREB reports for that community, as a plain
-     integer with no symbols. If TRREB does not report that community separately or the name does
-     not clearly match, set `price` to `null`. Do not borrow a figure from a neighbouring community.
-   - Name matching guide: Thornhill means the Markham portion only, not Vaughan. Milliken Mills may be
-     reported as East and West; only fill it if a single combined figure is published. Downtown
-     Markham may not be reported as its own community; if not, `null`.
-5. If only municipality level Markham figures exist, do not touch the per neighbourhood prices.
-   Those figures may still be used in a market report (step 6).
-6. Create a market report for the period if one does not already exist:
+`src/data/market.json` holds the TRREB median sale price, all property types, for the 18 TRREB
+communities behind the twelve neighbourhood guides. It feeds the homepage ticker.
+
+1. Open `src/data/market.json` and note the current `period`, for example `"Q2 2026"`.
+2. Open TRREB's community housing market reports page on `trreb.ca` and find the newest quarter.
+   The three Toronto reports are PDFs named like
+   `https://trreb.ca/wp-content/files/market-stats/community-reports/2026/Q2/TorontoCentralQ22026.pdf`,
+   with `TorontoEast` and `TorontoWest` in the same folder. If the newest quarter is not newer than
+   `period`, skip to task B.
+3. Open all three PDFs. The file lists each community under TRREB's own name. Keep every name
+   exactly as TRREB prints it and never merge two communities into one figure:
+
+   | Report | Communities in `market.json` |
+   | --- | --- |
+   | Toronto Central | Leaside; Lawrence Park South; Lawrence Park North; Annex; Bayview Village; Willowdale East; Willowdale West; Banbury-Don Mills; Yonge-Eglinton; Mount Pleasant West; Waterfront Communities C1; Waterfront Communities C8 |
+   | Toronto East | The Beaches; North Riverdale; South Riverdale |
+   | Toronto West | High Park-Swansea; High Park North; Islington-City Centre West |
+
+4. For each community set `price` to the all property types median sale price TRREB reports for the
+   new quarter, as a plain integer with no symbols. If TRREB does not report a median for that
+   community (for example too few sales), set `price` to `null`. Do not borrow a figure from a
+   neighbouring community.
+5. Set `period` to the quarter exactly as TRREB labels it (`"Q3 2026"`), update the three URLs under
+   `reports` and keep `source`, `sourceUrl`, `metric` and `note` accurate. If you change the months
+   named in `note` ("April to June 2026"), change only the months. Every community must use the same
+   metric and the same period.
+6. Do not change the prices, sales counts or property type figures written into the neighbourhood
+   guides themselves. Those are refreshed by the owner when a guide is rewritten. If the new quarter
+   makes a guide's figures look stale, say so under "Needs owner attention".
+7. Create a market report for the period if one does not already exist:
    - Copy `src/content/market-reports/template.mdx` to a file named for the period in lower case with
-     hyphens, for example `august-2026.mdx` or `q2-2026.mdx`.
+     hyphens, for example `q3-2026.mdx` or `september-2026.mdx`.
    - Remove the `draft: true` line and the instruction notice block from the body.
    - Fill every table cell with a sourced figure or delete the row. Never leave `TODO` in a
      published report.
@@ -136,31 +150,35 @@ unavailable.
    - Write the "what this means" sections factually. Describe what the figures show. Do not predict
      prices, do not tell readers whether to buy or sell and do not describe the market as "hot",
      "cooling" or similar unless TRREB's own release uses that language, in which case attribute it.
-7. Do not change `quickStats.priceRange` or `priceBands` on neighbourhood pages from TRREB data.
-   Those ranges come from the owner's own market knowledge.
 
-### Task B. Markham news roundup
+### Task B. Toronto news roundup
 
 1. Look at the newest file in `src/content/news/` (ignore `_template.mdx`). The roundup covers
    everything published after that file's `published` date. If there is none, cover the last 30
    days.
-2. Find news that would matter to someone buying, selling or living in Markham: transit service or
-   construction, school openings or boundary reviews, council decisions on housing, zoning or major
-   developments, new or closed community facilities and parks, significant infrastructure work.
-3. Exclude: crime, politics unrelated to housing or services, business openings, events, anything
+2. Find news that would matter to someone buying, selling or living in the City of Toronto: TTC and
+   Metrolinx service, openings, closures and construction; TDSB and TCDSB school openings, closures
+   or boundary reviews; City Council decisions on housing, zoning, property tax, the municipal land
+   transfer tax, the Vacant Home Tax or major developments; new or closed community centres,
+   libraries and parks; significant infrastructure work.
+3. Start from `toronto.ca/news`, `ttc.ca` service changes and news, `metrolinx.com` news,
+   `tdsb.on.ca` and `tcdsb.org` news.
+4. Exclude: crime, politics unrelated to housing or services, business openings, events, anything
    promotional, anything you cannot confirm on a primary or acceptable secondary source.
-4. Keep between 2 and 8 items. If fewer than 2 items qualify, do not create a roundup this run.
+5. Keep between 2 and 8 items. If fewer than 2 items qualify, do not create a roundup this run.
    Record that in the log.
-5. For each item:
+6. For each item:
    - `headline`: short and factual, no clickbait, no exclamation marks.
    - `date`: the date on the source, not today.
    - `summary`: two or three sentences in your own words. What happened, where and why it matters
-     to a Markham homeowner or buyer. Do not copy sentences from the source.
+     to a Toronto homeowner or buyer. Do not copy sentences from the source.
    - `sourceName` and `sourceUrl`: the page you actually opened.
    - `neighbourhoods`: only slugs for areas the source itself names or unambiguously covers. When a
-     story is citywide, leave the list empty.
+     story is citywide, leave the list empty. Slugs: `leaside`, `lawrence-park`, `yonge-eglinton`,
+     `don-mills`, `the-annex`, `bayview-village`, `willowdale`, `downtown-waterfront`, `high-park`,
+     `the-beaches`, `riverdale`, `islington-village`.
    - `topic`: one of `Transit`, `Schools`, `Development`, `City`, `Parks`, `Market`, `Other`.
-6. Copy `src/content/news/_template.mdx` to `src/content/news/YYYY-MM-DD.mdx` using today's date.
+7. Copy `src/content/news/_template.mdx` to `src/content/news/YYYY-MM-DD.mdx` using today's date.
    Replace every template value. Delete the YAML comment block at the top.
 
 ### Task C. Neighbourhood fact check
@@ -169,50 +187,54 @@ unavailable.
    the oldest `lastReviewed` date. Files with no `lastReviewed` count as oldest. Break ties
    alphabetically.
 2. For each of the three, check every factual claim that can go out of date:
-   - school names and which board runs them
-   - GO stations, bus and Viva routes named
+   - TTC subway, LRT and streetcar lines and station names, and GO stations
    - named parks, community centres, libraries, hospitals, campuses and landmarks
+   - school names and which board runs them
    - any statement that something exists, opened, closed or is planned
 3. If a claim is confirmed, leave the wording exactly as it is.
 4. If a claim is wrong or outdated, make the **smallest edit** that makes it correct. Keep the
    existing voice. Do not rewrite paragraphs, add new sections, change opinions, change the
    "who it suits" judgements or touch the FAQ tone.
-5. A `TODO` may be replaced only when you have a source for it:
-   - `quickStats.commute`: allowed when you can cite a published GO Transit schedule. Write it as,
-     for example, `"About 35 minutes by GO train from Unionville GO to Union Station (GO Transit
-     schedule, September 2026)"`. Use the typical scheduled time, not the fastest trip.
-   - Any other `TODO` on a neighbourhood page: leave it.
-6. Also in `src/data/why-markham.json`, you may replace a `"TODO"` value with a verified figure and
-   set that item's `source` to a short plain description of where it came from.
-7. Set `lastReviewed` to today's date in `YYYY-MM-DD` form on each of the three files you checked,
+5. `quickStats.commute` is always stated as stops counted on the official TTC map, never as minutes.
+   For example: `"Line 5 from Leaside station to Eglinton station, 2 stops, then Line 1 to Union
+   station, 11 stops"`. Recount only when a line or station has changed, using the current map on
+   `ttc.ca`. Never add a travel time.
+6. Any `TODO` on a neighbourhood page may be replaced only when you have a source you opened this
+   run. Otherwise leave it.
+7. In `src/data/why-toronto.json` you may replace a figure with a newer one from the source named
+   in its `source` field, and update the "Figures last checked" date in `note`.
+8. Set `lastReviewed` to today's date in `YYYY-MM-DD` form on each of the three files you checked,
    even when nothing needed changing.
-8. Set `sources` to the list of pages you used for that neighbourhood, replacing any previous list:
+9. Keep `sources` as the list of pages you used for that neighbourhood. Keep the TRREB report
+   entries, replace any other entry you re-checked with the page you opened and add any new one:
 
    ```yaml
    sources:
-     - name: "York Region District School Board, school locator"
-       url: "https://www.yrdsb.ca/..."
+     - name: "TTC, subway map"
+       url: "https://www.ttc.ca/..."
    ```
 
 ### Task D. Monthly city figures
 
-`src/data/trreb-monthly.json` feeds the Markham house prices page and the three comparison pages
-(Markham vs Richmond Hill, Vaughan and Toronto). Those pages write their sentences from the numbers,
-so updating the numbers is all this task does. Never edit the pages themselves.
+`src/data/trreb-monthly.json` feeds `/toronto-house-prices/` and the three comparison pages
+(`/toronto-vs-markham/`, `/toronto-vs-mississauga/`, `/toronto-vs-vaughan/`). Those pages write
+their sentences from the numbers in `src/lib/comparisons.ts`, so updating the numbers is all this
+task does. Never edit the pages themselves.
 
 1. Note the current `period` in the file, for example `"August 2026"`.
-2. Open TRREB's Market Watch page on `trreb.ca` and find the newest monthly issue. Its PDF is usually
-   named `mwYYMM.pdf`, for example `mw2609.pdf` for September 2026. If it is not newer than `period`,
+2. Open TRREB's Market Watch page on `trreb.ca` and find the newest monthly issue. Its PDF is named
+   `mwYYMM.pdf`, for example `mw2609.pdf` for September 2026. If it is not newer than `period`,
    skip this task.
 3. Open the actual PDF. Take every figure from it, for the same month:
-   - From the all home types table by municipality: sales, average price and median price for
-     Markham, Richmond Hill, Vaughan and the City of Toronto (Toronto is the "Toronto" or "City of
-     Toronto" total row, not the whole TRREB area).
-   - From the detached table by municipality: sales and average price for the same four.
-   - From the condo apartment table by municipality: sales and average price for the same four.
-   - For `markhamByType`, the Markham row of the detached, semi-detached, att/row/townhouse
-     (freehold townhouse), condo townhouse and condo apartment tables: sales, average price and
-     median price. Keep the five `type` labels and their order exactly as they are.
+   - `toronto`: from the all home types table by municipality, the City of Toronto total row (the
+     "Toronto" or "City of Toronto" row, not the whole TRREB area): `sales`, `average`, `median`.
+     From the detached table the same row's sales (`detSales`) and average (`detAvg`). From the
+     condo apartment table the same row's sales (`condoSales`) and average (`condoAvg`).
+   - `torontoByType`: the City of Toronto row of the detached, semi-detached, att/row/townhouse
+     (freehold townhouse), condo townhouse and condo apartment tables: `sales`, `average` and
+     `median`. Keep the five `type` labels and their order exactly as they are.
+   - `cities.markham`, `cities.mississauga`, `cities.vaughan`: the same seven fields as `toronto`
+     from the Markham, Mississauga and Vaughan rows.
 4. Update the file: `period` exactly as TRREB labels the month, `sourceUrl` the PDF you opened,
    every number as a plain integer with no symbols. `report` is the path of this site's market report
    for the same month if one exists in `src/content/market-reports/` (for example
@@ -231,8 +253,11 @@ The build enforces most of this and will fail if you break it.
 - Canadian English: neighbourhood, colour, centre, programme, licence (noun), cheque.
 - No em dashes and no en dashes anywhere. Rewrite the sentence instead.
 - No comma before "and" or "or", ever, including before a clause.
+- No exclamation marks and no emoji.
 - Plain, factual, local. No hype words: "stunning", "booming", "skyrocketing", "hot market", "must see".
 - Dates in prose as "September 22, 2026".
+- When a sentence compares land transfer tax, say that Toronto's municipal land transfer tax applies
+  to property in the City of Toronto. Never state that another city has "no" municipal tax.
 - Frontmatter:
   - **Wrap every text value in double quotes.** An unquoted value containing a colon followed by a
     space breaks the YAML parser and fails the build.
@@ -252,8 +277,8 @@ npm ci
 npm run verify
 ```
 
-`verify` runs the house style check, `astro check`, the production build and the internal link
-checker. **All four must pass.**
+`verify` runs the house style, blog, translation and Tina lock checks, `astro check`, the
+production build, the internal link checker and the thin page check. **All must pass.**
 
 Until the first news roundup exists the build prints `The collection "news" does not exist or is
 empty`. That line is expected and harmless. It is not a failure and needs no fix.
@@ -279,16 +304,17 @@ If anything else changed, revert it.
 Append one entry to the top of the entries in `UPDATE-LOG.md`, newest first, in this shape:
 
 ```markdown
-## 2026-09-22
+## 2026-10-08
 
-**Market figures:** Updated to TRREB August 2026. 9 of 12 neighbourhoods reported. New report at
-/market-reports/august-2026/.
-**News:** 5 items. /news/2026-09-22/
-**Fact check:** cornell, wismer, box-grove. Corrected one school name in wismer.
+**Community figures:** Updated to TRREB Q3 2026. 17 of 18 communities reported. New report at
+/market-reports/q3-2026/.
+**News:** 4 items. /news/2026-10-08/
+**Fact check:** bayview-village, don-mills, downtown-waterfront. Corrected one library name in don-mills.
+**Monthly figures:** Updated to TRREB September 2026.
 
 Sources:
-- TRREB Market Watch, August 2026: https://...
-- City of Markham news release, September 18, 2026: https://...
+- TRREB Toronto Central community report, Q3 2026: https://...
+- City of Toronto news release, October 2, 2026: https://...
 
 Needs owner attention:
 - None
@@ -302,11 +328,11 @@ that could not run. Always write a log entry, even when nothing else changed.
 ## 8. Commit and push
 
 ```bash
-git config user.name  >/dev/null || git config user.name  "Markham update bot"
-git config user.email >/dev/null || git config user.email "updates@kirbychanmarkham.com"
+git config user.name  >/dev/null || git config user.name  "Toronto update bot"
+git config user.email >/dev/null || git config user.email "updates@kirbychantoronto.com"
 git add -A
 git status
-git commit -m "Markham update YYYY-MM-DD" -m "<one line per task, same as the log entry>"
+git commit -m "Toronto update YYYY-MM-DD" -m "<one line per task, same as the log entry>"
 git pull --rebase origin main
 npm run verify
 git push origin main

@@ -1,6 +1,6 @@
 name: Refresh listing counts
 
-# Every morning, save how many Markham homes are for sale (by neighbourhood and home type) into
+# Every morning, save how many Toronto homes are for sale (by neighbourhood and home type) into
 # src/data/listing-counts.json. The push makes Cloudflare rebuild, so every page shows today's numbers.
 on:
   schedule:
@@ -25,7 +25,7 @@ jobs:
         run: |
           node -e "
             const c = require('/tmp/counts.json');
-            if (!(c.markham && c.markham.total > 200 && Object.keys(c.areas).length >= 8)) {
+            if (!(c.toronto && c.toronto.total > 2000 && c.complete && Object.keys(c.areas).length >= 10)) {
               console.error('Counts look wrong, keeping the old file:', JSON.stringify(c).slice(0, 300));
               process.exit(1);
             }

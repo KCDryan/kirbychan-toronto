@@ -1,33 +1,33 @@
 {
-  "note": "Every figure here must be checkable against a public source. Put the number in the value field and the source in the source field. Nothing on this band may be an estimate. Figures last checked 2026-09-17.",
+  "note": "Every figure here must be checkable against a public source. Put the number in the value field and the source in the source field. Nothing on this band may be an estimate. Figures last checked 2026-09-30.",
   "points": [
     {
-      "value": "4",
+      "value": "70",
       "unit": "",
-      "label": "GO stations inside Markham",
-      "body": "Four Stouffville line stations sit inside Markham: Unionville, Centennial, Markham and Mount Joy. Milliken GO, just south of Steeles, is in Toronto.",
-      "source": "GO Transit station pages"
+      "label": "TTC rail transit stations",
+      "body": "Stations across the subway, streetcar and LRT network in 2025, with each subway interchange counted once.",
+      "source": "TTC, 2025 Operating Statistics"
     },
     {
-      "value": "41",
-      "unit": "min",
-      "label": "Unionville GO to Union Station",
-      "body": "Scheduled weekday morning train time on the Stouffville line, not a drive estimate.",
-      "source": "GO Transit Stouffville line timetable, September 2026"
+      "value": "1,600",
+      "unit": "+",
+      "label": "Named City parks",
+      "body": "Ravines, beaches, woodlots and parkettes covering more than 8,000 hectares, linked by over 200 km of trails.",
+      "source": "City of Toronto, Toronto at a Glance"
     },
     {
-      "value": "2",
-      "unit": "",
-      "label": "Public school boards",
-      "body": "York Region District School Board and York Catholic District School Board both serve Markham and boundaries are reviewed periodically. Always confirm the catchment for a specific address before you buy.",
-      "source": "YRDSB and YCDSB"
-    },
-    {
-      "value": "8",
+      "value": "100",
       "unit": "",
       "label": "Public library branches",
-      "body": "Aaniin, Angus Glen, Cornell, Markham Village, Milliken Mills, Thornhill Community Centre, Thornhill Village and Unionville.",
-      "source": "Markham Public Library"
+      "body": "Toronto Public Library runs 100 branches and two bookmobiles, with items in more than 40 languages.",
+      "source": "Toronto Public Library, About the Library"
+    },
+    {
+      "value": "44.9",
+      "unit": "%",
+      "label": "Speak a non-official language at home",
+      "body": "In the 2021 Census, 44.9% of Toronto residents spoke at least one language other than English or French at home. Our team works in ten languages.",
+      "source": "City of Toronto, 2021 Census backgrounder on language"
     }
   ]
 }

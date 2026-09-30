@@ -8,7 +8,15 @@
 export const PROPTX_BASE = 'https://query.ampre.ca/odata';
 export const PAGE_SIZE = 24;
 
-export const CITIES = ['Markham', 'Richmond Hill', 'Vaughan', 'Whitchurch-Stouffville', 'Aurora', 'Newmarket', 'Toronto', 'Pickering'];
+export const CITIES = ['Toronto', 'Markham', 'Vaughan', 'Richmond Hill', 'Mississauga'];
+/** The city every search starts in and the only one with neighbourhood buttons. */
+export const HOME_CITY = 'Toronto';
+
+/**
+ * TRREB writes Toronto listings with a district suffix in some feeds ("Toronto C02"), so the home city
+ * matches on the prefix. Other cities match exactly.
+ */
+export const cityFilter = (city: string) => (city === HOME_CITY ? `startswith(City,${q(city)})` : `City eq ${q(city)}`);
 
 /** One-click home types. Values are PropTx's own labels, checked against the live feed. */
 export const HOMES: Record<string, { label: string; hint: string; filter: string }> = {
@@ -36,24 +44,23 @@ export function homeKinds(r: { PropertySubType?: unknown; ArchitecturalStyle?: u
 }
 
 /**
- * Our neighbourhood guides mapped to TRREB community names (PropTx CityRegion), checked against the
- * live feed. Downtown Markham is not a TRREB community, so it has no entry.
+ * Our neighbourhood guides mapped to TRREB community names (PropTx CityRegion), the names TRREB prints
+ * in its Toronto Central, East and West community reports. Check them against the live feed when the
+ * token changes: a name the feed spells differently simply matches nothing.
  */
 export const AREAS: Record<string, { label: string; communities: string[] }> = {
-  unionville: { label: 'Unionville', communities: ['Unionville', 'Village Green-South Unionville'] },
-  cornell: { label: 'Cornell', communities: ['Cornell'] },
-  'berczy-village': { label: 'Berczy Village', communities: ['Berczy'] },
-  'markham-village': { label: 'Markham Village', communities: ['Markham Village', 'Old Markham Village'] },
-  wismer: { label: 'Wismer', communities: ['Wismer'] },
-  greensborough: { label: 'Greensborough', communities: ['Greensborough'] },
-  thornhill: {
-    label: 'Thornhill',
-    communities: ['Thornhill', 'Royal Orchard', 'Aileen-Willowbrook', 'Grandview', 'German Mills', 'Thornlea', 'Bayview Glen'],
-  },
-  'milliken-mills': { label: 'Milliken Mills', communities: ['Milliken Mills East', 'Milliken Mills West'] },
-  'angus-glen': { label: 'Angus Glen', communities: ['Angus Glen'] },
-  cathedraltown: { label: 'Cathedraltown', communities: ['Cathedraltown'] },
-  'box-grove': { label: 'Box Grove', communities: ['Box Grove'] },
+  leaside: { label: 'Leaside', communities: ['Leaside'] },
+  'lawrence-park': { label: 'Lawrence Park', communities: ['Lawrence Park South', 'Lawrence Park North'] },
+  'yonge-eglinton': { label: 'Yonge and Eglinton', communities: ['Yonge-Eglinton', 'Mount Pleasant West'] },
+  'don-mills': { label: 'Don Mills', communities: ['Banbury-Don Mills'] },
+  'the-annex': { label: 'The Annex', communities: ['Annex'] },
+  'bayview-village': { label: 'Bayview Village', communities: ['Bayview Village'] },
+  willowdale: { label: 'Willowdale', communities: ['Willowdale East', 'Willowdale West'] },
+  'downtown-waterfront': { label: 'Downtown Waterfront', communities: ['Waterfront Communities C1', 'Waterfront Communities C8'] },
+  'high-park': { label: 'High Park', communities: ['High Park-Swansea', 'High Park North'] },
+  'the-beaches': { label: 'The Beaches', communities: ['The Beaches'] },
+  riverdale: { label: 'Riverdale', communities: ['North Riverdale', 'South Riverdale'] },
+  'islington-village': { label: 'Islington Village', communities: ['Islington-City Centre West'] },
 };
 
 export const areaOf = (region: unknown) => Object.keys(AREAS).find((k) => AREAS[k].communities.includes(String(region))) ?? null;
@@ -81,9 +88,9 @@ const int = (v: string | null, max: number) => {
 /** The filters the active and sold searches share: city, neighbourhood, home type, price band and bedrooms. */
 function shared(params: URLSearchParams, priceField: string): string[] {
   const f: string[] = [];
-  const city = CITIES.find((c) => c === (params.get('city') ?? 'Markham'));
-  if (city) f.push(`City eq ${q(city)}`);
-  const area = city === 'Markham' ? AREAS[params.get('area') ?? ''] : undefined;
+  const city = CITIES.find((c) => c === (params.get('city') ?? HOME_CITY));
+  if (city) f.push(cityFilter(city));
+  const area = city === HOME_CITY ? AREAS[params.get('area') ?? ''] : undefined;
   if (area) f.push(`CityRegion in (${area.communities.map(q).join(',')})`);
   const home = HOMES[params.get('home') ?? ''];
   if (home) f.push(home.filter);
@@ -183,13 +190,15 @@ export function photos(media: Media[] = [], prefer = ['Large', 'Largest', 'Mediu
 if (typeof process !== 'undefined' && import.meta.filename === process.argv[1]) {
   const s = new URLSearchParams(searchQuery(new URLSearchParams("home=bungalow&price=800-1200&beds=2&page=2&sort=low&x=1' or 1 eq 1")));
   const filter = s.get('$filter')!;
-  if (filter !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and City eq 'Markham' and ArchitecturalStyle/any(a:a eq 'Bungalow' or a eq 'Bungaloft') and ListPrice ge 800000 and ListPrice le 1200000 and BedroomsTotal ge 2") throw new Error(filter);
+  if (filter !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto') and ArchitecturalStyle/any(a:a eq 'Bungalow' or a eq 'Bungaloft') and ListPrice ge 800000 and ListPrice le 1200000 and BedroomsTotal ge 2") throw new Error(filter);
   if (s.get('$skip') !== '24' || s.get('$orderby') !== 'ListPrice asc,ListingKey') throw new Error('paging');
-  const evil = new URLSearchParams(searchQuery(new URLSearchParams("city=Markham' or 1 eq 1&home=x' or 1&price=5 or true")));
+  const evil = new URLSearchParams(searchQuery(new URLSearchParams("city=Toronto' or 1 eq 1&home=x' or 1&price=5 or true")));
   if (evil.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale'") throw new Error('injection ' + evil.get('$filter'));
-  const a = new URLSearchParams(searchQuery(new URLSearchParams('area=thornhill&home=condo'))).get('$filter')!;
-  if (!a.includes("City eq 'Markham' and CityRegion in ('Thornhill','Royal Orchard'")) throw new Error(a);
-  if (new URLSearchParams(searchQuery(new URLSearchParams('city=Vaughan&area=cornell'))).get('$filter')!.includes('CityRegion')) throw new Error('area outside Markham');
+  const a = new URLSearchParams(searchQuery(new URLSearchParams('area=willowdale&home=condo'))).get('$filter')!;
+  if (!a.includes("startswith(City,'Toronto') and CityRegion in ('Willowdale East','Willowdale West')")) throw new Error(a);
+  const m = new URLSearchParams(searchQuery(new URLSearchParams('city=Markham&area=leaside'))).get('$filter')!;
+  if (!m.includes("City eq 'Markham'") || m.includes('CityRegion')) throw new Error('area outside Toronto ' + m);
+  if (areaOf('Waterfront Communities C8') !== 'downtown-waterfront' || areaOf('Unionville') !== null) throw new Error('areaOf');
   if (homeKinds({ PropertySubType: 'Semi-Detached ', ArchitecturalStyle: ['2-Storey'] }).join() !== 'house' || homeKinds({ PropertySubType: 'Detached', ArchitecturalStyle: ['Bungaloft'] }).join() !== 'bungalow,house') throw new Error('homeKinds');
   const sold = new URLSearchParams(soldQuery(new URLSearchParams('home=condo&price=u800&sold=30&page=9'), new Date('2026-09-30T12:00:00Z')));
   if (!sold.get('$filter')!.includes("CloseDate ge 2026-08-31") || !sold.get('$filter')!.includes('ClosePrice le 800000') || sold.get('$skip') !== '80') throw new Error('sold ' + sold);

@@ -1,23 +1,23 @@
 {
   "meta": {
     "home": {
-      "title": "万锦房地产买房卖房 | Kirby Chan & Co.",
-      "description": "Kirby Chan & Co. Real Estate Team 帮助家庭在安大略省万锦买房卖房，提供每个社区的介绍，从头到尾给您真诚的建议。"
+      "title": "多伦多房地产经纪 | Kirby Chan & Co.",
+      "description": "Kirby Chan & Co. Real Estate Team 帮助客户在多伦多买房卖房，提供有资料来源的十二个社区指南，从第一次通话到成交都给您实在的建议。"
     },
     "about": {
       "title": "认识经纪人 Kirby Chan | Kirby Chan & Co.",
-      "description": "经纪人（Broker）Kirby Chan，eXp Realty Brokerage 旗下 Kirby Chan & Co. 联合创始人，服务万锦、Richmond Hill 及大多伦多地区。"
+      "description": "经纪人（Broker）Kirby Chan，eXp Realty Brokerage 旗下 Kirby Chan & Co. Real Estate Team 联合创始人，服务多伦多、万锦、Richmond Hill 及大多伦多地区其他城市。"
     },
     "services": {
-      "title": "万锦房地产服务 | Kirby Chan & Co.",
-      "description": "买房、卖房、换小房、搬迁、遗产房产出售、新楼盘等。了解 Kirby Chan & Co. Real Estate Team 在万锦如何针对不同情况为您提供帮助。"
+      "title": "多伦多房地产服务 | Kirby Chan & Co.",
+      "description": "换小房、遗产房产、买房、卖房、搬迁、新楼盘等。了解 Kirby Chan & Co. Real Estate Team 在多伦多如何处理每一种情况。"
     },
     "neighbourhoods": {
-      "title": "万锦社区房产指南 | Kirby Chan & Co.",
-      "description": "万锦十二个社区，从 Unionville、Markham Village 到 Cornell 和 Berczy Village。用浅白的话介绍每个社区的特点，以及适合什么样的家庭。"
+      "title": "多伦多社区房产指南 | Kirby Chan & Co.",
+      "description": "多伦多十二个社区，从 Leaside、Lawrence Park 到 Riverdale 和市中心湖滨。用浅白的话介绍每个社区的住房、交通和房价。"
     },
     "contact": {
-      "title": "联系 Kirby Chan & Co. | 万锦房地产",
+      "title": "联系 Kirby Chan & Co. | 多伦多房地产",
       "description": "欢迎致电、发邮件或留言给 Kirby Chan & Co. Real Estate Team。每一条咨询都由我们亲自回复，绝无任何压力，也没有任何义务。"
     }
   },
@@ -70,9 +70,9 @@
     "team": "我们的团队可以用普通话为您服务。团队一共可以用十种语言服务客户。"
   },
   "home": {
-    "eyebrow": "安大略省万锦",
-    "h1": "万锦房地产，一个社区一个社区地了解",
-    "lede": "Kirby Chan & Co. Real Estate Team 帮助家庭在万锦买房卖房。我们了解每个社区各自的特点，从 Unionville 充满历史风貌的主街，到 Cornell 较新的街区。",
+    "eyebrow": "安大略省多伦多",
+    "h1": "您的多伦多房地产团队，一个社区一个社区地了解",
+    "lede": "Kirby Chan & Co. Real Estate Team 帮助客户在多伦多各区买房卖房。我们把每个社区当作独立的市场来看待，从 Leaside 的独立屋街区，到湖滨的公寓大楼。",
     "ctaContact": "与 Kirby 聊聊",
     "ctaNeighbourhoods": "浏览社区",
     "photoAlt": "经纪人（Broker）Kirby Chan 面带微笑，指向标题",
@@ -91,7 +91,7 @@
       },
       {
         "value": "12",
-        "label": "万锦社区指南"
+        "label": "多伦多社区指南"
       }
     ],
     "kirby": {
@@ -109,12 +109,12 @@
     },
     "hoods": {
       "eyebrow": "社区介绍",
-      "h2": "万锦不是一个市场，而是十二个。",
+      "h2": "十二个社区，各有各的市场",
       "lede": "每个社区的房屋类型、学校、交通和价位都各不相同。先从您正在考虑的社区看起吧。",
       "viewAll": "全部社区"
     },
     "cta": {
-      "h2": "正在考虑在万锦买房或卖房？",
+      "h2": "正在考虑在多伦多买房或卖房？",
       "body": "没有压力，也没有任何义务。只是和一个了解市场的团队真诚地聊一聊。",
       "button": "联系我们"
     }
@@ -122,14 +122,14 @@
   "about": {
     "eyebrow": "认识 Kirby",
     "h1": "Kirby Chan, Broker",
-    "lede": "eXp Realty Brokerage 旗下 Kirby Chan & Co. Real Estate Team 联合创始人，服务万锦、Richmond Hill 及大多伦多地区。",
+    "lede": "eXp Realty Brokerage 旗下 Kirby Chan & Co. Real Estate Team 联合创始人，服务多伦多、万锦、Richmond Hill 及大多伦多地区其他城市。",
     "photoAlt": "Kirby Chan 的肖像照",
     "teamPhotoAlt": "Kirby Chan 与 Kirby Chan & Co. Real Estate Team 的一位成员",
     "bio": [
       "大多数人一生只卖几次房子。这不只是一笔交易，而是人生中最重大的财务决定之一。Kirby Chan 的事业，就是围绕着确保这件事顺利完成而建立起来的。",
-      "Kirby 是经纪人（Broker），也是 Kirby Chan & Co. Real Estate Team 的联合创始人，业务覆盖万锦、Richmond Hill 及大多伦多地区。团队创立之初就秉持一个简单的承诺：诚实经营，客户至上。",
+      "Kirby 是经纪人（Broker），也是 Kirby Chan & Co. Real Estate Team 的联合创始人，业务覆盖多伦多、万锦、Richmond Hill 及大多伦多地区。团队创立之初就秉持一个简单的承诺：诚实经营，客户至上。",
       "他的做法很直接。他不会催促您。他会倾听，给出建议，帮助您做出适合您的决定，而不是对他方便的决定。正因如此，老客户的推荐和回头客是这份事业的根基。",
-      "Kirby 与联合创始人 Carrie Szeto 以及一群尽心尽力的专业人员一起带领团队。他们结合本地市场知识、现代数字营销，以及对万锦和 Richmond Hill 业主在搬家时真正需要什么的深入理解。"
+      "Kirby 与联合创始人 Carrie Szeto 以及一群尽心尽力的专业人员一起带领团队。他们结合本地市场知识、现代数字营销，以及对大多伦多地区业主在搬家时真正需要什么的深入理解。"
     ],
     "quote": "他不会催促您。他会倾听，给出建议，帮助您做出适合您的决定。",
     "philosophyEyebrow": "我们的动力",
@@ -141,7 +141,7 @@
       },
       {
         "title": "熟悉本地",
-        "body": "万锦和 Richmond Hill 是我们的主场。我们熟悉这里的街道、学校，也清楚不同社区之间的房价差异。"
+        "body": "多伦多、万锦和 Richmond Hill 是我们的市场。我们逐条街道跟踪成交记录，清楚房价在不同社区之间有何差别。"
       },
       {
         "title": "长久的客户关系",
@@ -161,7 +161,7 @@
       "body": "我们以合作、正直、责任和慷慨为基础，与团队成员、客户和社区建立稳固的关系。"
     },
     "languagesHeading": "我们说您的语言",
-    "languagesBody": "万锦是加拿大最多元化的城市之一。我们的团队用十种语言为客户服务，让您人生中最重要的决定之一，不会因为语言不通而产生误会。",
+    "languagesBody": "根据 2021 年人口普查，44.9% 的多伦多居民在家中使用英语或法语以外的语言。我们的团队用十种语言为客户服务，让您人生中最重要的决定之一，不会因为语言不通而产生误会。",
     "languages": [
       "英语",
       "普通话",
@@ -182,7 +182,7 @@
   },
   "services": {
     "eyebrow": "我们的服务",
-    "h1": "万锦房地产服务",
+    "h1": "多伦多房地产服务",
     "lede": "每一次搬家都不一样。以下是我们最常协助处理的情况，并用浅白的话说明我们如何处理每一种情况。",
     "items": {
       "buying": {
@@ -198,12 +198,12 @@
       "luxury": {
         "name": "豪宅",
         "summary": "可比成交少，买家群体小，定价容不得失误。",
-        "body": "万锦的豪宅很少有可以直接参考的成交案例。我们谨慎定价，妥善展示房屋，并在整个过程中保护您的隐私。"
+        "body": "多伦多的豪宅很少有可以直接参考的成交案例，而且自 2026 年 4 月 1 日起，超过 300 万加元的房产需缴纳更高的市政土地转让税。我们谨慎定价，妥善展示房屋，并保护您的隐私。"
       },
       "relocation": {
         "name": "搬迁安家",
         "summary": "要在从未住过的地方选社区，而且通常时间紧迫。",
-        "body": "从其他城市或国家搬到万锦？我们会如实介绍各个社区、学校和通勤情况，让您即使身在远方，也能放心做出选择。"
+        "body": "从其他城市或国家搬到多伦多？我们会如实介绍各个社区、交通和各项费用，让您即使身在远方，也能放心做出选择。"
       },
       "downsizing": {
         "name": "换小房",
@@ -228,7 +228,7 @@
       "investors": {
         "name": "投资者",
         "summary": "先算清楚数字，再听故事。",
-        "body": "在听推销之前，我们先看租金、持有成本和转售情况，确保万锦的投资物业首先在账面上说得通。"
+        "body": "在听推销之前，我们先看租金、持有成本、市政规定和转售情况，确保多伦多的投资物业首先在账面上说得通。"
       },
       "estate-sales": {
         "name": "遗产房产出售",
@@ -243,57 +243,57 @@
     }
   },
   "neighbourhoods": {
-    "eyebrow": "安大略省万锦",
-    "h1": "万锦十二个社区",
-    "lede": "万锦不是一个单一的市场。每个社区都有自己的特色、房屋类型、学校和交通。以下是每个社区的简要介绍。",
+    "eyebrow": "安大略省多伦多",
+    "h1": "多伦多十二个社区",
+    "lede": "多伦多每个社区都有自己的住房类型、交通和价位。以下是每个社区的简要介绍。",
     "items": {
-      "unionville": {
-        "tagline": "历史主街，成荫老树，万锦最有名气的社区。",
-        "body": "一条十九世纪的主街，尽头就是 GO 车站。提到万锦，大多数人首先想到的就是 Unionville，房价也相应较高。"
+      "leaside": {
+        "tagline": "独立屋和半独立屋街区，紧邻 Line 5 Eglinton 各站。",
+        "body": "Leaside 一半以上的住宅是独立屋（2021 年人口普查）。Line 5 Eglinton 的 Leaside 站位于 Bayview Avenue，沿 Eglinton 往东还有 Laird 站和 Sunnybrook Park 站。"
       },
-      "markham-village": {
-        "tagline": "最初的镇中心，老房子多，地块纵深大。",
-        "body": "万锦最早的中心。一条热闹的主街，纵深大的地块，以及跨越一百多年建成的房屋，步行不远就到 GO 车站。"
+      "lawrence-park": {
+        "tagline": "独立屋、溪谷公园和 Line 1 的 Lawrence 站。",
+        "body": "这是一个以独立屋为主的社区，环绕 Lawrence Park Ravine 和 Blythwood Ravine Park，区内有 Line 1 的 Lawrence 站，南端则是 Eglinton 站。"
       },
-      "cornell": {
-        "tagline": "前门廊，后巷车库，附近就有医院。",
-        "body": "位于万锦东部的规划社区，街道呈网格布局，房屋带前门廊，车库设在后巷，Markham Stouffville Hospital 就在社区边上。"
+      "yonge-eglinton": {
+        "tagline": "Line 1 与 Line 5 交汇处的公寓大楼。",
+        "body": "Eglinton 站是 Line 1 Yonge University 与 Line 5 Eglinton 的换乘站。区内大多数住宅位于五层或以上的公寓楼，两侧是较老的独立屋和半独立屋街区。"
       },
-      "berczy-village": {
-        "tagline": "以家庭为主，重视学校，房价也与之相符。",
-        "body": "万锦北部的家庭聚居区。较新的独立屋和镇屋，安静的弯月形街道，学校口碑吸引了很多买家。"
+      "don-mills": {
+        "tagline": "靠近 Line 5 Eglinton 各站的规划社区。",
+        "body": "Banbury-Don Mills 既有独立屋，也有公寓。Line 5 Eglinton 的 Wynford 站、Aga Khan Park & Museum 站和 Don Valley 站都在其南端附近。"
       },
-      "cathedraltown": {
-        "tagline": "围绕一座大教堂而建，街景独具特色。",
-        "body": "围绕一座大教堂建成的规划社区，建筑管控比万锦其他任何地方都严格，街景风格鲜明，有人非常喜欢，也有人不太喜欢。"
+      "the-annex": {
+        "tagline": "Line 1 和 Line 2 沿线的维多利亚式住宅和公寓。",
+        "body": "The Annex 位于 Bloor Street，有 Spadina、St George 和 Bathurst 三个车站。区内包括 East Annex 历史保护区，大多数住宅是公寓或由独立屋改建的住宅。"
       },
-      "wismer": {
-        "tagline": "较新的家庭住宅，附近有 GO 车站。",
-        "body": "Wismer Commons 位于万锦北部的中间地带，环境安静。较新的家庭住宅，学校需求旺盛，GO 车站也近得可以日常使用。"
+      "bayview-village": {
+        "tagline": "Sheppard 地铁沿线的公寓，后面是独立屋街区。",
+        "body": "Line 4 Sheppard 的 Bayview、Bessarion 和 Leslie 站服务这一地区，Bayview 与 Sheppard 路口还有市政社区中心和图书馆。大多数成交是公寓单位。"
       },
-      "greensborough": {
-        "tagline": "东北角，围绕 GO 车站发展起来。",
-        "body": "万锦东北部，围绕 Mount Joy GO 发展起来。房屋较新，镇屋很多，不少街道步行不远就能搭火车。"
+      "willowdale": {
+        "tagline": "Yonge 地铁沿线的 North York Centre 公寓。",
+        "body": "Line 1 的 Finch、North York Centre 和 Sheppard-Yonge 站贯穿 Willowdale。Yonge Street 附近的大多数住宅位于五层或以上的公寓楼，西侧街道则是独立屋（2021 年人口普查）。"
       },
-      "angus-glen": {
-        "tagline": "高端住宅，锦标赛级高尔夫球场，大地块。",
-        "body": "万锦的高端住宅区，位于 Major Mackenzie Drive 以北，地块宽大，有一座锦标赛级高尔夫俱乐部和一个知名的社区中心。"
+      "downtown-waterfront": {
+        "tagline": "Union Station 与湖岸之间的公寓。",
+        "body": "这里几乎所有住宅都位于五层或以上的公寓楼（2021 年人口普查）。设有 Line 1 和 GO 火车的 Union Station 位于其北端。"
       },
-      "box-grove": {
-        "tagline": "历史小村落，周围建起了较新的住宅。",
-        "body": "一个十九世纪的小村落，被较新的住宅区环绕，位于万锦东南角，紧邻 Highway 407。"
+      "high-park": {
+        "tagline": "High Park 沿线的 Line 2 各站。",
+        "body": "Line 2 的 High Park、Keele 和 Runnymede 站服务 High Park 周边的独立屋、半独立屋街区和公寓楼。"
       },
-      "thornhill": {
-        "tagline": "成熟稳定的老社区，与 Vaughan 以 Yonge Street 为界。",
-        "body": "Thornhill 沿 Yonge Street 分属万锦和 Vaughan 两地。万锦这一侧拥有全市最成熟的住宅区之一。"
+      "the-beaches": {
+        "tagline": "湖边街道和 Kingswood Road South 历史保护区。",
+        "body": "The Beaches 靠近湖边，大多数成交是独立屋和半独立屋，北面有 Line 2 的 Main Street 站和 Woodbine 站。"
       },
-      "milliken-mills": {
-        "tagline": "紧邻多伦多，是买独立屋门槛最低的地方。",
-        "body": "万锦南端，沿 Steeles Avenue 一带。房屋较老，公共交通便利，通常是全市买独立屋价格最容易负担的地方。"
+      "riverdale": {
+        "tagline": "Don 河东岸的半独立屋街区。",
+        "body": "在 North Riverdale 和 South Riverdale，半独立屋和联排屋占成交的很大一部分。区内有从 Broadview 到 Donlands 的四个 Line 2 车站，还有 Riverdale 历史保护区。"
       },
-      "downtown": {
-        "tagline": "万锦少有的适合步行、不必开车的地方。",
-        "body": "Downtown Markham 按城市中心的理念设计，公寓楼、餐厅、电影院和 York University Markham Campus 都集中在一起。"
+      "islington-village": {
+        "tagline": "Islington 站附近的独立屋和 Kipling 的公寓。",
+        "body": "这个 TRREB 社区涵盖 Islington 周边的独立屋街区，以及 Kipling 站附近 Etobicoke City Centre 的公寓楼，Line 2 在那里与 Kipling GO 站相连。"
       }
     }
   },
@@ -304,7 +304,7 @@
     "phone": "电话",
     "email": "电子邮件",
     "office": "办公室",
-    "officeNote": "我们的办公室位于 Richmond Hill，距离万锦只有很短的车程。我们也很乐意在您方便的地方见面。",
+    "officeNote": "我们的注册办公室位于 Richmond Hill。我们很乐意在您方便的地方见面，无论是在多伦多还是大多伦多地区的其他地方。",
     "form": {
       "heading": "给我们留言",
       "name": "姓名",
@@ -312,7 +312,7 @@
       "phone": "电话",
       "neighbourhood": "感兴趣的社区",
       "notSure": "还不确定",
-      "elsewhere": "万锦其他地区",
+      "elsewhere": "多伦多其他地区",
       "intent": "我想",
       "buying": "买房",
       "selling": "卖房",
@@ -324,7 +324,7 @@
       "t3": "6至12个月",
       "t4": "一年以上",
       "message": "有什么想让我们了解的？",
-      "consent": "我同意 Kirby Chan & Co. 通过电子邮件、电话或短信，就我的咨询以及万锦房地产相关事宜与我联系。我可以随时撤回同意。",
+      "consent": "我同意 Kirby Chan & Co. 通过电子邮件、电话或短信，就我的咨询以及多伦多房地产相关事宜与我联系。我可以随时撤回同意。",
       "privacyLink": "隐私声明（英文）",
       "send": "发送",
       "sending": "正在发送",
@@ -352,7 +352,7 @@
     "asideHeading": "与我们谈谈",
     "asideBody": "没有压力，也没有任何义务。Kirby 与团队可提供十种语言服务。",
     "sendMessage": "发送信息",
-    "leadHeading": "就您在万锦的置业计划联系 Kirby",
+    "leadHeading": "就您在多伦多的置业计划联系 Kirby",
     "quickContact": "快速联系",
     "barCta": "获取免费方案"
   }

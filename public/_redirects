@@ -1,7 +1,35 @@
 # Cloudflare Pages redirects. One rule per line, first match wins.
 # Format: /source /destination [status]
 
-# Neighbourhood pillar pages live at /[name]-toronto/. Short aliases for each are added with the guides.
+# Neighbourhood pillar pages live at /[name]-toronto/. These catch the URL shapes people type.
+/leaside/ /leaside-toronto/ 301
+/lawrence-park/ /lawrence-park-toronto/ 301
+/yonge-eglinton/ /yonge-eglinton-toronto/ 301
+/don-mills/ /don-mills-toronto/ 301
+/the-annex/ /the-annex-toronto/ 301
+/bayview-village/ /bayview-village-toronto/ 301
+/willowdale/ /willowdale-toronto/ 301
+/downtown-waterfront/ /downtown-waterfront-toronto/ 301
+/high-park/ /high-park-toronto/ 301
+/the-beaches/ /the-beaches-toronto/ 301
+/riverdale/ /riverdale-toronto/ 301
+/islington-village/ /islington-village-toronto/ 301
+/annex/ /the-annex-toronto/ 301
+/beaches/ /the-beaches-toronto/ 301
+/islington/ /islington-village-toronto/ 301
+/waterfront/ /downtown-waterfront-toronto/ 301
+/neighbourhoods/leaside/ /leaside-toronto/ 301
+/neighbourhoods/lawrence-park/ /lawrence-park-toronto/ 301
+/neighbourhoods/yonge-eglinton/ /yonge-eglinton-toronto/ 301
+/neighbourhoods/don-mills/ /don-mills-toronto/ 301
+/neighbourhoods/the-annex/ /the-annex-toronto/ 301
+/neighbourhoods/bayview-village/ /bayview-village-toronto/ 301
+/neighbourhoods/willowdale/ /willowdale-toronto/ 301
+/neighbourhoods/downtown-waterfront/ /downtown-waterfront-toronto/ 301
+/neighbourhoods/high-park/ /high-park-toronto/ 301
+/neighbourhoods/the-beaches/ /the-beaches-toronto/ 301
+/neighbourhoods/riverdale/ /riverdale-toronto/ 301
+/neighbourhoods/islington-village/ /islington-village-toronto/ 301
 /neighborhoods/ /neighbourhoods/ 301
 
 # Common alternates

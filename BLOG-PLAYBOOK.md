@@ -1,6 +1,6 @@
 # Blog playbook
 
-Rules for writing and publishing a post on the kirbychanmarkham.com blog. The scheduled blog writer
+Rules for writing and publishing a post on the kirbychantoronto.com blog. The scheduled blog writer
 follows this file on every run and so does anyone writing a post by hand. A push to `main` goes
 live on the public site within minutes with no human review, so accuracy comes before everything
 else. **If you cannot verify a post properly, publish nothing.** A missed day costs nothing. A wrong
@@ -42,12 +42,12 @@ Tuesday is for and the site builds depth in six areas rather than a scatter of o
 
 | Day in Toronto | Theme | Section of `BLOG-TOPICS.md` |
 | --- | --- | --- |
-| Sunday | Downsizing in Markham | Sunday |
-| Monday | First time home buyers in Markham | Monday |
-| Tuesday | Probate and estate sales in Markham | Tuesday |
-| Wednesday | Selling a home in Markham | Wednesday |
-| Thursday | Relocating to Markham | Thursday |
-| Friday | Upsizing in Markham | Friday |
+| Sunday | Downsizing in Toronto | Sunday |
+| Monday | First time home buyers in Toronto | Monday |
+| Tuesday | Estates and probate: selling an estate home in Toronto | Tuesday |
+| Wednesday | Selling a home in Toronto | Wednesday |
+| Thursday | Relocating to Toronto | Thursday |
+| Friday | Moving up in Toronto | Friday |
 | Saturday | Writer's choice, outside the six themes above | Saturday |
 
 Get the day with `TZ=America/Toronto date "+%Y-%m-%d %A"`. Never assume it from the UTC clock,
@@ -55,13 +55,15 @@ because the run fires in the early afternoon UTC and the Toronto day can differ.
 
 1. List what already exists: `grep -h "^title:\|^h1:" src/content/blog/*.mdx`.
 2. Take the first unticked topic from **today's section only**. Do not borrow from another day to
-   keep a streak going. A Sunday post also sets `guide: downsizing-markham` and links to the guide.
+   keep a streak going. A Sunday post also sets `guide: downsizing-toronto` and links to `/downsizing-toronto/`.
+   A Tuesday post may set `guide: selling-an-estate-home-toronto` and link to that guide.
 3. Before writing, answer the test in `SEO-PLAYBOOK.md` section 1: what would be missing from the index if this post did not exist? If the honest answer is "very little", skip the topic and note why. Each post must be more specific than the ones already published, not another pass at the same ground.
 4. Skip it (leave it unticked and note why in the log) if an existing post already targets the same
    search intent, or if the facts it needs cannot be verified from the sources in section 4.
 5. If every topic in today's section is ticked or skipped, write five new ideas for that day at
    the bottom of its section in the same format, then use the first. Good topics answer one specific question
-   a Markham buyer, seller, owner or newcomer would type into Google. Mix the categories over a week.
+   a Toronto buyer, seller, owner or newcomer would type into Google. `KEYWORDS.md` records which
+   queries really exist. Mix the categories over a week.
    Never write a topic that duplicates a neighbourhood guide or a service page. Link to those instead.
 
 6. **A missed day is cheaper than a weak post.** Daily publishing only helps while each post is
@@ -87,11 +89,14 @@ even for facts that feel well known, because rules and rates change.
 | Mortgage brokers, title insurance regulation | fsrao.ca |
 | New home warranties, builders | hcraontario.ca, tarion.com |
 | Property assessment | mpac.ca |
-| Markham property tax, bylaws, permits, services, parks | markham.ca |
-| Regional services, water, roads, YRT | york.ca, yrt.ca |
-| Schools and boundaries | yrdsb.ca, ycdsb.ca |
+| Condo rules, fees, reserve funds, status certificates | condoauthorityontario.ca, ontario.ca/laws |
+| Toronto property tax, municipal land transfer tax, Vacant Home Tax, bylaws, permits, services, parks, neighbourhood profiles, news | toronto.ca |
+| Subway, streetcar and bus service | ttc.ca |
+| Line 5 Eglinton, Line 6 Finch West and other transit projects | metrolinx.com |
 | GO Transit | gotransit.com, metrolinx.com |
-| Market statistics | trreb.ca (Market Watch and community reports) |
+| Schools and boundaries | tdsb.on.ca, tcdsb.org |
+| Libraries | torontopubliclibrary.ca (tpl.ca) |
+| Market statistics | trreb.ca (Market Watch `mwYYMM.pdf` and the Toronto Central, East and West quarterly community reports) |
 | Population and census | statcan.gc.ca |
 | Interest rates | bankofcanada.ca |
 
@@ -146,43 +151,47 @@ even for facts that feel well known, because rules and rates change.
 ## 7. SEO specification
 
 **Choose one primary keyword** before writing: the phrase a real person in the Greater Toronto Area
-would search, usually including "Markham" or "Ontario" (for example "land transfer tax Ontario first
-time buyer", "Markham property tax rate"). Note it in the log.
+would search, usually including "Toronto" or "Ontario" (for example "toronto land transfer tax first
+time home buyer", "toronto property tax rate 2026"). Check `KEYWORDS.md`: on estates and probate the
+real searches say "Ontario", and seniors phrases have no demand of their own. Note it in the log.
 
 **Frontmatter**
 
 ```yaml
 ---
-title: "Land Transfer Tax in Markham: What Buyers Pay in 2026"   # 30 to 60 characters, primary keyword near the start, unique
+title: "Toronto Condo Fees: What They Pay For in 2026"   # 30 to 60 characters, primary keyword near the start, unique
 description: "..."          # 140 to 168 characters. Contains the primary keyword and says what the reader will learn
 h1: "..."                   # 20 to 90 characters. Natural headline, contains the keyword or a close variant, not identical to title
 subtitle: "..."             # 40 to 200 characters. One sentence that expands the H1
-category: costs-and-taxes   # buying, selling, neighbourhoods, market, condos, new-construction, moving-to-markham, downsizing, investing, costs-and-taxes
-published: 2026-09-18       # today, Toronto time
+category: condos            # buying, selling, neighbourhoods, market, condos, new-construction, moving-to-toronto, downsizing, investing, costs-and-taxes
+published: 2026-10-04       # today, Toronto time
 takeaway: "..."             # 2 to 4 sentences that directly answer the search query. Written to win a featured snippet
-neighbourhood: unionville   # optional, only if the post is mainly about one neighbourhood (sets the share image)
+neighbourhood: downtown-waterfront   # optional, only if the post is mainly about one neighbourhood (sets the share image)
 related:                    # 0 to 3 neighbourhood slugs the post genuinely discusses
-  - unionville
-guide: downsizing-markham    # only for posts marked (guide: downsizing-markham) in BLOG-TOPICS.md; the body must then link to /downsizing-markham/
+  - downtown-waterfront
+guide: downsizing-toronto    # required on every Sunday post, optional otherwise; the body must then link to the guide
 relatedServices:            # 1 to 3 service slugs that fit the reader's situation
-  - first-time-buyers
+  - downsizing
 faq:                        # 4 to 6 real questions, each ending in ?, each answer 1 to 3 standalone sentences
   - q: "..."
     a: "..."
 sources:                    # every source relied on, exact URLs opened this run
-  - name: "Ontario.ca, Land transfer tax"
-    url: https://www.ontario.ca/document/land-transfer-tax
+  - name: "Condominium Authority of Ontario"
+    url: https://www.condoauthorityontario.ca/
 ---
 ```
 
 Quote any YAML value that contains a colon followed by a space, starts with a special character or
-contains a `#`. Neighbourhood slugs: unionville, markham-village, cornell, berczy-village,
-cathedraltown, wismer, greensborough, angus-glen, box-grove, thornhill, milliken-mills, downtown.
+contains a `#`. Neighbourhood slugs: leaside, lawrence-park, yonge-eglinton, don-mills,
+the-annex, bayview-village, willowdale, downtown-waterfront, high-park, the-beaches, riverdale,
+islington-village. Guide slugs: downsizing-toronto, first-time-home-buyers-toronto,
+investment-property-toronto, luxury-homes-toronto, new-construction-toronto, relocating-to-toronto,
+selling-a-home-after-separation-toronto, selling-an-estate-home-toronto, upsizing-toronto.
 Service slugs: luxury, relocation, downsizing, upsizing, first-time-buyers, new-construction,
 investors, estate-sales, separation-and-divorce.
 
 **File name** is the slug: lowercase kebab-case, 3 to 7 words, contains the primary keyword, no
-dates or stop words unless needed (`land-transfer-tax-markham.mdx`). Never reuse or rename an
+dates or stop words unless needed (`toronto-condo-fees.mdx`). Never reuse or rename an
 existing slug.
 
 **Body**
@@ -195,10 +204,14 @@ existing slug.
 - Use a Markdown table whenever you compare figures, options or costs.
 - Use a numbered list for steps and a bulleted list for checklists. Keep list items parallel.
 - **Internal links, at least three, in the body text**, with descriptive anchor text (never "click
-  here" or "this page"). At least one must go to a neighbourhood guide (`/unionville-markham/`), a
-  service page (`/services/relocation/`), the pillar guide (`/downsizing-markham/`), `/buyers/` or `/sellers/`. Link to an existing blog
+  here" or "this page"). At least one must go to a neighbourhood guide (`/leaside-toronto/`), a
+  service page (`/services/relocation/`), a pillar guide (`/downsizing-toronto/`), `/buyers/` or `/sellers/`. Link to an existing blog
   post (`/blog/<slug>/`) when one is genuinely relevant. Other useful pages: `/neighbourhoods/`,
-  `/map-of-markham/`, `/market-reports/`, `/contact/`. Every internal link ends with a slash. Only link
+  `/map-of-toronto/`, `/toronto-house-prices/`, `/land-transfer-tax-calculator-toronto/`,
+  `/mortgage-calculator-toronto/`, `/toronto-vs-markham/`, `/toronto-vs-mississauga/`,
+  `/toronto-vs-vaughan/`, `/best-toronto-neighbourhoods-for-downsizing/`,
+  `/best-toronto-neighbourhoods-for-families/`, `/best-toronto-neighbourhoods-for-commuters/`,
+  `/market-reports/`, `/contact/`. Every internal link ends with a slash. Only link
   to pages that exist: check `src/content/` and `src/pages/`.
 - External links are optional in the body. When used, link the primary source on the phrase that
   cites it, https only.
@@ -216,11 +229,14 @@ After writing, go through the post line by line, including the takeaway and ever
 2. For each one, find the exact sentence on a source page you opened this run that supports it. If
    you cannot, rewrite the claim so it is supported, or delete it.
 3. Recalculate every worked example and every table total yourself.
-4. Check that "Markham" facts are really about Markham and not Toronto (for example, Toronto has a
-   municipal land transfer tax and Markham does not).
-5. Check place facts against the neighbourhood guides in `src/content/neighbourhoods/`. If a post
+4. Check that "Toronto" facts are about the City of Toronto and not the wider TRREB area or the GTA.
+   Buyers of property in the City of Toronto pay the Ontario land transfer tax plus the City's
+   municipal land transfer tax (`src/lib/ltt.ts`). Say that Toronto's tax applies to property in the
+   City of Toronto. Never write that another city has "no" municipal tax.
+5. Commutes are stated as stops counted on the TTC map, never as minutes.
+6. Check place facts against the neighbourhood guides in `src/content/neighbourhoods/`. If a post
    and a guide disagree, the post must match the guide or leave the claim out.
-6. Read the whole post once more purely for house style and the banned phrases in section 5.
+7. Read the whole post once more purely for house style and the banned phrases in section 5.
 
 ## 9. Topic list and log
 
@@ -229,11 +245,11 @@ In `BLOG-TOPICS.md` change the topic's `- [ ]` to `- [x]` and add the slug after
 Append to `BLOG-LOG.md`:
 
 ```markdown
-## 2026-09-18, land-transfer-tax-markham
+## 2026-10-04, toronto-condo-fees
 
-- Primary keyword: land transfer tax Markham
+- Primary keyword: toronto condo fees average
 - Words: 1,540
-- Sources checked: ontario.ca land transfer tax page (rates and refund), ...
+- Sources checked: Condominium Authority of Ontario pages on fees and reserve funds, ...
 - Claims verified: 14. Claims removed because they could not be verified: 1 (describe)
 - Needs owner attention: none
 ```
@@ -252,7 +268,7 @@ git push origin main
 Then wait about three minutes for the deploy and notify Bing and other IndexNow engines of the new post:
 
 ```bash
-node scripts/indexnow.mjs /blog/<slug>/ /downsizing-markham/ /blog/
+node scripts/indexnow.mjs /blog/<slug>/ /downsizing-toronto/ /blog/
 ```
 
 A non-200 result is not a failure of the run; note it in the log.
@@ -261,5 +277,5 @@ Never force push. Never push with a failing `npm run verify`. If the push is rej
 record it in the log.
 
 Finish the run with a four line summary: the post title, its URL
-(`https://kirbychanmarkham.com/blog/<slug>/`), the primary keyword and anything that needs the
+(`https://kirbychantoronto.com/blog/<slug>/`), the primary keyword and anything that needs the
 owner's attention.

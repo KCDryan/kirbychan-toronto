@@ -66,8 +66,9 @@ function values(text) {
     t = t.replace(/(\d)[\s   ,](?=\d{3}(?!\d))/g, '$1');
   }
 
-  // French writes decimals with a comma: 1,5 million is 1.5 million.
-  t = t.replace(/(\d),(\d)(?!\d\d)/g, '$1.$2');
+  // French writes decimals with a comma: 1,5 million is 1.5 million and 0,767311 % is 0.767311 %.
+  // Groups of exactly three digits were joined above, so any other run after a comma is a decimal.
+  t = t.replace(/(\d),(\d{1,2}|\d{4,})(?!\d)/g, '$1.$2');
   // Chinese dates are written as digits before 年, 月 and 日, so "10 月" is a
   // month, not a figure of ten. Drop the month and day parts.
   t = t.replace(/\d{1,2}\s*[月日]/g, ' ');

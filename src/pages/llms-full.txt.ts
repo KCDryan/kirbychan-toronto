@@ -24,7 +24,7 @@ export const GET: APIRoute = async () => {
 
   add(`# ${site.name}: guides in full`);
   add();
-  add(`${site.name} (${site.brokerage.legalName}), Toronto, Ontario, Canada. ${site.contact.phone}. ${site.url}`);
+  add(`${site.name} (${site.brokerage.legalName}), serving Toronto, Ontario, Canada. ${site.contact.phone}. ${site.url}`);
   add();
   add('Every figure is dated and cites a primary source, listed under each guide. Market prices are TRREB figures for the period stated and are not an appraisal. Nothing here is legal, tax, mortgage or investment advice.');
   add();

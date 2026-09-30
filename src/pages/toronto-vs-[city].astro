@@ -4,19 +4,18 @@ import type { GetStaticPaths } from 'astro';
 import Page from '../layouts/Page.astro';
 import { cad } from '../lib/format';
 import { ontarioLtt, torontoMltt } from '../lib/ltt';
-import { CITIES, MARKHAM, PERIOD, type Stats } from '../lib/comparisons';
+import { CITIES, TORONTO, PERIOD, type Stats } from '../lib/comparisons';
 
 export const getStaticPaths = (() => CITIES.map((c) => ({ params: { city: c.slug }, props: { c } }))) satisfies GetStaticPaths;
 
 const { c } = Astro.props as { c: (typeof CITIES)[number] };
 const path = `/toronto-vs-${c.slug}/`;
-// A Markham photo that fits each comparison: Main Street for the two suburbs, the skyline against Toronto.
-const PHOTO: Record<string, string> = { 'richmond-hill': 'unionville', vaughan: 'markham-village', toronto: 'downtown' };
+// The Toronto neighbourhood nearest each city leads the page; the city's own photo follows the table.
+const PHOTO: Record<string, string> = { markham: 'bayview-village', mississauga: 'islington-village', vaughan: 'willowdale' };
 const crumbs = [
   { name: 'Home', path: '/' },
-  { name: `Markham vs ${c.name}`, path },
+  { name: `Toronto vs ${c.name}`, path },
 ];
-const lttAt = (median: number, toronto: boolean) => ontarioLtt(median) + (toronto ? torontoMltt(median) : 0);
 const rows: [string, (s: Stats) => string | null][] = [
   ['Sales, all property types', (s) => s.sales.toLocaleString('en-CA')],
   ['Median price, all property types', (s) => cad(s.median)],
@@ -29,39 +28,40 @@ const rows: [string, (s: Stats) => string | null][] = [
 const others = CITIES.filter((o) => o.slug !== c.slug);
 const faq = [
   ...c.faq,
-  { q: `What is the median home price in Markham?`, a: `TRREB recorded a median of ${cad(MARKHAM.median)} across all property types in Markham in ${PERIOD}, from ${MARKHAM.sales} sales.` },
+  { q: 'What is the median home price in the City of Toronto?', a: `TRREB recorded a median of ${cad(TORONTO.median)} across all property types in the City of Toronto in ${PERIOD}, from ${TORONTO.sales.toLocaleString('en-CA')} sales.` },
 ];
+const sister = 'sister' in c ? c.sister : undefined;
 ---
 
 <Page
   title={c.title}
   description={c.description}
   eyebrow="Compare"
-  h1={`Markham vs ${c.name}: where to buy`}
+  h1={`Toronto vs ${c.name}: where to buy`}
   lede={c.intro}
   crumbs={crumbs}
   faq={faq}
 >
   <section class="section">
     <div class="wrap-narrow prose">
-      <CreditedPhoto slug={PHOTO[c.slug] ?? 'downtown'} priority />
-      <h2>At a glance, {PERIOD}</h2>
+      <CreditedPhoto slug={PHOTO[c.slug] ?? 'downtown-waterfront'} priority />
+      <h2>Side by side, {PERIOD}</h2>
       <table>
-        <thead><tr><th>TRREB, {PERIOD}</th><th>Markham</th><th>{c.name}</th></tr></thead>
+        <thead><tr><th>TRREB, {PERIOD}</th><th>City of Toronto</th><th>{c.name}</th></tr></thead>
         <tbody>
-          {rows.map(([label, f]) => <tr><td>{label}</td><td>{f(MARKHAM)}</td><td>{f(c.stats)}</td></tr>)}
+          {rows.map(([label, f]) => <tr><td>{label}</td><td>{f(TORONTO)}</td><td>{f(c.stats)}</td></tr>)}
           <tr>
-            <td>Land transfer tax at the median</td>
-            <td>{cad(lttAt(MARKHAM.median, false))}</td>
-            <td>{cad(lttAt(c.stats.median, c.toronto))}</td>
+            <td>Land transfer tax at {c.name}'s median</td>
+            <td>{cad(ontarioLtt(c.stats.median) + torontoMltt(c.stats.median))}</td>
+            <td>{cad(ontarioLtt(c.stats.median))}</td>
           </tr>
-          <tr><td>Municipal land transfer tax</td><td>No</td><td>{c.toronto ? 'Yes' : 'No'}</td></tr>
+          <tr><td>Toronto municipal land transfer tax</td><td>Yes</td><td>No</td></tr>
         </tbody>
       </table>
       <p>
-        One month of sales moves around, especially in smaller categories, so treat these as a snapshot
-        rather than a trend. Our <a href="/market-reports/">Markham market reports</a> follow the numbers
-        month by month.
+        A single month is a snapshot. Small categories in particular swing from one month to the next,
+        so read these alongside our <a href="/market-reports/">Toronto market reports</a>, which follow
+        the figures over time.
       </p>
 
       <CreditedPhoto slug={c.slug} />
@@ -75,25 +75,34 @@ const faq = [
         ))
       }
 
-      <h2>Choosing within Markham</h2>
+      {
+        sister && (
+          <p>
+            Weighing the move itself? The <a href={sister.url} rel="noopener">{sister.name}</a> cover
+            Markham's own neighbourhoods and prices.
+          </p>
+        )
+      }
+
+      <h2>Choosing within Toronto</h2>
       <p>
-        Markham itself varies a great deal from one neighbourhood to the next, from condo towers in
-        Downtown Markham to heritage streets in Unionville and family crescents in Berczy Village. Our
-        <a href="/neighbourhoods/">Markham neighbourhood guides</a> compare all twelve and the
-        <a href="/relocating-to-toronto/">relocating to Markham guide</a> covers the move itself.
+        Toronto is not one market. A condo near the waterfront, a semi in Riverdale and a detached house
+        in Lawrence Park answer very different questions. Our
+        <a href="/neighbourhoods/">Toronto neighbourhood guides</a> set out the prices, housing and transit
+        for twelve of them and the <a href="/relocating-to-toronto/">relocating to Toronto guide</a> covers
+        a move into the city.
       </p>
 
-      <h2>Run your own numbers</h2>
+      <h2>Check the numbers on a real home</h2>
       <p>
-        Use the <a href="/land-transfer-tax-calculator-toronto/">land transfer tax calculator</a> and the
-        <a href="/mortgage-calculator-toronto/">mortgage calculator</a> on a specific price, read the
-        <a href="/blog/markham-go-train-commute/">Markham GO train commute guide</a> or
-        <a href="/contact/">ask us</a> to compare two homes you are considering.
+        Put a specific price through the <a href="/land-transfer-tax-calculator-toronto/">land transfer tax calculator</a>
+        and the <a href="/mortgage-calculator-toronto/">mortgage calculator</a>. You can also
+        <a href="/contact/">ask us</a> to set two homes you are considering side by side.
       </p>
 
-      <h2>More comparisons</h2>
+      <h2>Other comparisons</h2>
       <ul>
-        {others.map((o) => <li><a href={`/toronto-vs-${o.slug}/`}>Markham vs {o.name}</a></li>)}
+        {others.map((o) => <li><a href={`/toronto-vs-${o.slug}/`}>Toronto vs {o.name}</a></li>)}
       </ul>
 
       <h2>Sources</h2>

@@ -1,23 +1,23 @@
 {
   "meta": {
     "home": {
-      "title": "マーカムの不動産・住宅 | Kirby Chan & Co.",
-      "description": "Kirby Chan & Co.がマーカムでの住宅の購入と売却をお手伝いします。エリアごとのガイドと正直なアドバイスをお届けします。"
+      "title": "トロントの不動産エージェント | Kirby Chan & Co.",
+      "description": "Kirby Chan & Co.がトロントでの住宅の購入と売却をお手伝いします。出典付きの12エリアガイドと、最初のお電話からクロージングまで分かりやすいアドバイスをお届けします。"
     },
     "about": {
       "title": "ブローカー Kirby Chan のご紹介 | Kirby Chan & Co.",
-      "description": "ブローカーのKirby Chanは、eXp Realty Brokerage所属のKirby Chan & Co.共同創業者。マーカムなどを担当しています。"
+      "description": "ブローカーのKirby Chanは、eXp Realty Brokerage所属のKirby Chan & Co.共同創業者。トロント、マーカム、Richmond Hillをはじめトロント広域圏を担当しています。"
     },
     "services": {
-      "title": "マーカムの不動産サービス | Kirby Chan & Co.",
-      "description": "購入、売却、住み替え、移住、遺産の売却、新築物件など。マーカムでの状況別のお手伝いの内容をご紹介します。"
+      "title": "トロントの不動産サービス | Kirby Chan & Co.",
+      "description": "住み替え、遺産の住宅、購入、売却、移住、新築物件など。トロントでの状況別の対応内容をご紹介します。"
     },
     "neighbourhoods": {
-      "title": "マーカムの住宅エリアガイド | Kirby Chan & Co.",
-      "description": "UnionvilleからCornellまで、マーカムの12のエリアを紹介。それぞれの雰囲気とどんな方に合うかを分かりやすくまとめました。"
+      "title": "トロントの住宅エリアガイド | Kirby Chan & Co.",
+      "description": "LeasideやLawrence ParkからRiverdale、ダウンタウンのウォーターフロントまで、トロントの12のエリアを紹介。それぞれの住宅、交通、価格を分かりやすくまとめました。"
     },
     "contact": {
-      "title": "お問い合わせ | Kirby Chan & Co. マーカムの不動産",
+      "title": "お問い合わせ | Kirby Chan & Co. トロントの不動産",
       "description": "お電話、メール、メッセージでご連絡ください。すべてのお問い合わせに直接お返事し、無理な勧誘や義務は一切ありません。"
     }
   },
@@ -70,9 +70,9 @@
     "team": "当チームは英語、中国語（北京語）、ベトナム語、ロシア語、ジョージア語、ペルシャ語、ウルドゥー語、ヒンディー語、ポルトガル語、韓国語の10言語でお客様に対応しています。日本語には対応していないため、ご相談は英語またはこれらの言語でお願いいたします。"
   },
   "home": {
-    "eyebrow": "オンタリオ州マーカム",
-    "h1": "マーカムの不動産を、エリアごとに",
-    "lede": "Kirby Chan & Co. Real Estate Teamは、マーカムで住宅を購入・売却するご家族をお手伝いしています。Unionvilleの歴史あるメインストリートからCornellの新しい街並みまで、それぞれのエリアの特徴をよく知っています。",
+    "eyebrow": "オンタリオ州トロント",
+    "h1": "トロントの不動産チームが、エリアごとにご案内します",
+    "lede": "Kirby Chan & Co. Real Estate Teamは、トロント全域で住宅を購入・売却する方をお手伝いしています。Leasideの戸建ての街並みからウォーターフロントのコンドミニアムタワーまで、それぞれのエリアをひとつの独立した市場として捉えています。",
     "ctaContact": "Kirbyに相談する",
     "ctaNeighbourhoods": "エリアを見る",
     "photoAlt": "見出しの方を指さしてほほえむブローカーのKirby Chan",
@@ -91,7 +91,7 @@
       },
       {
         "value": "12",
-        "label": "マーカムのエリアガイド"
+        "label": "トロントのエリアガイド"
       }
     ],
     "kirby": {
@@ -109,12 +109,12 @@
     },
     "hoods": {
       "eyebrow": "エリア紹介",
-      "h2": "マーカムはひとつの市場ではなく、12の市場です。",
+      "h2": "12のエリア、それぞれに異なる市場",
       "lede": "エリアごとに住宅、学校、交通、価格帯が異なります。まずは検討中のエリアからご覧ください。",
       "viewAll": "すべてのエリア"
     },
     "cta": {
-      "h2": "マーカムでの購入や売却をお考えですか？",
+      "h2": "トロントでの購入や売却をお考えですか？",
       "body": "無理な勧誘や義務はありません。市場をよく知るチームと、率直にお話しいただくだけです。",
       "button": "お問い合わせ"
     }
@@ -122,14 +122,14 @@
   "about": {
     "eyebrow": "Kirbyについて",
     "h1": "Kirby Chan, Broker",
-    "lede": "eXp Realty Brokerage所属、Kirby Chan & Co. Real Estate Teamの共同創業者。マーカム、Richmond Hill、トロント広域圏を担当しています。",
+    "lede": "eXp Realty Brokerage所属、Kirby Chan & Co. Real Estate Teamの共同創業者。トロント、マーカム、Richmond Hillをはじめ、トロント広域圏を担当しています。",
     "photoAlt": "Kirby Chanの肖像写真",
     "teamPhotoAlt": "Kirby Chan & Co. Real Estate TeamのメンバーとKirby Chan",
     "bio": [
       "家を売る機会は、一生のうちに数回しかありません。それは単なる取引ではなく、人生で最も大きなお金の決断のひとつです。Kirby Chanは、その決断がうまくいくよう力を尽くすことを仕事の軸にしてきました。",
-      "Kirbyはブローカーであり、Kirby Chan & Co. Real Estate Teamの共同創業者として、マーカム、Richmond Hill、トロント広域圏で活動しています。チームは、正直でお客様を第一に考える不動産サービスというシンプルな約束から始まりました。",
+      "Kirbyはブローカーであり、Kirby Chan & Co. Real Estate Teamの共同創業者として、トロント、マーカム、Richmond Hill、トロント広域圏で活動しています。チームは、正直でお客様を第一に考える不動産サービスというシンプルな約束から始まりました。",
       "Kirbyのやり方は率直です。無理に勧めることはありません。お話を聞き、アドバイスをし、Kirbyにとって都合の良い決断ではなく、お客様にとって正しい決断ができるようお手伝いします。紹介や、再びご依頼くださるお客様が事業の土台となっているのはそのためです。",
-      "Kirbyは共同創業者のCarrie Szetoと、熱意ある専門スタッフとともにチームを運営しています。地域の市場知識、現代的なデジタルマーケティング、そしてマーカムやRichmond Hillの住宅所有者が住み替えの際に本当に必要とするものへの理解を、チーム全体でお届けします。"
+      "Kirbyは共同創業者のCarrie Szetoと、熱意ある専門スタッフとともにチームを運営しています。地域の市場知識、現代的なデジタルマーケティング、そしてトロント広域圏の住宅所有者が住み替えの際に本当に必要とするものへの理解を、チーム全体でお届けします。"
     ],
     "quote": "無理に勧めることはありません。お話を聞き、アドバイスをし、お客様にとって正しい決断ができるようお手伝いします。",
     "philosophyEyebrow": "私たちの原動力",
@@ -141,7 +141,7 @@
       },
       {
         "title": "地域に根ざした知識",
-        "body": "マーカムとRichmond Hillは私たちの地元の市場です。通りや学校、そしてエリアごとの価格の違いをよく知っています。"
+        "body": "トロント、マーカム、Richmond Hillが私たちの市場です。通りごとに取引を追い、エリアごとの価格の違いをよく知っています。"
       },
       {
         "title": "一生のお付き合い",
@@ -161,7 +161,7 @@
       "body": "協力、誠実さ、責任、寛大さを大切に、チームメンバー、お客様、地域社会と強い信頼関係を築きます。"
     },
     "languagesHeading": "チームが対応している言語",
-    "languagesBody": "マーカムはカナダでも特に多様性に富んだ都市のひとつです。人生の大きな決断が言葉の壁で伝わらないことのないよう、当チームは10の言語でお客様に対応しています。",
+    "languagesBody": "2021年の国勢調査では、トロント住民の44.9%が家庭で英語またはフランス語以外の言語を話していました。人生の大きな決断が言葉の壁で伝わらないことのないよう、当チームは10の言語でお客様に対応しています。",
     "languages": [
       "英語",
       "中国語（北京語）",
@@ -182,7 +182,7 @@
   },
   "services": {
     "eyebrow": "サービス",
-    "h1": "マーカムの不動産サービス",
+    "h1": "トロントの不動産サービス",
     "lede": "住み替えは一つひとつ異なります。ここでは、私たちがよくお手伝いする状況と、それぞれへの対応を分かりやすくご紹介します。",
     "items": {
       "buying": {
@@ -198,12 +198,12 @@
       "luxury": {
         "name": "高級住宅",
         "summary": "比較できる事例が少なく、買い手も限られ、価格設定の失敗が許されない物件。",
-        "body": "マーカムの高級住宅は、直接比較できる事例がほとんどありません。慎重に価格を設定し、物件の魅力をきちんと伝え、売却の過程を通してお客様のプライバシーを守ります。"
+        "body": "トロントの高級住宅は、直接比較できる事例がほとんどありません。さらに2026年4月1日からは、300万ドルを超える物件で市の土地譲渡税が引き上げられています。慎重に価格を設定し、物件の魅力をきちんと伝え、お客様のプライバシーを守ります。"
       },
       "relocation": {
         "name": "移住・転居",
         "summary": "住んだことのないエリアを、多くの場合は期限のある中で選ぶこと。",
-        "body": "他の都市や国からマーカムへ移られますか？エリア、学校、通勤について正直にご説明し、遠方からでも安心して選べるようお手伝いします。"
+        "body": "他の都市や国からトロントへ移られますか？エリア、交通、費用について正直にご説明し、遠方からでも安心して選べるようお手伝いします。"
       },
       "downsizing": {
         "name": "ダウンサイジング",
@@ -228,7 +228,7 @@
       "investors": {
         "name": "投資家の方へ",
         "summary": "魅力的な話より先に、数字が成り立つこと。",
-        "body": "売り込みの話より先に、家賃、維持費、売却時の価値を確認します。マーカムの投資物件が、まず数字の上で理にかなっているかを見極めます。"
+        "body": "売り込みの話より先に、家賃、維持費、市の規制、売却時の価値を確認します。トロントの投資物件が、まず数字の上で理にかなっているかを見極めます。"
       },
       "estate-sales": {
         "name": "遺産の売却",
@@ -243,57 +243,57 @@
     }
   },
   "neighbourhoods": {
-    "eyebrow": "オンタリオ州マーカム",
-    "h1": "マーカムの12のエリア",
-    "lede": "マーカムはひとつの市場ではありません。エリアごとに雰囲気、住宅、学校、交通が異なります。それぞれのエリアを簡単にご紹介します。",
+    "eyebrow": "オンタリオ州トロント",
+    "h1": "トロントの12のエリア",
+    "lede": "トロントではエリアごとに住宅、交通、価格帯が異なります。それぞれのエリアを簡単にご紹介します。",
     "items": {
-      "unionville": {
-        "tagline": "歴史あるメインストリート、大きく育った木々、市内で最もよく知られた名前。",
-        "body": "19世紀のメインストリートの先にGO駅があります。Unionvilleは、マーカムと聞いて多くの人が思い浮かべるエリアで、価格もそれに見合った高めの水準です。"
+      "leaside": {
+        "tagline": "Line 5 Eglintonの駅に近い、戸建てと二戸一住宅の街並み。",
+        "body": "Leasideの住宅の半数以上は一戸建てです（2021年国勢調査）。Line 5 EglintonのLeaside駅はBayview Avenueにあり、Eglinton沿いの東にはLaird駅とSunnybrook Park駅があります。"
       },
-      "markham-village": {
-        "tagline": "古い住宅と奥行きのある敷地が残る、かつての町の中心。",
-        "body": "マーカムの原点です。今も活気のあるメインストリート、奥行きのある敷地、100年以上にわたって建てられてきた家々があり、どこもGO駅から歩いてすぐです。"
+      "lawrence-park": {
+        "tagline": "戸建て、渓谷の公園、Line 1のLawrence駅。",
+        "body": "Lawrence Park RavineとBlythwood Ravine Parkを囲む戸建て住宅のエリアで、Line 1のLawrence駅があり、南端にはEglinton駅があります。"
       },
-      "cornell": {
-        "tagline": "玄関ポーチ、裏道に面したガレージ、近くには病院。",
-        "body": "マーカム東部の碁盤の目状の道路に沿って計画された街です。玄関ポーチのある家、裏道に面したガレージがあり、エリアの端にはMarkham Stouffville Hospitalがあります。"
+      "yonge-eglinton": {
+        "tagline": "Line 1とLine 5が交わる場所のコンドミニアムタワー。",
+        "body": "Eglinton駅はLine 1 Yonge UniversityとLine 5 Eglintonの乗換駅です。エリアの住宅の大半は5階建て以上の集合住宅にあり、両側には古くからの戸建てと二戸一住宅の街並みが広がります。"
       },
-      "berczy-village": {
-        "tagline": "家族中心、学校重視、価格もそれに見合った水準。",
-        "body": "マーカム北部のファミリー向けエリアです。比較的新しい一戸建てやタウンハウス、静かな弧を描く通りがあり、学校の評判に惹かれて多くの買い手が集まります。"
+      "don-mills": {
+        "tagline": "Line 5 Eglintonの駅に近い計画都市。",
+        "body": "Banbury-Don Millsには戸建て住宅とコンドミニアムが混在しています。Line 5 EglintonのWynford駅、Aga Khan Park & Museum駅、Don Valley駅が南端の近くにあります。"
       },
-      "cathedraltown": {
-        "tagline": "大聖堂を中心に造られた、個性的な街並み。",
-        "body": "大聖堂を中心に計画された街で、マーカムのどこよりも建築規制が厳しく、その景観は好きか嫌いかがはっきり分かれます。"
+      "the-annex": {
+        "tagline": "Line 1とLine 2沿いのヴィクトリア様式の住宅とアパートメント。",
+        "body": "The AnnexはBloor Street沿いにあり、Spadina駅、St George駅、Bathurst駅があります。East Annexの歴史的保存地区を含み、住宅の大半はアパートメントか改築された住宅です。"
       },
-      "wismer": {
-        "tagline": "比較的新しいファミリー向け住宅と、近くのGO駅。",
-        "body": "Wismer Commonsは、マーカム北部の中ほどにある落ち着いたエリアです。比較的新しいファミリー向け住宅、学校を目当てにした根強い需要、そして利用しやすい距離にGO駅があります。"
+      "bayview-village": {
+        "tagline": "Sheppard地下鉄沿いのコンドミニアムと、その奥の戸建ての街並み。",
+        "body": "Line 4 SheppardのBayview駅、Bessarion駅、Leslie駅がこのエリアを結び、BayviewとSheppardの交差点には市のコミュニティセンターと図書館があります。取引の大半はコンドミニアムです。"
       },
-      "greensborough": {
-        "tagline": "GO駅を中心に広がる、マーカム北東部。",
-        "body": "Mount Joy GOを中心に広がるマーカム北東部のエリアです。比較的新しい住宅やタウンハウスが多く、多くの通りから駅まで歩いてすぐです。"
+      "willowdale": {
+        "tagline": "Yonge地下鉄沿いのNorth York Centreのコンドミニアム。",
+        "body": "Line 1のFinch駅、North York Centre駅、Sheppard-Yonge駅がWillowdaleを通っています。Yonge Street付近の住宅の大半は5階建て以上の集合住宅にあり、西側の通りには戸建て住宅が並びます（2021年国勢調査）。"
       },
-      "angus-glen": {
-        "tagline": "エグゼクティブ向けの住宅、選手権コースのゴルフ場、広い敷地。",
-        "body": "Major Mackenzie Driveの北に位置する、マーカムのエグゼクティブ向けエリアです。広い敷地、選手権コースのゴルフクラブ、よく知られたコミュニティセンターがあります。"
+      "downtown-waterfront": {
+        "tagline": "Union Stationと湖の間に広がるコンドミニアム。",
+        "body": "ここではほぼすべての住宅が5階建て以上の集合住宅にあります（2021年国勢調査）。Line 1とGOトレインが乗り入れるUnion Stationが北端にあります。"
       },
-      "box-grove": {
-        "tagline": "歴史ある集落と、その周りに建てられた新しい住宅。",
-        "body": "19世紀の集落を新しい住宅地が囲むエリアで、マーカムの南東の端、Highway 407のそばにあります。"
+      "high-park": {
+        "tagline": "High Park沿いのLine 2の駅。",
+        "body": "Line 2のHigh Park駅、Keele駅、Runnymede駅が、High Park周辺の戸建てや二戸一住宅の街並みと集合住宅を結んでいます。"
       },
-      "thornhill": {
-        "tagline": "成熟した落ち着きのある街並み、Yonge StreetでVaughanと分かれるエリア。",
-        "body": "Thornhillは、Yonge Streetを境にマーカムとVaughanに分かれています。マーカム側には、市内でも特に歴史のある住宅地が広がっています。"
+      "the-beaches": {
+        "tagline": "湖畔の街並みとKingswood Road Southの歴史的地区。",
+        "body": "湖に近いThe Beachesでは、取引の大半が戸建てと二戸一住宅で、北側にはLine 2のMain Street駅とWoodbine駅があります。"
       },
-      "milliken-mills": {
-        "tagline": "トロントとの境にあり、一戸建てを最も手の届きやすい価格から探せるエリア。",
-        "body": "Steeles Avenue沿いのマーカム南端のエリアです。比較的古い住宅、便利な公共交通があり、市内で一戸建てを最も手の届きやすい価格で探せることが多いエリアです。"
+      "riverdale": {
+        "tagline": "Don川の東側に広がる二戸一住宅の街並み。",
+        "body": "North RiverdaleとSouth Riverdaleでは、二戸一住宅とタウンハウスが取引の大きな割合を占めます。BroadviewからDonlandsまでLine 2の駅が4つあり、Riverdaleの歴史的保存地区もあります。"
       },
-      "downtown": {
-        "tagline": "車ではなく歩いて過ごせるように造られた、マーカムの一角。",
-        "body": "Downtown Markhamは都市型の街として設計され、コンドミニアムのタワー、レストラン、映画館、York University Markham Campusが近くに集まっています。"
+      "islington-village": {
+        "tagline": "Islington駅近くの住宅と、Kiplingのコンドミニアム。",
+        "body": "このTRREBのコミュニティは、Islington周辺の戸建ての街並みと、Kipling駅近くのEtobicoke City Centreのコンドミニアムを含みます。Kipling駅ではLine 2とKipling GOが接続しています。"
       }
     }
   },
@@ -304,7 +304,7 @@
     "phone": "電話",
     "email": "メール",
     "office": "オフィス",
-    "officeNote": "オフィスはマーカムから車ですぐのRichmond Hillにあります。ご都合の良い場所でお会いすることもできます。",
+    "officeNote": "登記上のオフィスはRichmond Hillにあります。トロントをはじめ、トロント広域圏のどこでも、ご都合の良い場所でお会いできます。",
     "form": {
       "heading": "メッセージを送る",
       "name": "お名前",
@@ -312,7 +312,7 @@
       "phone": "電話番号",
       "neighbourhood": "ご興味のあるエリア",
       "notSure": "まだ決めていない",
-      "elsewhere": "マーカムのその他のエリア",
+      "elsewhere": "トロントのその他のエリア",
       "intent": "ご検討内容",
       "buying": "購入",
       "selling": "売却",
@@ -324,7 +324,7 @@
       "t3": "6か月から12か月",
       "t4": "1年以上先",
       "message": "お伝えしておきたいことはありますか？",
-      "consent": "お問い合わせ内容およびマーカムの不動産について、Kirby Chan & Co.からメール、電話、テキストメッセージで連絡を受けることに同意します。この同意はいつでも取り消すことができます。",
+      "consent": "お問い合わせ内容およびトロントの不動産について、Kirby Chan & Co.からメール、電話、テキストメッセージで連絡を受けることに同意します。この同意はいつでも取り消すことができます。",
       "privacyLink": "プライバシー通知（英語）",
       "send": "送信",
       "sending": "送信中",
@@ -352,7 +352,7 @@
     "asideHeading": "Talk it through",
     "asideBody": "No pressure and no obligation. Kirby and the team speak ten languages.",
     "sendMessage": "Send a message",
-    "leadHeading": "Talk to Kirby about your move in Markham",
+    "leadHeading": "トロントでの住み替えについてKirbyにご相談ください",
     "quickContact": "Quick contact",
     "barCta": "Get a free plan"
   }

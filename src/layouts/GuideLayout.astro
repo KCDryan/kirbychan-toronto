@@ -29,7 +29,7 @@ interface Props {
 }
 const { entry, headings, lang = 'en' } = Astro.props;
 const d = entry.data;
-// A translated entry's id carries the language folder, for example zh/luxury-markham.
+// A translated entry's id carries the language folder, for example zh/luxury-homes-toronto.
 const slug = entry.id.replace(/^[a-z]{2}\//, '') as GuideSlug;
 const guide = GUIDES[slug];
 const en = lang === 'en';
@@ -54,8 +54,8 @@ const linkedServices = d.relatedServices
 // Client stories published by the team are downsizing and later-life moves.
 const showStories = en && slug === 'downsizing-toronto';
 
-// Share image: a Toronto streetscape instead of the generic card.
-const sharePhoto = photo('neighbourhoods/markham-village');
+// Share image: a Toronto photo instead of the generic card.
+const sharePhoto = photo('neighbourhoods/downtown-waterfront');
 const ogImage = sharePhoto
   ? (await getImage({ src: sharePhoto, width: 1200, height: 630, format: 'jpg', fit: 'cover' })).src
   : undefined;

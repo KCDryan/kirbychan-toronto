@@ -1,23 +1,23 @@
 {
   "meta": {
     "home": {
-      "title": "Bienes raíces en Markham | Kirby Chan & Co.",
-      "description": "Kirby Chan & Co. Real Estate Team ayuda a familias a comprar y vender casas en Markham, Ontario, con guías de cada vecindario y consejos honestos en cada paso."
+      "title": "Agente inmobiliario en Toronto | Kirby Chan & Co.",
+      "description": "Kirby Chan & Co. Real Estate Team ayuda a las personas a comprar y vender casas en Toronto, con una guía documentada de doce vecindarios y consejos claros desde la primera llamada hasta el cierre."
     },
     "about": {
       "title": "Conozca a Kirby Chan, Broker | Kirby Chan & Co.",
-      "description": "Kirby Chan es corredor (Broker) y cofundador de Kirby Chan & Co. Real Estate Team en eXp Realty Brokerage, en Markham, Richmond Hill y el Gran Toronto."
+      "description": "Kirby Chan es corredor (Broker) y cofundador de Kirby Chan & Co. Real Estate Team en eXp Realty Brokerage, al servicio de Toronto, Markham, Richmond Hill y el resto del Gran Toronto."
     },
     "services": {
-      "title": "Servicios inmobiliarios en Markham | Kirby Chan & Co.",
-      "description": "Compra, venta, mudanza a una casa más pequeña, reubicación, herencias, obra nueva y más. Cómo ayuda Kirby Chan & Co. en cada situación en Markham."
+      "title": "Servicios inmobiliarios en Toronto | Kirby Chan & Co.",
+      "description": "Mudanza a una casa más pequeña, herencias, compra, venta, reubicación, obra nueva y más. Cómo gestiona Kirby Chan & Co. Real Estate Team cada situación en Toronto."
     },
     "neighbourhoods": {
-      "title": "Vecindarios de Markham | Kirby Chan & Co.",
-      "description": "Doce vecindarios de Markham, desde Unionville y Markham Village hasta Cornell y Berczy Village. Cómo es cada zona y para quién es, en palabras sencillas."
+      "title": "Vecindarios de Toronto | Kirby Chan & Co.",
+      "description": "Doce vecindarios de Toronto, desde Leaside y Lawrence Park hasta Riverdale y la zona costera del centro. Vivienda, transporte y precios de cada uno, en palabras sencillas."
     },
     "contact": {
-      "title": "Contacte a Kirby Chan & Co. | Bienes raíces Markham",
+      "title": "Contacte a Kirby Chan & Co. | Bienes raíces Toronto",
       "description": "Llame, escriba un correo o envíe un mensaje a Kirby Chan & Co. Real Estate Team. Respondemos personalmente cada consulta, sin presión ni compromiso."
     }
   },
@@ -70,9 +70,9 @@
     "team": "Nuestro equipo atiende a clientes en diez idiomas: inglés, mandarín, vietnamita, ruso, georgiano, farsi, urdu, hindi, portugués y coreano. El español no es uno de ellos, así que las conversaciones con el equipo son en inglés o en uno de esos idiomas."
   },
   "home": {
-    "eyebrow": "Markham, Ontario",
-    "h1": "Bienes raíces en Markham, vecindario por vecindario",
-    "lede": "Kirby Chan & Co. Real Estate Team ayuda a familias a comprar y vender casas en Markham. Conocemos cada vecindario tal como es, desde la calle principal histórica de Unionville hasta las calles más nuevas de Cornell.",
+    "eyebrow": "Toronto, Ontario",
+    "h1": "Su equipo inmobiliario en Toronto, vecindario por vecindario",
+    "lede": "Kirby Chan & Co. Real Estate Team ayuda a las personas a comprar y vender casas en todo Toronto. Tratamos cada vecindario como un mercado propio, desde las calles de casas independientes de Leaside hasta las torres de condominios junto al lago.",
     "ctaContact": "Hable con Kirby",
     "ctaNeighbourhoods": "Explorar vecindarios",
     "photoAlt": "Kirby Chan, Broker, sonriendo y señalando hacia el titular",
@@ -91,7 +91,7 @@
       },
       {
         "value": "12",
-        "label": "Guías de vecindarios de Markham"
+        "label": "Guías de vecindarios de Toronto"
       }
     ],
     "kirby": {
@@ -109,12 +109,12 @@
     },
     "hoods": {
       "eyebrow": "Los vecindarios",
-      "h2": "Markham no es un solo mercado. Son doce.",
+      "h2": "Doce vecindarios, cada uno con su propio mercado",
       "lede": "Cada vecindario tiene su propio tipo de vivienda, escuelas, transporte y nivel de precios. Empiece por el que está considerando.",
       "viewAll": "Todos los vecindarios"
     },
     "cta": {
-      "h2": "¿Está pensando en comprar o vender en Markham?",
+      "h2": "¿Está pensando en comprar o vender en Toronto?",
       "body": "Sin presión y sin compromiso. Solo una conversación honesta con un equipo que conoce el mercado.",
       "button": "Contáctenos"
     }
@@ -122,14 +122,14 @@
   "about": {
     "eyebrow": "Conozca a Kirby",
     "h1": "Kirby Chan, Broker",
-    "lede": "Cofundador de Kirby Chan & Co. Real Estate Team en eXp Realty Brokerage, al servicio de Markham, Richmond Hill y el Gran Toronto.",
+    "lede": "Cofundador de Kirby Chan & Co. Real Estate Team en eXp Realty Brokerage, al servicio de Toronto, Markham, Richmond Hill y el resto del Gran Toronto.",
     "photoAlt": "Retrato de Kirby Chan",
     "teamPhotoAlt": "Kirby Chan con un miembro de Kirby Chan & Co. Real Estate Team",
     "bio": [
-      "La mayoría de las personas vende una casa solo unas pocas veces en la vida. No es simplemente una transacción. Es una de las decisiones financieras más importantes que tomarán, y Kirby Chan ha construido su carrera en torno a asegurarse de que salga bien.",
-      "Kirby es corredor (Broker) y cofundador de Kirby Chan & Co. Real Estate Team, y trabaja en Markham, Richmond Hill y el Gran Toronto. El equipo nació con un compromiso sencillo: hacer bienes raíces con honestidad y poniendo al cliente primero.",
+      "La mayoría de las personas vende una casa solo unas pocas veces en la vida. No es simplemente una transacción. Es una de las decisiones financieras más importantes que tomarán y Kirby Chan ha construido su carrera en torno a asegurarse de que salga bien.",
+      "Kirby es corredor (Broker) y cofundador de Kirby Chan & Co. Real Estate Team. Trabaja en Toronto, Markham, Richmond Hill y el Gran Toronto. El equipo nació con un compromiso sencillo: hacer bienes raíces con honestidad y poniendo al cliente primero.",
       "Su forma de trabajar es directa. No presiona. Escucha, aconseja y le ayuda a tomar la decisión correcta para usted, no la que le conviene a él. Por eso las recomendaciones y los clientes que regresan son la base del negocio.",
-      "Kirby dirige el equipo junto con la cofundadora Carrie Szeto y un grupo de especialistas dedicados. Juntos aportan conocimiento del mercado local, marketing digital moderno y una comprensión real de lo que necesitan los propietarios de Markham y Richmond Hill cuando llega el momento de mudarse."
+      "Kirby dirige el equipo junto con la cofundadora Carrie Szeto y un grupo de especialistas dedicados. Juntos aportan conocimiento del mercado local, marketing digital moderno y una comprensión real de lo que necesitan los propietarios del Gran Toronto cuando llega el momento de mudarse."
     ],
     "quote": "No presiona. Escucha, aconseja y le ayuda a tomar la decisión correcta para usted.",
     "philosophyEyebrow": "Lo que nos mueve",
@@ -141,7 +141,7 @@
       },
       {
         "title": "Conocimiento local",
-        "body": "Markham y Richmond Hill son nuestros mercados. Conocemos las calles, las escuelas y cómo cambian los precios de un vecindario a otro."
+        "body": "Toronto, Markham y Richmond Hill son nuestros mercados. Seguimos las ventas calle por calle y sabemos cómo cambian los precios de un vecindario a otro."
       },
       {
         "title": "Clientes para toda la vida",
@@ -161,7 +161,7 @@
       "body": "Construimos relaciones sólidas con los miembros de nuestro equipo, nuestros clientes y la comunidad, basadas en la colaboración, la integridad, la responsabilidad y la generosidad."
     },
     "languagesHeading": "Los idiomas de nuestro equipo",
-    "languagesBody": "Markham es una de las ciudades más diversas de Canadá. Nuestro equipo atiende a clientes en diez idiomas para que una de las decisiones más importantes de su vida nunca se pierda en la traducción.",
+    "languagesBody": "En el Censo de 2021, el 44,9 % de los residentes de Toronto hablaba en casa un idioma distinto del inglés o el francés. Nuestro equipo atiende a clientes en diez idiomas para que una de las decisiones más importantes de su vida nunca se pierda en la traducción.",
     "languages": [
       "Inglés",
       "Mandarín",
@@ -182,7 +182,7 @@
   },
   "services": {
     "eyebrow": "Nuestros servicios",
-    "h1": "Servicios inmobiliarios en Markham",
+    "h1": "Servicios inmobiliarios en Toronto",
     "lede": "Cada mudanza es diferente. Estas son las situaciones en las que ayudamos con más frecuencia, con una descripción sencilla de cómo manejamos cada una.",
     "items": {
       "buying": {
@@ -198,17 +198,17 @@
       "luxury": {
         "name": "Casas de lujo",
         "summary": "Pocos comparables, pocos compradores y ningún margen para equivocarse con el precio.",
-        "body": "Las casas de lujo en Markham tienen pocos comparables directos. Fijamos el precio con cuidado, presentamos la casa como se debe y protegemos su privacidad durante todo el proceso."
+        "body": "Las casas de lujo en Toronto tienen pocos comparables directos y, desde el 1 de abril de 2026, un impuesto municipal de transferencia de tierras más alto por encima de 3 millones de dólares. Fijamos el precio con cuidado, presentamos la casa como se debe y protegemos su privacidad."
       },
       "relocation": {
         "name": "Reubicación",
         "summary": "Elegir un vecindario donde nunca ha vivido, casi siempre con poco tiempo.",
-        "body": "¿Se muda a Markham desde otra ciudad u otro país? Le explicamos con honestidad los vecindarios, las escuelas y los trayectos para que pueda elegir con confianza, muchas veces a distancia."
+        "body": "¿Se muda a Toronto desde otra ciudad u otro país? Le explicamos con honestidad los vecindarios, el transporte y los costos para que pueda elegir con confianza, muchas veces a distancia."
       },
       "downsizing": {
         "name": "Mudarse a una casa más pequeña",
         "summary": "Décadas en una misma casa y una mudanza que debe hacerse en el orden correcto.",
-        "body": "Planificamos juntos la venta y la próxima vivienda, al ritmo que le convenga, y le ayudamos con el lado práctico de dejar la casa familiar de toda la vida."
+        "body": "Planificamos juntos la venta y la próxima vivienda, al ritmo que le convenga y le ayudamos con el lado práctico de dejar la casa familiar de toda la vida."
       },
       "upsizing": {
         "name": "Mudarse a una casa más grande",
@@ -228,7 +228,7 @@
       "investors": {
         "name": "Inversionistas",
         "summary": "Los números tienen que cuadrar antes que la historia.",
-        "body": "Analizamos la renta, los costos de mantenimiento y la reventa antes que la propuesta de venta, para que una propiedad de inversión en Markham tenga sentido primero sobre el papel."
+        "body": "Analizamos la renta, los costos de mantenimiento, las normas de la Ciudad y la reventa antes que la propuesta de venta, para que una propiedad de inversión en Toronto tenga sentido primero sobre el papel."
       },
       "estate-sales": {
         "name": "Venta de herencias",
@@ -243,57 +243,57 @@
     }
   },
   "neighbourhoods": {
-    "eyebrow": "Markham, Ontario",
-    "h1": "Doce vecindarios de Markham",
-    "lede": "Markham no es un solo mercado. Cada vecindario tiene su propio carácter, tipo de vivienda, escuelas y transporte. Aquí tiene una breve presentación de cada uno.",
+    "eyebrow": "Toronto, Ontario",
+    "h1": "Doce vecindarios de Toronto",
+    "lede": "Cada vecindario de Toronto tiene su propio tipo de vivienda, transporte y nivel de precios. Aquí tiene una breve presentación de cada uno.",
     "items": {
-      "unionville": {
-        "tagline": "Calle principal histórica, árboles maduros y el nombre más conocido de la ciudad.",
-        "body": "Una calle principal del siglo XIX con una estación GO al final. Unionville es el vecindario que la mayoría imagina cuando piensa en Markham, y sus precios tienen una prima acorde."
+      "leaside": {
+        "tagline": "Calles de casas independientes y pareadas junto a las estaciones de la Line 5 Eglinton.",
+        "body": "Más de la mitad de las viviendas de Leaside son casas unifamiliares independientes (Censo de 2021). La estación Leaside de la Line 5 Eglinton está en Bayview Avenue, con las estaciones Laird y Sunnybrook Park más al este sobre Eglinton."
       },
-      "markham-village": {
-        "tagline": "El centro original del pueblo, con casas antiguas y terrenos profundos.",
-        "body": "El Markham original. Una calle principal con vida, terrenos profundos y casas construidas a lo largo de más de un siglo, todo a poca distancia a pie de una estación GO."
+      "lawrence-park": {
+        "tagline": "Casas independientes, parques en barrancos y la Line 1 en Lawrence.",
+        "body": "Un vecindario de casas independientes alrededor de Lawrence Park Ravine y Blythwood Ravine Park, con la estación Lawrence de la Line 1 y la estación Eglinton en su límite sur."
       },
-      "cornell": {
-        "tagline": "Porches al frente, garajes en callejones traseros y un hospital cerca.",
-        "body": "Una comunidad planificada en el este de Markham, trazada en cuadrícula, con porches al frente, garajes en callejones traseros y el Markham Stouffville Hospital en uno de sus bordes."
+      "yonge-eglinton": {
+        "tagline": "Torres de condominios donde la Line 1 se cruza con la Line 5.",
+        "body": "La estación Eglinton es el transbordo entre la Line 1 Yonge University y la Line 5 Eglinton. La mayoría de las viviendas de la zona están en edificios de apartamentos de cinco pisos o más, con calles más antiguas de casas independientes y pareadas a ambos lados."
       },
-      "berczy-village": {
-        "tagline": "La familia primero, enfocado en las escuelas y con precios acordes.",
-        "body": "Zona de familias en el norte de Markham. Casas unifamiliares y townhouses más nuevas, calles tranquilas en media luna y una reputación escolar que atrae a muchos compradores."
+      "don-mills": {
+        "tagline": "Una comunidad planificada cerca de las estaciones de la Line 5 Eglinton.",
+        "body": "Banbury-Don Mills combina casas independientes con apartamentos en condominio. Las estaciones Wynford, Aga Khan Park & Museum y Don Valley de la Line 5 Eglinton están cerca de su límite sur."
       },
-      "cathedraltown": {
-        "tagline": "Construido alrededor de una catedral, con un paisaje urbano distintivo.",
-        "body": "Una comunidad planificada alrededor de una catedral, con un control arquitectónico más estricto que en cualquier otro lugar de Markham y un estilo que a la gente le encanta o no le gusta."
+      "the-annex": {
+        "tagline": "Casas victorianas y apartamentos en la Line 1 y la Line 2.",
+        "body": "The Annex está sobre Bloor Street, con las estaciones Spadina, St George y Bathurst. Incluye el distrito de conservación patrimonial East Annex y la mayoría de sus viviendas son apartamentos o casas convertidas."
       },
-      "wismer": {
-        "tagline": "Viviendas familiares más nuevas con una estación GO cerca.",
-        "body": "Wismer Commons es el centro tranquilo del norte de Markham. Casas familiares más nuevas, mucha demanda por sus escuelas y una estación GO lo bastante cerca para usarla."
+      "bayview-village": {
+        "tagline": "Condominios sobre el metro Sheppard y calles de casas independientes detrás.",
+        "body": "Las estaciones Bayview, Bessarion y Leslie de la Line 4 Sheppard dan servicio a la zona, con un centro comunitario y una biblioteca de la Ciudad en Bayview y Sheppard. La mayoría de las ventas son apartamentos en condominio."
       },
-      "greensborough": {
-        "tagline": "La esquina noreste, construida alrededor de una estación GO.",
-        "body": "El noreste de Markham, construido alrededor de Mount Joy GO. Viviendas más nuevas, muchos townhouses y, desde muchas calles, una corta caminata hasta el tren."
+      "willowdale": {
+        "tagline": "Condominios de North York Centre a lo largo del metro Yonge.",
+        "body": "Las estaciones Finch, North York Centre y Sheppard-Yonge de la Line 1 atraviesan Willowdale. La mayoría de las viviendas cerca de Yonge Street están en edificios de apartamentos de cinco pisos o más, con casas independientes en las calles al oeste (Censo de 2021)."
       },
-      "angus-glen": {
-        "tagline": "Casas ejecutivas, un campo de golf de campeonato y terrenos grandes.",
-        "body": "La zona ejecutiva de Markham al norte de Major Mackenzie Drive, con terrenos grandes, un club de golf de campeonato y un centro comunitario muy conocido."
+      "downtown-waterfront": {
+        "tagline": "Apartamentos en condominio entre Union Station y el lago.",
+        "body": "Casi todas las viviendas aquí están en edificios de apartamentos de cinco pisos o más (Censo de 2021). Union Station, con la Line 1 y los trenes GO, está en su límite norte."
       },
-      "box-grove": {
-        "tagline": "Un caserío histórico rodeado de viviendas más nuevas.",
-        "body": "Un caserío del siglo XIX rodeado de urbanizaciones más nuevas, en la esquina sureste de Markham junto a la Highway 407."
+      "high-park": {
+        "tagline": "Estaciones de la Line 2 a lo largo de High Park.",
+        "body": "Las estaciones High Park, Keele y Runnymede de la Line 2 dan servicio a calles de casas independientes y pareadas y a edificios de apartamentos alrededor de High Park."
       },
-      "thornhill": {
-        "tagline": "Maduro, consolidado y separado de Vaughan por Yonge Street.",
-        "body": "Thornhill está dividido entre Markham y Vaughan a lo largo de Yonge Street. El lado de Markham tiene algunas de las viviendas más consolidadas de la ciudad."
+      "the-beaches": {
+        "tagline": "Calles junto al lago y el distrito patrimonial de Kingswood Road South.",
+        "body": "Las casas independientes y pareadas son la mayoría de las ventas en The Beaches, cerca del lago, con las estaciones Main Street y Woodbine de la Line 2 al norte."
       },
-      "milliken-mills": {
-        "tagline": "En el límite con Toronto, con el precio de entrada más bajo para una casa.",
-        "body": "El extremo sur de Markham a lo largo de Steeles Avenue. Viviendas más antiguas, buenas conexiones de transporte y, a menudo, el precio más accesible de la ciudad para una casa unifamiliar."
+      "riverdale": {
+        "tagline": "Calles de casas pareadas al este del río Don.",
+        "body": "Las casas pareadas y en hilera son una gran parte de las ventas en North Riverdale y South Riverdale, con cuatro estaciones de la Line 2 de Broadview a Donlands y el distrito de conservación patrimonial de Riverdale."
       },
-      "downtown": {
-        "tagline": "La parte de Markham hecha para recorrer a pie y no en auto.",
-        "body": "Downtown Markham se diseñó para ser urbano, con torres de condominios, restaurantes, un cine y el York University Markham Campus cerca unos de otros."
+      "islington-village": {
+        "tagline": "Casas cerca de la estación Islington y condominios en Kipling.",
+        "body": "Esta comunidad de TRREB abarca calles de casas independientes alrededor de Islington y los edificios de condominios de Etobicoke City Centre cerca de la estación Kipling, donde la Line 2 conecta con Kipling GO."
       }
     }
   },
@@ -304,7 +304,7 @@
     "phone": "Teléfono",
     "email": "Correo electrónico",
     "office": "Oficina",
-    "officeNote": "Nuestra oficina está en Richmond Hill, a poca distancia en auto de Markham. Con gusto nos reunimos donde le resulte más conveniente.",
+    "officeNote": "Nuestra oficina registrada está en Richmond Hill. Con gusto nos reunimos donde le resulte más conveniente, en Toronto o en cualquier otro lugar del Gran Toronto.",
     "form": {
       "heading": "Envíenos un mensaje",
       "name": "Nombre",
@@ -312,7 +312,7 @@
       "phone": "Teléfono",
       "neighbourhood": "Vecindario de interés",
       "notSure": "Todavía no lo sé",
-      "elsewhere": "Otra zona de Markham",
+      "elsewhere": "Otra zona de Toronto",
       "intent": "Estoy",
       "buying": "Comprando",
       "selling": "Vendiendo",
@@ -324,7 +324,7 @@
       "t3": "De 6 a 12 meses",
       "t4": "Más de un año",
       "message": "¿Qué debemos saber?",
-      "consent": "Acepto que Kirby Chan & Co. me contacte por correo electrónico, teléfono o mensaje de texto sobre mi consulta y sobre bienes raíces en Markham. Puedo retirar mi consentimiento en cualquier momento.",
+      "consent": "Acepto que Kirby Chan & Co. me contacte por correo electrónico, teléfono o mensaje de texto sobre mi consulta y sobre bienes raíces en Toronto. Puedo retirar mi consentimiento en cualquier momento.",
       "privacyLink": "Aviso de privacidad (en inglés)",
       "send": "Enviar",
       "sending": "Enviando",
@@ -352,7 +352,7 @@
     "asideHeading": "Talk it through",
     "asideBody": "No pressure and no obligation. Kirby and the team speak ten languages.",
     "sendMessage": "Send a message",
-    "leadHeading": "Talk to Kirby about your move in Markham",
+    "leadHeading": "Hable con Kirby sobre su mudanza en Toronto",
     "quickContact": "Quick contact",
     "barCta": "Get a free plan"
   }

@@ -1,6 +1,6 @@
 # SEO playbook
 
-How search work on kirbychanmarkham.com is decided. Written from three practitioner sources:
+How search work on kirbychantoronto.com is decided. Written from three practitioner sources:
 an indexation case study on location pages, a local SEO teardown of a vibe coded site and a
 rank and rent operator interview. It records what we adopted, what we rejected and why.
 
@@ -33,7 +33,7 @@ tomorrow using the same method?** If yes, the page does not need to exist.
 - `npm run check:thin` lists every built page by word count and fails the build when an indexable
   English page has less than 300 words of body text. Navigation pages (`/`, `/blog/`, category and
   numbered listings, `/videos/`, `/services/`, `/neighbourhoods/`, `/market-reports/`, `/news/`,
-  `/client-stories/`, `/map-of-markham/`) are exempt. Translated pages are exempt from the word
+  `/client-stories/`, `/map-of-toronto/`) are exempt. Translated pages are exempt from the word
   count because Chinese and Japanese have no spaces to count.
 - `npm run check:blog` enforces the rest: unique titles and descriptions, length limits, at least
   four H2 sections, at least three internal links, a link to a money page, cited sources and no
@@ -81,14 +81,14 @@ and the AI assistants treat the profile as the business entity, so:
    lists everything that names it. Links run up and down that hierarchy, not sideways between
    unrelated services.
 3. **Name, address and phone must match everywhere.** Ours live in `src/data/site.json` and feed the
-   `RealEstateAgent` schema in `src/lib/schema.ts`: the real Richmond Hill office, with Markham and
-   its neighbourhoods as `areaServed`. Never a fake Markham address.
+   `RealEstateAgent` schema in `src/lib/schema.ts`: the real Richmond Hill office, with Toronto and
+   every neighbourhood guide as `areaServed`. Never a fake Toronto address.
 4. **Say who wrote it.** The author of everything published here is a named registrant with a
    page, a title and profiles elsewhere, not an unattributed brand. `person()` in
    `src/lib/schema.ts` is the `Person` entity and it is the `author` on every post and guide.
 5. **Reviews are not replaceable.** No on-site work substitutes for genuine Google reviews from
    clients, ideally mentioning what the work actually was.
-6. **Geography has to be real.** When a page names a landmark, park, road or GO station, use ones
+6. **Geography has to be real.** When a page names a landmark, park, road or TTC station, use ones
    that exist on Google Maps and that the page's own facts support. A list of trivia about a place
    is not local relevance.
 7. **Rankings are measured across a map, not from one spot.** A single search from one location
@@ -98,12 +98,17 @@ and the AI assistants treat the profile as the business entity, so:
 ## 5. Bottom of the funnel first
 
 The pages that pay are the ones people search when they are ready to act. Ours are `/home-valuation/`,
-`/downsizing-markham/`, `/sellers/`, `/buyers/` and the service pages. Informational posts exist to
+`/downsizing-toronto/` and the other pillar guides, `/sellers/`, `/buyers/`, the neighbourhood
+guides and the service pages. Informational posts exist to
 support them and must link to them. `check-blog.mjs` enforces that link.
 
 Specific beats broad. A page about one narrow situation in one place will rank when a general page
 will not, and it converts better. Keep adding narrower pages only while each one is genuinely
 different. When two ideas are contextually the same, write one page, not two.
+
+The demand evidence for Toronto queries is in `KEYWORDS.md`. Two rules from it matter on every
+page: put "Toronto" in every neighbourhood title, because names such as High Park, Riverdale and
+The Beaches collide with places elsewhere, and say "estate home" rather than "estate sale".
 
 ## 6. What we rejected
 
@@ -149,7 +154,7 @@ and cite. The site does these things, and each one is generated from the content
    a question and its answer together.
 5. **Entities are explicit.** The `RealEstateAgent` node carries `knowsAbout`, every guide and post
    carries `about`, the author is a named `Person` with a page and profiles, and the office address
-   is the real one in Richmond Hill with Markham as `areaServed`.
+   is the real one in Richmond Hill with Toronto and its neighbourhoods as `areaServed`.
 6. **Figures are dated and sourced on the page.** Assistants prefer claims they can trace.
 
 What we do not do: hidden text for bots, pages that exist only for assistants, invented "as seen

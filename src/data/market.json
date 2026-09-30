@@ -1,21 +1,104 @@
 {
   "source": "TRREB Community Housing Market Report",
-  "period": "Q1 2026",
-  "sourceUrl": "https://trreb.ca/wp-content/files/market-stats/community-reports/2026/Q1/MarkhamQ12026.pdf",
+  "period": "Q2 2026",
+  "sourceUrl": "https://trreb.ca/market-data/community-reports/",
   "metric": "Median sale price, all property types",
-  "note": "Each price is the TRREB median sale price for all property types in the matching TRREB community for January to March 2026, as a plain number with no symbols. Milliken Mills is null because TRREB reports it as two communities (East and West). Downtown Markham is null because TRREB does not report it as a community. Neighbourhoods with a null price are skipped on the ticker. Unionville's median is pulled down by condo apartment sales.",
+  "note": "Each price is the TRREB median sale price for all property types in one TRREB community for April to June 2026, from the Toronto Central, Toronto East and Toronto West community reports. Neighbourhoods that span two TRREB communities list both, under TRREB's own community names, rather than a combined figure TRREB does not publish. Communities with a null price are skipped on the ticker.",
+  "reports": {
+    "central": "https://trreb.ca/wp-content/files/market-stats/community-reports/2026/Q2/TorontoCentralQ22026.pdf",
+    "east": "https://trreb.ca/wp-content/files/market-stats/community-reports/2026/Q2/TorontoEastQ22026.pdf",
+    "west": "https://trreb.ca/wp-content/files/market-stats/community-reports/2026/Q2/TorontoWestQ22026.pdf"
+  },
   "neighbourhoods": [
-    { "slug": "unionville", "name": "Unionville", "price": 736500 },
-    { "slug": "markham-village", "name": "Markham Village", "price": 1209000 },
-    { "slug": "cornell", "name": "Cornell", "price": 977000 },
-    { "slug": "berczy-village", "name": "Berczy Village", "price": 1232000 },
-    { "slug": "cathedraltown", "name": "Cathedraltown", "price": 1200000 },
-    { "slug": "wismer", "name": "Wismer", "price": 1048000 },
-    { "slug": "greensborough", "name": "Greensborough", "price": 980100 },
-    { "slug": "angus-glen", "name": "Angus Glen", "price": 1349000 },
-    { "slug": "box-grove", "name": "Box Grove", "price": 1177500 },
-    { "slug": "thornhill", "name": "Thornhill", "price": 663000 },
-    { "slug": "milliken-mills", "name": "Milliken Mills", "price": null },
-    { "slug": "downtown", "name": "Downtown Markham", "price": null }
+    {
+      "slug": "leaside",
+      "name": "Leaside",
+      "price": 1850000
+    },
+    {
+      "slug": "lawrence-park",
+      "name": "Lawrence Park South",
+      "price": 2550000
+    },
+    {
+      "slug": "lawrence-park",
+      "name": "Lawrence Park North",
+      "price": 1922500
+    },
+    {
+      "slug": "the-annex",
+      "name": "Annex",
+      "price": 1240000
+    },
+    {
+      "slug": "bayview-village",
+      "name": "Bayview Village",
+      "price": 622500
+    },
+    {
+      "slug": "high-park",
+      "name": "High Park-Swansea",
+      "price": 1175000
+    },
+    {
+      "slug": "high-park",
+      "name": "High Park North",
+      "price": 1345500
+    },
+    {
+      "slug": "the-beaches",
+      "name": "The Beaches",
+      "price": 1600000
+    },
+    {
+      "slug": "riverdale",
+      "name": "North Riverdale",
+      "price": 1799000
+    },
+    {
+      "slug": "riverdale",
+      "name": "South Riverdale",
+      "price": 1257500
+    },
+    {
+      "slug": "willowdale",
+      "name": "Willowdale East",
+      "price": 630000
+    },
+    {
+      "slug": "willowdale",
+      "name": "Willowdale West",
+      "price": 764000
+    },
+    {
+      "slug": "don-mills",
+      "name": "Banbury-Don Mills",
+      "price": 853000
+    },
+    {
+      "slug": "yonge-eglinton",
+      "name": "Yonge-Eglinton",
+      "price": 1450000
+    },
+    {
+      "slug": "yonge-eglinton",
+      "name": "Mount Pleasant West",
+      "price": 630000
+    },
+    {
+      "slug": "islington-village",
+      "name": "Islington-City Centre West",
+      "price": 594500
+    },
+    {
+      "slug": "downtown-waterfront",
+      "name": "Waterfront Communities C1",
+      "price": 610000
+    },
+    {
+      "slug": "downtown-waterfront",
+      "name": "Waterfront Communities C8",
+      "price": 597500
+    }
   ]
 }

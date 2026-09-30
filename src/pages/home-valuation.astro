@@ -13,30 +13,34 @@ const crumbs = [
 
 const faq = [
   {
-    q: 'Is the home valuation really free?',
-    a: 'Yes. There is no cost and no obligation to list with us.',
+    q: 'Does the valuation cost anything?',
+    a: 'No. It is free and you are under no obligation to list with us afterwards.',
   },
   {
-    q: 'Is this an automated online estimate?',
-    a: 'No. Kirby Chan and the team look at recent comparable sales near your home, its size, condition and features, then give you a price range and explain how they reached it.',
+    q: 'Is it an automated estimate?',
+    a: 'No. Kirby and the team read the recent sales of comparable homes near yours, allow for size, condition, lot and features, then send you a range with the reasoning behind it.',
   },
   {
-    q: 'Is a home valuation the same as an appraisal?',
-    a: 'No. A valuation from a real estate team is an opinion of market value based on comparable sales, prepared to help you plan a sale. A lender or court may require a formal appraisal from a certified appraiser.',
+    q: 'How is this different from an appraisal?',
+    a: 'A valuation is a real estate team\'s opinion of market value from comparable sales, meant for planning. A lender, a court or an estate may need a formal appraisal from a qualified appraiser instead.',
+  },
+  {
+    q: 'Can I get a valuation for a parent\'s home or an estate property?',
+    a: 'Yes. Estate trustees and families often ask for one early to plan the sale. Tell us in the form who you are acting for.',
   },
   {
     q: 'What happens after I send the form?',
-    a: 'We contact you to confirm a few details about the home, then share the valuation with you. If you are planning a move, we can also talk through timing and next steps.',
+    a: 'We get in touch to confirm a few details about the home, then send you the valuation. If a move is on the horizon we can also talk about timing.',
   },
 ];
 ---
 
 <Page
-  title="Toronto Home Value: Free Home Valuation"
-  description="Find out what your Toronto home is worth. A free, no-obligation home value estimate from Kirby Chan & Co. Real Estate Team, based on recent comparable sales nearby."
+  title="Toronto Home Value Estimate: Free Valuation"
+  description="What is your Toronto home worth? Request a free, no-obligation valuation from Kirby Chan & Co. Real Estate Team, built from recent sales of similar homes near you."
   eyebrow="Toronto, Ontario"
   h1="What is your Toronto home worth today?"
-  lede="Get a free, no-obligation valuation prepared by Kirby Chan and the team from recent comparable sales near you. Useful if you are selling soon, downsizing or simply planning ahead."
+  lede="A free valuation prepared by Kirby Chan and the team from the sales of similar homes near yours. Useful whether you plan to sell soon, are thinking about downsizing or are settling an estate."
   crumbs={crumbs}
   faq={faq}
   tone="sand"
@@ -46,7 +50,7 @@ const faq = [
       <div>
         <LeadForm
           heading="Request your free home valuation"
-          intro="It takes about a minute. Your details stay private and are used only to prepare your valuation."
+          intro="About a minute to fill in. We use your details only to prepare the valuation and contact you about it."
           source="home-valuation"
           askAddress
           defaultIntent="Selling"
@@ -54,19 +58,19 @@ const faq = [
         />
       </div>
       <aside class="val-side">
-        <h2>What your home value report includes</h2>
+        <h2>What you receive</h2>
         <ol>
-          <li>A price range based on recent sales of comparable homes near yours</li>
-          <li>An explanation of the sales used and how your home compares</li>
-          <li>Advice on what, if anything, is worth doing before listing</li>
-          <li>If you are downsizing, a first look at timing and next steps</li>
+          <li>A price range drawn from recent sales of similar homes nearby</li>
+          <li>The sales we used and how your home compares with each</li>
+          <li>Our view on which preparation, if any, would pay for itself</li>
+          <li>For downsizers and estate trustees, a first outline of timing</li>
         </ol>
         <p class="val-side__note">
-          Prefer to talk? Call <a href={site.contact.phoneHref}>{site.contact.phone}</a>. The team serves
-          clients in ten languages.
+          Rather talk it through? Call <a href={site.contact.phoneHref}>{site.contact.phone}</a>. The team works
+          in ten languages.
         </p>
         <p class="val-side__note">
-          Thinking about a smaller home? Read our <a href="/downsizing-toronto/">Toronto downsizing guide</a>.
+          Planning a move to something smaller? Start with our <a href="/downsizing-toronto/">Toronto downsizing guide</a>.
         </p>
       </aside>
     </div>
@@ -75,9 +79,9 @@ const faq = [
   <section class="section section--alt">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">Recent sales by the team</p>
+        <p class="eyebrow">Published results</p>
         <h2>Homes the team has sold</h2>
-        <p class="lede">List and sale prices as published by the team on kirbychanandco.com. Every home and market is different, so past results do not predict the sale price of any other property.</p>
+        <p class="lede">List and sale prices as the team published them on kirbychanandco.com, with the area each home was in. No two homes or markets are alike and past results do not predict what any other home will sell for.</p>
       </div>
       <ul class="val-stories" role="list">
         {

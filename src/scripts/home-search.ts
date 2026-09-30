@@ -58,7 +58,7 @@ export function bindChoices(load: () => void) {
   load();
 }
 
-/** A plain sentence for the search, e.g. "bungalows for sale in Unionville, Toronto under $800,000". */
+/** A plain sentence for the search, e.g. "bungalows for sale in Leaside, Toronto under $800,000". */
 export function describe(p: URLSearchParams, verb: string): string {
   const home = HOMES[p.get('home') ?? ''];
   const price = PRICES[p.get('price') ?? ''];

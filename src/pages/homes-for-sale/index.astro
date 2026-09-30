@@ -85,7 +85,7 @@ const crumbs = [
   import { $, bindChoices, current, describe, el, factsLine, money, photo, syncChoices, withValue } from '../../scripts/home-search';
 
   const KEYS = ['home', 'area', 'price', 'beds', 'city', 'for', 'sort', 'page'];
-  const FALLBACK = 'https://kirbychanandco.com/homes-for-sale-markham';
+  const FALLBACK = '/contact/';
   type Listing = { key: string; price: number; address: string | null; city: string; community: string | null; beds: number | null; baths: number | null; type: string | null; style: string | null; lease: boolean; brokerage: string | null; photo: string | null };
 
   const card = (l: Listing) => {
@@ -140,7 +140,7 @@ const crumbs = [
       .catch(() => {
         if (mine !== seq) return;
         $('status').textContent = `Homes could not be loaded just now. Please try again in a minute or call us at ${site.contact.phone}. `;
-        const a = el('a', null, 'Or search all Toronto listings here.') as HTMLAnchorElement;
+        const a = el('a', null, 'Or tell us what you are looking for.') as HTMLAnchorElement;
         a.href = FALLBACK;
         $('status').append(a);
       });

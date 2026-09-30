@@ -1,121 +1,141 @@
 [
   {
-    "slug": "angus-glen",
-    "shows": "A row of large porch-front homes on Harper Hill Road in Angus Glen, Markham.",
+    "slug": "leaside",
+    "shows": "Brick houses behind green lawns and hedges along Rumsey Road in Leaside, Toronto.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Homes_on_Rumsey_Road_in_Leaside,_Toronto,_August_30_2025.jpg",
+    "title": "Homes on Rumsey Road in Leaside, Toronto, August 30 2025.jpg"
+  },
+  {
+    "slug": "lawrence-park",
+    "shows": "Tulips in the Alexander Muir Memorial Gardens looking toward St. Edmunds Drive on the edge of Lawrence Park, Toronto.",
+    "author": "GTD Aquitaine",
+    "license": "Public domain",
+    "licenseUrl": "https://commons.wikimedia.org/wiki/Template:PD-self",
+    "source": "https://commons.wikimedia.org/wiki/File:Lawrence_Park_South.jpg",
+    "title": "Lawrence Park South.jpg"
+  },
+  {
+    "slug": "yonge-eglinton",
+    "shows": "Office towers and condos at the corner of Yonge Street and Eglinton Avenue in Midtown Toronto on a sunny day.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Eglinton_Avenue_at_Yonge_Street_in_Toronto,_August_15_2026.jpg",
+    "title": "Eglinton Avenue at Yonge Street in Toronto, August 15 2026.jpg"
+  },
+  {
+    "slug": "don-mills",
+    "shows": "A tree-lined pedestrian street at the Shops at Don Mills in Don Mills, Toronto.",
     "author": "Jeff Hitchcock from Seattle, WA, USA",
     "license": "CC BY 2.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:35_Harper_Hill_Road_(21675610972).jpg",
-    "title": "35 Harper Hill Road (21675610972).jpg"
+    "source": "https://commons.wikimedia.org/wiki/File:Shops_at_Don_Mills_(37496329896).jpg",
+    "title": "Shops at Don Mills (37496329896).jpg"
   },
   {
-    "slug": "berczy-village",
-    "shows": "Autumn trees, a footbridge and nearby homes reflected in the pond at Berczy Park in Berczy Village, Markham.",
-    "author": "Enoch Leung",
-    "license": "CC BY-SA 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Reflections_of_Autumn_(50916350896).jpg",
-    "title": "Reflections of Autumn (50916350896).jpg"
+    "slug": "the-annex",
+    "shows": "Victorian brick houses and mature trees along Madison Avenue in The Annex, Toronto.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Madison_Avenue_in_Toronto,_July_29_2026_(02).jpg",
+    "title": "Madison Avenue in Toronto, July 29 2026 (02).jpg"
   },
   {
-    "slug": "box-grove",
-    "shows": "Aerial view of the Box Grove neighbourhood in Markham, with homes, woodland and a golf course.",
+    "slug": "bayview-village",
+    "shows": "Condo towers rising above tree-lined streets south of Sheppard Avenue East in Bayview Village, Toronto.",
+    "author": "GTD Aquitaine",
+    "license": "Public domain",
+    "licenseUrl": "https://commons.wikimedia.org/wiki/Template:PD-self",
+    "source": "https://commons.wikimedia.org/wiki/File:Condo_Towers_Bayview_Village.jpg",
+    "title": "Condo Towers Bayview Village.jpg"
+  },
+  {
+    "slug": "willowdale",
+    "shows": "Mel Lastman Square and the North York Civic Centre seen from above Yonge Street in Willowdale, Toronto.",
+    "author": "PFHLai",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:MelLastmanSquare_-_2015June03.jpg",
+    "title": "MelLastmanSquare - 2015June03.jpg"
+  },
+  {
+    "slug": "downtown-waterfront",
+    "shows": "The CN Tower and downtown Toronto towers seen across the harbour from the water on a clear morning.",
+    "author": "Maksim Sokolov (maxergon.com)",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Downtown_Toronto_in_September_2018_(Early_Sunday_Morning,_view_from_a_kayak).jpg",
+    "title": "Downtown Toronto in September 2018 (Early Sunday Morning, view from a kayak).jpg"
+  },
+  {
+    "slug": "high-park",
+    "shows": "Reeds and spring trees along the shore of Grenadier Pond in High Park, Toronto.",
+    "author": "Mykola Swarnyk",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Grenadier_Pond_in_High_park.jpg",
+    "title": "Grenadier Pond in High park.jpg"
+  },
+  {
+    "slug": "the-beaches",
+    "shows": "Shops and parked cars along a leafy stretch of Queen Street East in The Beaches, Toronto.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Queen_Street_East_in_The_Beaches,_July_16_2025_(01).jpg",
+    "title": "Queen Street East in The Beaches, July 16 2025 (01).jpg"
+  },
+  {
+    "slug": "riverdale",
+    "shows": "A red TTC streetcar on tree-lined Broadview Avenue near Withrow Avenue in Riverdale, Toronto.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:504_King_TTC_Streetcar_on_Broadview,_July_23_2025_(04).jpg",
+    "title": "504 King TTC Streetcar on Broadview, July 23 2025 (04).jpg"
+  },
+  {
+    "slug": "islington-village",
+    "shows": "Aerial view of new high-rise towers and surrounding homes in Islington-City Centre West, Etobicoke.",
     "author": "Canmenwalker",
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Box_Grove_aerial_view_2025.jpg",
-    "title": "Box Grove aerial view 2025.jpg"
+    "source": "https://commons.wikimedia.org/wiki/File:Islington-City_Centre_West_new_high-rise_residential_2021.jpg",
+    "title": "Islington-City Centre West new high-rise residential 2021.jpg"
   },
   {
-    "slug": "cathedraltown",
-    "shows": "The Cathedral of the Transfiguration rising above an open field in Cathedraltown, Markham, with low-rise buildings in the distance.",
-    "author": "William B. Grice",
+    "slug": "mississauga",
+    "file": "places/mississauga",
+    "shows": "Condo towers and the clock tower of the Mississauga City Centre skyline on a partly cloudy day.",
+    "author": "Dillan Payne",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Cathedral_of_Transfiguration_Markham_ON.jpg",
-    "title": "Cathedral of Transfiguration Markham ON.jpg"
+    "source": "https://commons.wikimedia.org/wiki/File:Mississauga_City_Centre,_September_13_2025.jpg",
+    "title": "Mississauga City Centre, September 13 2025.jpg"
   },
   {
-    "slug": "cornell",
-    "shows": "Low-rise apartment buildings with ground-floor shops along Cornell Park Avenue in Cornell, Markham.",
-    "author": "Loozrboy from Toronto, Canada",
-    "license": "CC BY-SA 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Downtown_Cornell_(7166792144).jpg",
-    "title": "Downtown Cornell (7166792144).jpg"
+    "slug": "ttc-subway",
+    "file": "places/ttc-subway",
+    "shows": "A Toronto Rocket subway train on TTC Line 1 at Rosedale station.",
+    "author": "CCC2012",
+    "license": "CC0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:Toronto_Rocket.JPG",
+    "title": "Toronto Rocket.JPG"
   },
   {
-    "slug": "downtown",
-    "shows": "Aerial view of Downtown Markham condo towers and offices beside Highway 407 on a sunny day.",
-    "author": "Canmenwalker",
-    "license": "CC BY 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Downtown_Markham_2025.jpg",
-    "title": "Downtown Markham 2025.jpg"
-  },
-  {
-    "slug": "greensborough",
-    "shows": "Townhouses facing a park with benches in the Greensborough neighbourhood of Markham.",
-    "author": "Loozrboy from Toronto, Canada",
-    "license": "CC BY-SA 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Greensborough_(7174248206).jpg",
-    "title": "Greensborough (7174248206).jpg"
-  },
-  {
-    "slug": "markham-village",
-    "shows": "Heritage-style shops and a clock tower building along Main Street in Markham Village.",
-    "author": "Mhsheikholeslami",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Markham_Village_Heritage_Conservation_District-_Markham-Ontario-HPC15250-20201017_(2).jpg",
-    "title": "Markham Village Heritage Conservation District- Markham-Ontario-HPC15250-20201017 (2).jpg"
-  },
-  {
-    "slug": "milliken-mills",
-    "shows": "Aerial view of Milliken Mills High School playing fields and the surrounding homes in Milliken Mills, Markham.",
-    "author": "Canmenwalker",
-    "license": "CC BY 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Milliken_Mills_High_School_aerial_view_2024.jpg",
-    "title": "Milliken Mills High School aerial view 2024.jpg"
-  },
-  {
-    "slug": "thornhill",
-    "shows": "A white heritage house behind a picket fence on Colborne Street in the Thornhill Heritage Conservation District, Markham.",
-    "author": "Silver Dovelet",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:37-39_Colbourne_Street,_Markham.jpg",
-    "title": "37-39 Colbourne Street, Markham.jpg"
-  },
-  {
-    "slug": "unionville",
+    "slug": "markham",
+    "file": "places/markham",
     "shows": "Historic shops and a Canadian flag along Main Street in Unionville, Markham.",
     "author": "Dillan Payne",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Main_Street_in_Unionville,_April_25_2026_(07).jpg",
     "title": "Main Street in Unionville, April 25 2026 (07).jpg"
-  },
-  {
-    "slug": "wismer",
-    "shows": "Rows of brick townhouses along Bur Oak Avenue in Wismer, Markham, under a partly cloudy sky.",
-    "author": "ChadPerez49",
-    "license": "CC BY-SA 3.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Bur_Oak_Avenue_Wismer_Comms_4272014.jpg",
-    "title": "Bur Oak Avenue Wismer Comms 4272014.jpg"
-  },
-  {
-    "slug": "richmond-hill",
-    "file": "places/richmond-hill",
-    "shows": "Sunset clouds over detached brick homes on a residential street in Richmond Hill, Ontario.",
-    "author": "David Zhang",
-    "license": "CC BY-SA 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Richmond_Hill,_Ontario.jpg",
-    "title": "Richmond Hill, Ontario.jpg"
   },
   {
     "slug": "vaughan",
@@ -126,25 +146,5 @@
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "source": "https://commons.wikimedia.org/wiki/File:Vaughan_Metropolitan_Centre_station_exterior,_July_2018.jpg",
     "title": "Vaughan Metropolitan Centre station exterior, July 2018.jpg"
-  },
-  {
-    "slug": "toronto",
-    "file": "places/toronto",
-    "shows": "The downtown Toronto skyline and the CN Tower seen across the harbour from Lake Ontario.",
-    "author": "Erik Drost",
-    "license": "CC BY 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Toronto_skyline_2025.jpg",
-    "title": "Toronto skyline 2025.jpg"
-  },
-  {
-    "slug": "go-train",
-    "file": "places/go-train",
-    "shows": "A northbound Stouffville line GO train at the platform of Unionville GO station in Markham.",
-    "author": "Dillan Payne",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Stouffville_GO_Train_at_Unionville_GO_Station,_October_25_2025_(01).jpg",
-    "title": "Stouffville GO Train at Unionville GO Station, October 25 2025 (01).jpg"
   }
 ]

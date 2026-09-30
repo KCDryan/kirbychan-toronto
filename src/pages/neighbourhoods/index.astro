@@ -2,56 +2,62 @@
 import Page from '../../layouts/Page.astro';
 import NeighbourhoodGrid from '../../components/NeighbourhoodGrid.astro';
 import Cta from '../../components/Cta.astro';
+import market from '../../data/market.json';
+import { cad } from '../../lib/format';
 
 const crumbs = [
   { name: 'Home', path: '/' },
   { name: 'Neighbourhoods', path: '/neighbourhoods/' },
 ];
 
+const priced = market.neighbourhoods.filter((n): n is typeof n & { price: number } => typeof n.price === 'number');
+const top = [...priced].sort((a, b) => b.price - a.price)[0];
+const low = [...priced].sort((a, b) => a.price - b.price)[0];
+
 const faq = [
   {
-    q: 'How many neighbourhoods are there in Markham?',
-    a: 'The city has many named communities. We cover the twelve that people actually search for and buy in, each with its own guide to prices, property types, schools, transit and the commute.',
+    q: 'How were these twelve Toronto neighbourhoods chosen?',
+    a: 'Each one matches one or two communities that TRREB reports on every quarter, so every guide can quote real sales figures. Together they cover detached house areas, condo areas near the subway and the neighbourhoods downsizers ask us about most.',
   },
   {
-    q: 'Which Markham neighbourhood is the most expensive?',
-    a: 'It depends on the property type. In TRREB figures for January to March 2026, Angus Glen had the highest median across all property types of the twelve neighbourhoods on this site. For detached houses, the historic core of Unionville and the larger lots in Angus Glen and on the Markham side of Thornhill sit near the top. Each guide has the figures.',
+    q: 'Which of these neighbourhoods had the highest prices?',
+    a: `Across all property types, ${top.name} had the highest median of the TRREB communities in our guides for ${market.period}, at ${cad(top.price)}. For one property type, compare the tables in each guide, because the mix of houses and condos moves the overall figure.`,
   },
   {
-    q: 'Which Markham neighbourhood is the most affordable?',
-    a: 'It depends on what you are buying. Condo apartments near Highway 7 and in Downtown Markham are the lowest entry point overall. For a house, compare the detached medians in each guide, because they shift from quarter to quarter.',
+    q: 'Where is the lowest entry price?',
+    a: `Condo apartments. ${low.name} had the lowest all types median of the communities covered, ${cad(low.price)} for ${market.period}, because nearly all of its sales were condos. Each guide lists the condo apartment median separately.`,
   },
   {
-    q: 'Which neighbourhoods have a GO station?',
-    a: 'Four Stouffville line stations sit inside Markham: Unionville, Centennial, Markham and Mount Joy. Milliken GO is just across Steeles Avenue in Toronto. Unionville, Markham Village and Greensborough have a station within or beside the neighbourhood and everywhere else means a short drive or bus ride to one.',
+    q: 'Which neighbourhoods are on the subway?',
+    a: 'All but The Beaches have a Line 1, Line 2, Line 4 or Line 5 station in or beside them. The Beaches is served by streetcars and buses to Main Street and Woodbine stations on Line 2.',
   },
   {
-    q: 'How do I choose between two neighbourhoods?',
-    a: 'Start with your week rather than with houses. Where you work, how you will get there, who is in school and what you do on a Saturday will narrow twelve options to two or three very quickly.',
+    q: 'How do I narrow it down?',
+    a: 'Start with how you will spend the week: where you travel to, whether you want a house or a condo and your budget for that type. Those three usually bring twelve options down to two or three.',
   },
 ];
 ---
 
 <Page
-  title="Markham Neighbourhoods: Where to Live in Markham"
-  description="Twelve Markham neighbourhood guides covering price bands, property types, schools, parks, transit and the commute downtown, with the trade-offs stated plainly."
-  eyebrow="Markham, Ontario"
-  h1="Markham neighbourhoods, one guide each"
-  accent="one"
-  lede="Each Markham neighbourhood behaves like its own market. What a house costs, how long it sits and who wants it changes street by street. Each guide below is written to answer the questions a buyer actually asks."
+  title="Toronto Neighbourhoods: Where to Live in Toronto"
+  description="Twelve Toronto neighbourhood guides with TRREB prices by property type, housing stock, subway and LRT stations, parks and libraries, with the trade-offs stated plainly."
+  eyebrow="Toronto, Ontario"
+  h1="Toronto neighbourhoods, one guide each"
+  accent="one guide each"
+  lede="Toronto is a city of very different housing markets. A few subway stops can separate streets of detached houses from blocks of condo towers. Each guide below sets out the prices, homes and transit for one neighbourhood."
   crumbs={crumbs}
   faq={faq}
 >
   <section class="section">
     <div class="wrap">
       <NeighbourhoodGrid level={2} />
-      <nav class="hub-links" aria-label="Compare Markham neighbourhoods">
+      <nav class="hub-links" aria-label="Compare Toronto neighbourhoods">
         <h2>Compare them by what you need</h2>
         <ul>
-          <li><a href="/best-toronto-neighbourhoods-for-downsizing/">Where to downsize in Markham</a></li>
-          <li><a href="/best-toronto-neighbourhoods-for-families/">Neighbourhoods with the most room</a></li>
-          <li><a href="/best-toronto-neighbourhoods-for-commuters/">Neighbourhoods by commute</a></li>
-          <li><a href="/toronto-house-prices/">Markham house prices by neighbourhood</a></li>
+          <li><a href="/best-toronto-neighbourhoods-for-downsizing/">Where to downsize in Toronto</a></li>
+          <li><a href="/best-toronto-neighbourhoods-for-families/">Neighbourhoods with the most houses</a></li>
+          <li><a href="/best-toronto-neighbourhoods-for-commuters/">Neighbourhoods by subway commute</a></li>
+          <li><a href="/toronto-house-prices/">Toronto house prices by community</a></li>
         </ul>
       </nav>
     </div>
@@ -60,39 +66,39 @@ const faq = [
   <section class="section section--alt">
     <div class="wrap">
       <div class="section-head">
-        <h2>Which Markham neighbourhood suits you?</h2>
+        <h2>Where to start in Toronto</h2>
         <p class="lede">
-          Three questions narrow the list faster than any amount of browsing. Where do you work and
-          how will you get there. Is anyone in school. Do you want a yard or a walk to something.
+          Three questions shorten the list quickly: where you need to get to, whether you want a house
+          or a condo and what that type costs in each area.
         </p>
       </div>
       <div class="starters">
         <div class="starter">
-          <h3>You commute downtown by train</h3>
+          <h3>A condo near the subway</h3>
           <p>
-            Look first at Unionville, Greensborough, Markham Village and Milliken Mills. All four
-            have a Stouffville line station within or beside the neighbourhood.
+            Yonge and Eglinton, Willowdale and Bayview Village had the most condo apartment sales in our
+            guides from April to June 2026, near Line 1, Line 4 and Line 5 stations.
           </p>
         </div>
         <div class="starter">
-          <h3>You have school aged children</h3>
+          <h3>A detached house</h3>
           <p>
-            Berczy Village, Wismer and Unionville carry the strongest local school reputations and
-            the pricing reflects it. Always confirm the catchment for the exact address.
+            Lawrence Park, Leaside and The Beaches sold mostly detached houses. Islington Village and
+            Willowdale West had the lower detached medians among our guides.
           </p>
         </div>
         <div class="starter">
-          <h3>You want space and a big lot</h3>
+          <h3>A short ride downtown</h3>
           <p>
-            Angus Glen for executive housing, Markham Village for deep older lots, Thornhill if you
-            are willing to renovate something from the 1960s or 1970s.
+            The downtown waterfront has Union station at its edge. The Annex is 7 stops away on Line 1
+            and Riverdale 9 stops via Line 2 and Line 1.
           </p>
         </div>
         <div class="starter">
-          <h3>You do not want a suburb</h3>
+          <h3>A semi-detached house</h3>
           <p>
-            Downtown Markham is the only part of the city built to be walked, with towers,
-            restaurants and a university campus on a real street grid.
+            Semi-detached houses led sales in North and South Riverdale. The Annex, The Beaches and
+            High Park North each recorded 11 or more semi-detached sales from April to June 2026.
           </p>
         </div>
       </div>
