@@ -78,6 +78,7 @@ without them.
 4. **The Content Security Policy in `public/_headers` allows inline scripts.** That is needed for
    the JSON-LD blocks. `/admin/*` has its own looser rules for Tina.
 
-## Preview site
+## Cloudflare Pages projects
 
-A preview runs at https://kirbychan-toronto-dev.pages.dev in the Cloudflare Pages project `kirbychan-toronto-dev`. It is a direct upload (`npm run build`, then `npx wrangler pages deploy dist --project-name kirbychan-toronto-dev --branch main`), with an `X-Robots-Tag: noindex, nofollow` header added to `dist/_headers` before upload so search engines skip it. Direct upload projects cannot be connected to GitHub, so production is a separate, Git-connected project. Delete the preview project once kirbychantoronto.com is live.
+- `kirbychan-toronto` is the production project. It is connected to GitHub (`KCDryan/kirbychan-toronto`, branch `main`, build `npm run build`, output `dist`, `NODE_VERSION=22`) and deploys on every push. It is live at https://kirbychan-toronto.pages.dev until the custom domains are added.
+- `kirbychan-toronto-dev` was a one-off direct upload preview at https://kirbychan-toronto-dev.pages.dev. It does not update on push and can be deleted.
