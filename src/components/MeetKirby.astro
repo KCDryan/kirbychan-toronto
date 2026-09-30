@@ -10,7 +10,7 @@ const k = dict.home.kirby;
 <section class="kirby section section--alt">
   <div class="wrap kirby__inner">
     <div class="kirby__media">
-      <Photo name="kirby-portrait" alt={dict.about.photoAlt} label="Portrait of Kirby Chan" ratio="1 / 1" />
+      <Photo name="kirby-office-casual" alt={dict.home.kirby.photoAlt} label="Photo of Kirby Chan" ratio="4 / 5" sizes="(min-width: 880px) 400px, 90vw" />
       <p class="broker-caption"><strong>Kirby Chan</strong>, Broker</p>
     </div>
     <div class="kirby__copy">
@@ -33,8 +33,12 @@ const k = dict.home.kirby;
     align-items: center;
   }
   .kirby__media {
-    max-width: 380px;
+    max-width: 400px;
     width: 100%;
+  }
+  .kirby__media :global(.photo) {
+    box-shadow: var(--shadow-lift);
+    border-bottom: 4px solid var(--brass);
   }
   .broker-caption {
     margin-top: var(--sp-3);

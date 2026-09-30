@@ -75,7 +75,7 @@
     "lede": "Kirby Chan & Co. Real Estate Team aide les gens à acheter et à vendre une maison partout à Toronto. Nous traitons chaque quartier comme un marché à part entière, des rues de maisons individuelles de Leaside aux tours de condos du bord de l'eau.",
     "ctaContact": "Parler à Kirby",
     "ctaNeighbourhoods": "Explorer les quartiers",
-    "photoAlt": "Kirby Chan, courtier, souriant et pointant vers le titre",
+    "photoAlt": "Kirby Chan, courtier, debout en complet foncé et souriant",
     "stats": [
       {
         "value": "150+",
@@ -99,7 +99,8 @@
       "h2": "Un courtier qui écoute avant de conseiller",
       "p1": "Kirby Chan est courtier et cofondateur de Kirby Chan & Co. Real Estate Team. La plupart des gens ne vendent une maison que quelques fois dans leur vie, alors Kirby traite chaque déménagement comme la décision financière importante qu'il est.",
       "p2": "Il ne pousse pas. Il écoute, vous donne un avis honnête et vous aide à prendre la décision qui vous convient, même quand la réponse honnête est d'attendre.",
-      "button": "Qui est Kirby"
+      "button": "Qui est Kirby",
+      "photoAlt": "Kirby Chan, courtier, souriant dans son bureau"
     },
     "services": {
       "eyebrow": "Nos services",

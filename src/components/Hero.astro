@@ -31,17 +31,20 @@ const searchExternal = searchHref.startsWith('http');
         <a class="btn btn--ghost" href={localePath(lang, '/neighbourhoods/')}>{dict.home.ctaNeighbourhoods}</a>
       </div>
     </div>
-    <div class="hero__media">
+    <figure class="hero__media">
       <Photo
-        name="home-hero"
+        name="home-hero-suit"
         alt={dict.home.photoAlt}
         label="Photo of Kirby Chan"
-        ratio="873 / 1080"
-        sizes="(min-width: 900px) 460px, 80vw"
+        ratio="4 / 5"
+        sizes="(min-width: 900px) 420px, 80vw"
         priority
-        cutout
       />
-    </div>
+      <figcaption class="hero__badge">
+        <strong>Kirby Chan</strong>
+        <span>Broker, {site.brokerage.legalName}</span>
+      </figcaption>
+    </figure>
   </div>
 </section>
 
@@ -73,12 +76,49 @@ const searchExternal = searchHref.startsWith('http');
     margin-top: var(--sp-6);
   }
   .hero__media {
-    max-width: 380px;
+    position: relative;
+    max-width: 360px;
     width: 100%;
+    margin: 0 0 var(--sp-5);
     justify-self: center;
-    /* The photo is cut off at the waist, so it sits flush on the section edge. */
-    align-self: end;
-    margin-bottom: calc(-1 * clamp(3rem, 1.8rem + 6vw, 6rem));
+  }
+  /* A brass frame offset behind the photo. */
+  .hero__media::before {
+    content: '';
+    position: absolute;
+    inset: var(--sp-5) calc(-1 * var(--sp-5)) calc(-1 * var(--sp-5)) var(--sp-5);
+    border: 2px solid var(--brass);
+    border-radius: var(--radius-lg);
+    z-index: 0;
+  }
+  .hero__media :global(.photo) {
+    position: relative;
+    z-index: 1;
+    box-shadow: var(--shadow-lift);
+  }
+  .hero__badge {
+    position: absolute;
+    z-index: 2;
+    left: calc(-1 * var(--sp-4));
+    bottom: var(--sp-6);
+    display: grid;
+    gap: 0.1rem;
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--ground);
+    color: var(--text-on-dark);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--brass);
+    box-shadow: var(--shadow);
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+  .hero__badge strong {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .hero__badge span {
+    color: var(--text-on-dark-muted);
   }
 
   @media (min-width: 900px) {
@@ -88,7 +128,8 @@ const searchExternal = searchHref.startsWith('http');
     }
     .hero__media {
       justify-self: end;
-      max-width: 460px;
+      max-width: 420px;
+      margin-right: var(--sp-5);
     }
   }
 </style>

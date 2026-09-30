@@ -75,7 +75,7 @@
     "lede": "Kirby Chan & Co. Real Estate Team helps people buy and sell homes across Toronto. We treat every neighbourhood as its own market, from the detached streets of Leaside to the condo towers on the waterfront.",
     "ctaContact": "Talk to Kirby",
     "ctaNeighbourhoods": "Explore Neighbourhoods",
-    "photoAlt": "Kirby Chan, Broker, smiling and pointing toward the headline",
+    "photoAlt": "Kirby Chan, Broker, standing in a dark suit and smiling",
     "stats": [
       {
         "value": "150+",
@@ -99,7 +99,8 @@
       "h2": "A Broker who listens before he advises",
       "p1": "Kirby Chan is a Broker and the co-founder of Kirby Chan & Co. Real Estate Team. Most people only sell a home a few times in their lives, so Kirby treats every move as the major financial decision it is.",
       "p2": "He does not push. He listens, gives his honest advice and helps you make the decision that is right for you, even when the honest answer is to wait.",
-      "button": "Meet Kirby"
+      "button": "Meet Kirby",
+      "photoAlt": "Kirby Chan, Broker, smiling in his office"
     },
     "services": {
       "eyebrow": "Our services",

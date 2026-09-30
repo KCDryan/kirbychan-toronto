@@ -6,11 +6,10 @@ creates the small fast versions automatically.
 
 | File | Where it shows |
 | --- | --- |
-| `home-hero.png` | Homepage hero. A transparent cutout of Kirby pointing at the headline. A transparent PNG looks best here; the image is not cropped |
+| `home-hero-suit.jpg` | Homepage hero, portrait crop (4:5) in a framed card. Kirby standing in a dark suit |
 | `about-team.jpg` | About page, full width, landscape crop (3:2). The team photo |
-| `kirby-portrait.png` | Homepage team section and /about/, square crop (1:1). Kirby's headshot. Delete the old file if you add a replacement with a different extension |
-| `kirby-standing-suit.jpg` | Not used yet. Full-length portrait of Kirby in a dark suit |
-| `kirby-office-casual.png` | Not used yet. Kirby in a cream jacket in a bright office setting |
+| `kirby-portrait.png` | /about/ and the guide sidebar, square crop (1:1). Kirby's headshot. Delete the old file if you add a replacement with a different extension |
+| `kirby-office-casual.png` | Homepage Meet Kirby section, portrait crop (4:5). Kirby in a cream jacket in a bright office |
 | `neighbourhoods/leaside.jpg` | Leaside page hero, grid card and social share image |
 | `neighbourhoods/lawrence-park.jpg` | Lawrence Park |
 | `neighbourhoods/yonge-eglinton.jpg` | Yonge and Eglinton |
@@ -38,10 +37,9 @@ Kirby's own photos:
 
 | File | Source |
 | --- | --- |
-| `home-hero.png` | https://kirbychanmarkham.com/ (same file as the hero there; original source not recorded) |
 | `kirby-portrait.png` | https://kirbychanandco.com/ (the headshot on that site) |
 | `about-team.jpg` | https://kirbychanandco.com/ (the team photo on that site) |
-| `kirby-standing-suit.jpg` | https://kirbychandigital.com/ |
+| `home-hero-suit.jpg` | Cropped from the full-length suit portrait (2456 x 3680) on https://kirbychandigital.com/ . Only the crop is kept in the repo, because every image in this folder is copied into the build |
 | `kirby-office-casual.png` | https://kirbychandigital.com/ |
 
 Licensed photos from Wikimedia Commons (full credits in `src/data/photo-credits.json`):
