@@ -1,44 +1,48 @@
 /* ==========================================================================
-   Kirby Chan & Co. | Markham - design tokens
-   Evergreen sister palette to the crimson kirbychanandco.com brand.
+   Kirby Chan & Co. | Toronto - design tokens
+   U of T Blue (Pantone 655, #1E3765) on the shared light paper and brass.
 
-   Contrast (WCAG 2.1 AA, verified):
-     ink #1B2320 on paper #F8F8F5          15.1:1  body text
-     muted #4F5E58 on paper                 6.4:1  secondary text
-     brand #1F5045 on paper / white     8.6 / 9.2:1  links, eyebrows, italic accents
-     paper on brand                          8.6:1  primary button text
-     brass #C2A06A on ground #10251F         6.5:1  small accents on the dark footer
-     ground on brass                         6.5:1  brass button text
+   Contrast (WCAG 2.1 AA, computed with the WCAG 2.1 relative luminance formula):
+     ink #1A2130 on paper #F8F8F5          15.1:1  body text
+     muted #4D586B on paper / mist     6.8 / 6.3:1  secondary text
+     brand #1E3765 on paper / white   11.0 / 11.7:1  links, eyebrows, accents
+     paper on brand                         11.0:1  primary button text
+     paper on brand-dark #152747            14.0:1  primary button hover
+     brass #C2A06A on ground #0F1C33         6.9:1  small accents on the dark footer
+     ground on brass                         6.9:1  brass button text
+     on-dark #EEF2F8 on ground              15.1:1  text on dark bands
+     on-dark-muted #AAB6C9 on ground         8.3:1  secondary text on dark bands
+     footer #8E9BB0 on ground                6.1:1  footer small print
      brass on paper                          2.3:1  FAILS. Decorative only on light
                                                     grounds: rules, numerals, borders.
    ========================================================================== */
 
 :root {
   /* brand */
-  --brand: #1f5045;
-  --brand-dark: #163c34;
+  --brand: #1e3765;
+  --brand-dark: #152747;
   --brass: #c2a06a;
   --brass-soft: #e0cda8;
-  --ground: #10251f;
-  --ground-lift: #1b3a32;
+  --ground: #0f1c33;
+  --ground-lift: #1a2d4f;
   --paper: #f8f8f5;
-  --mist: #ecf1ee;
-  --ink: #1b2320;
+  --mist: #edf1f7;
+  --ink: #1a2130;
 
   /* semantic */
   --bg: var(--paper);
   --bg-alt: var(--mist);
   --bg-dark: var(--ground);
   --text: var(--ink);
-  --text-muted: #4f5e58;
-  --text-on-dark: #eef3f0;
-  --text-on-dark-muted: #a9bbb4;
+  --text-muted: #4d586b;
+  --text-on-dark: #eef2f8;
+  --text-on-dark-muted: #aab6c9;
   --link: var(--brand);
   --link-hover: var(--brand-dark);
   --accent: var(--brass);
-  --rule: #d6dfda;
-  --rule-dark: #2a4a41;
-  --focus: #1f5045;
+  --rule: #d5dce8;
+  --rule-dark: #2a3d5e;
+  --focus: #1e3765;
 
   /* type */
   --font-heading: 'Montserrat', 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -73,8 +77,8 @@
   /* misc */
   --radius: 2px;
   --radius-lg: 4px;
-  --shadow: 0 1px 2px rgba(16, 37, 31, 0.05), 0 8px 24px rgba(16, 37, 31, 0.07);
-  --shadow-lift: 0 2px 4px rgba(16, 37, 31, 0.07), 0 16px 40px rgba(16, 37, 31, 0.11);
+  --shadow: 0 1px 2px rgba(15, 28, 51, 0.05), 0 8px 24px rgba(15, 28, 51, 0.07);
+  --shadow-lift: 0 2px 4px rgba(15, 28, 51, 0.07), 0 16px 40px rgba(15, 28, 51, 0.11);
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 

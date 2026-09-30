@@ -36,3 +36,4 @@ tina/__generated__/
 # Quick post build report, published at /admin/status.html
 .quick-post-status.html
 .held-quick-posts/
+

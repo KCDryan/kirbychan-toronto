@@ -210,7 +210,7 @@ a.card { text-decoration: none; color: inherit; display: block; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--brand-dark);
-  background: rgba(31, 80, 69, 0.08);
+  background: rgba(30, 55, 101, 0.08);
 }
 
 /* disclaimers -------------------------------------------------------------- */
@@ -234,7 +234,7 @@ a.card { text-decoration: none; color: inherit; display: block; }
 /* notice block, used inside MDX where scoped styles do not reach ------------ */
 .notice {
   padding: var(--sp-5);
-  background: rgba(31, 80, 69, 0.09);
+  background: rgba(30, 55, 101, 0.09);
   border: 1px dashed var(--brass);
   border-radius: var(--radius-lg);
   font-size: 0.9rem;

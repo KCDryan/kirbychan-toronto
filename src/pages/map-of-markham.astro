@@ -97,12 +97,12 @@ const faq = [
             follows below the diagram.
           </desc>
 
-          <rect x="0" y="0" width="1000" height="700" fill="#ecf1ee" />
+          <rect x="0" y="0" width="1000" height="700" fill="#edf1f7" />
 
           {
             roadsH.map((r) => (
               <>
-                <line x1="20" y1={r.y} x2="980" y2={r.y} stroke="#d6dfda" stroke-width="10" />
+                <line x1="20" y1={r.y} x2="980" y2={r.y} stroke="#d5dce8" stroke-width="10" />
                 <text x="28" y={r.y - 12} class="road">
                   {r.label}
                 </text>
@@ -112,7 +112,7 @@ const faq = [
           {
             roadsV.map((r) => (
               <>
-                <line x1={r.x} y1="20" x2={r.x} y2="680" stroke="#d6dfda" stroke-width="8" />
+                <line x1={r.x} y1="20" x2={r.x} y2="680" stroke="#d5dce8" stroke-width="8" />
                 <text x={r.x + 6} y="686" class="road">
                   {r.label}
                 </text>
@@ -124,7 +124,7 @@ const faq = [
           <polyline
             points="540,690 552,520 586,360 660,220 700,60"
             fill="none"
-            stroke="#1f5045"
+            stroke="#1e3765"
             stroke-width="3"
             stroke-dasharray="10 7"
           />
@@ -205,7 +205,7 @@ const faq = [
     font-size: 13px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    fill: #4f5e58;
+    fill: #4d586b;
   }
   .map :global(.road--go) {
     fill: var(--brand);
