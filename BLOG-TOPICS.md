@@ -4,150 +4,126 @@ The blog writer runs once a day and takes the first unticked topic **from the se
 weekday in Toronto** (see `BLOG-PLAYBOOK.md`, section 3).
 
 Format: `- [ ] Working title | category | primary keyword`. `category` must be one of the slugs in
-`src/lib/blog.ts`. When a topic is published, tick it, move it to Published and add the slug. New
-ideas go at the bottom of the day they belong to.
+`src/lib/blog.ts`: buying, selling, neighbourhoods, market, condos, new-construction,
+moving-to-toronto, downsizing, investing, costs-and-taxes. When a topic is published, tick it, move
+it to Published and add the slug. New ideas go at the bottom of the day they belong to.
+
+The primary keywords come from `KEYWORDS.md`, which records the queries Google actually completes
+for Canadian searchers. Check it before adding a topic: seniors phrases have no demand of their own,
+estates and probate are searched as "Ontario" and "estate sale" means weekend contents sales.
 
 The daily rota:
 
 | Day (Toronto) | Theme |
 | --- | --- |
-| Sunday | Downsizing in Markham |
-| Monday | First time home buyers in Markham |
-| Tuesday | Probate and estate sales in Markham |
-| Wednesday | Selling a home in Markham |
-| Thursday | Relocating to Markham |
-| Friday | Upsizing in Markham |
+| Sunday | Downsizing in Toronto |
+| Monday | First time home buyers in Toronto |
+| Tuesday | Estates and probate: selling an estate home in Toronto |
+| Wednesday | Selling a home in Toronto |
+| Thursday | Relocating to Toronto |
+| Friday | Moving up in Toronto |
 | Saturday | Writer's choice, outside the six themes above |
 
 If no topic in today's section passes the index test in `SEO-PLAYBOOK.md` section 1, publish nothing
-and record why in `BLOG-LOG.md`. A near duplicate of an existing post is worse than a missed day.
+and record why in `BLOG-LOG.md`. A near duplicate of an existing post, pillar guide, neighbourhood
+guide or service page is worse than a missed day.
 
 ## Published
 
-- [x] What it costs to downsize in Markham | downsizing | markham downsizing costs | markham-downsizing-costs
-- [x] Markham neighbourhoods downsizers consider | downsizing | downsizing neighbourhoods markham | markham-neighbourhoods-for-downsizing
-- [x] Bungalow, condo or townhouse for downsizing | downsizing | bungalow vs condo downsizing | bungalow-condo-or-townhouse-downsizing
-- [x] Senior downsizing checklist for Markham homeowners | downsizing | senior downsizing checklist markham | senior-downsizing-checklist-markham
-- [x] Sell first or buy first when you downsize | downsizing | sell first or buy first | sell-first-or-buy-first-downsizing-markham
-- [x] How long downsizing takes in Markham | downsizing | downsizing timeline | how-long-downsizing-takes-markham
-- [x] What downsizing clients have taught our team | downsizing | downsizing specialist markham | what-downsizing-clients-taught-us
-- [x] Who helps with downsizing in Markham: who does what | downsizing | who helps with downsizing in markham | who-helps-with-downsizing-markham
-- [x] Unionville or Markham Village | neighbourhoods | unionville vs markham village | unionville-vs-markham-village
-- [x] Land transfer tax on a Markham home and the first-time buyer refund | costs-and-taxes | land transfer tax markham | land-transfer-tax-markham
-- [x] Closing costs when you buy a home in Markham | costs-and-taxes | closing costs ontario home buyer | closing-costs-buying-home-markham
-- [x] FHSA and the RRSP Home Buyers' Plan for a first home in Markham | buying | fhsa home buyers plan | fhsa-and-home-buyers-plan
-- [x] Commuting from Markham to downtown Toronto by GO train | moving-to-markham | markham go train to union station | markham-go-train-commute
-- [x] How property tax works on a Markham home | costs-and-taxes | markham property tax | markham-property-tax
-- [x] Status certificates when buying a condo in Markham | condos | status certificate ontario condo | condo-status-certificate-markham
-- [x] The mortgage stress test explained for Markham buyers | buying | mortgage stress test canada | mortgage-stress-test-markham
-- [x] What happens on closing day when you buy a home in Ontario | buying | closing day ontario | closing-day-ontario-markham
+- [x] What it costs to downsize in Toronto | downsizing | toronto downsizing costs | toronto-downsizing-costs
+- [x] Toronto neighbourhoods downsizers consider, by home type | downsizing | downsizing neighbourhoods toronto | toronto-neighbourhoods-for-downsizing
+- [x] Bungalow, condo or townhouse when you downsize in Toronto | downsizing | bungalow for sale toronto | bungalow-condo-or-townhouse-downsizing-toronto
+- [x] Senior downsizing checklist for Toronto homeowners | downsizing | senior downsizing toronto | senior-downsizing-checklist-toronto
+- [x] Sell first or buy first when you downsize in Toronto | downsizing | sell first or buy first downsizing | sell-first-or-buy-first-downsizing-toronto
+- [x] How long downsizing takes in Toronto | downsizing | downsizing timeline toronto | how-long-downsizing-takes-toronto
+- [x] Who helps with downsizing in Toronto: the roles | downsizing | who helps with downsizing toronto | who-helps-with-downsizing-toronto
+- [x] Toronto land transfer tax: both taxes explained | costs-and-taxes | toronto land transfer tax | land-transfer-tax-toronto
+- [x] Toronto property tax 2026: rates, due dates and relief | costs-and-taxes | toronto property tax rate 2026 | toronto-property-tax
+- [x] Closing costs when buying a home in Toronto | costs-and-taxes | closing costs toronto | closing-costs-buying-home-toronto
+- [x] The mortgage stress test for Toronto buyers | buying | mortgage stress test ontario | mortgage-stress-test-toronto
+- [x] FHSA and the Home Buyers' Plan for a first Toronto home | buying | fhsa home buyers plan | fhsa-and-home-buyers-plan-toronto
+- [x] Condo status certificates in Toronto | condos | condo status certificate toronto | condo-status-certificate-toronto
+- [x] Closing day in Ontario for a Toronto buyer | buying | closing day ontario | closing-day-ontario-toronto
+- [x] Can you sell a house before probate in Ontario | selling | can you sell a house before probate in ontario | selling-a-house-before-probate-ontario
+- [x] Toronto subway commute by neighbourhood | moving-to-toronto | toronto subway commute | toronto-subway-commute-by-neighbourhood
+- [x] Leaside vs Lawrence Park | neighbourhoods | leaside real estate | leaside-vs-lawrence-park
 
-## Sunday: downsizing in Markham
+## Sunday: downsizing in Toronto
 
-Every Sunday post sets `guide: downsizing-markham` in frontmatter and links to `/downsizing-markham/`
-in the body. This is the cluster that feeds the pillar guide, so it stays the priority.
+Every Sunday post sets `guide: downsizing-toronto` in frontmatter and links to `/downsizing-toronto/`
+in the body. This is the cluster that feeds the pillar guide, so it stays the priority. The guide
+already covers when to downsize, moving expenses, the principal residence exemption and the City's
+seniors tax relief. A post must go further than the guide's section, not repeat it.
 
-- [ ] Downsizing to a condo in Downtown Markham: what to check | downsizing | downsize to condo markham
-- [ ] Capital gains and the principal residence exemption when you downsize | downsizing | principal residence exemption downsizing
-- [ ] Pricing a long-time family home in Markham | downsizing | how to price family home markham
-- [ ] Downsizing from a Thornhill detached home on the Markham side | downsizing | downsizing thornhill markham
-- [ ] Downsizing in Unionville: smaller homes near Main Street | downsizing | downsizing unionville
-- [ ] Selling an older Markham Village home when you downsize | downsizing | sell older home markham village
-- [ ] Retirement residence or condo: what Ontario rules say before you choose | downsizing | retirement residence vs condo ontario
-- [ ] Downsizing in Milliken Mills and south Markham | downsizing | downsizing milliken mills
-- [ ] Downsizing from north Markham: Berczy, Wismer, Cathedraltown and Angus Glen | downsizing | downsizing north markham
-- [ ] Selling a family home after decades: a planning checklist | downsizing | selling family home ontario
-- [ ] Condo fees when you downsize in Markham: what they pay for | condos | condo fees markham
+- [ ] Downsizing from a house to renting an apartment in Toronto | downsizing | downsizing from house to apartment
+- [ ] Toronto condo fees for downsizers: what they pay for | condos | toronto condo fees average
+- [ ] How to cope with downsizing your home: deciding as a family | downsizing | how to cope with downsizing your home
+- [ ] Bayview Village or Willowdale: condos for downsizers compared | downsizing | bayview village condos for sale
+- [ ] Yonge-Eglinton or Downtown Waterfront: condos for downsizers compared | downsizing | yonge and eglinton condos
 
-## Monday: first time home buyers in Markham
+## Monday: first time home buyers in Toronto
 
-- [ ] Home inspections in Markham: what they cover and what they miss | buying | home inspection markham
-- [ ] Offer dates and bidding in Ontario: how multiple offers work | buying | multiple offers ontario
-- [ ] York Region schools: how to confirm a school boundary before you buy | buying | yrdsb school boundary
-- [ ] Markham townhouses: freehold or condo, and what each costs | buying | markham townhouse for sale
-- [ ] Buying a home with family members on title in Ontario | buying | joint tenancy tenants in common ontario
-- [ ] How much deposit a Markham buyer needs and when it is due | buying | deposit on a house ontario
-- [ ] Conditions in an Ontario offer: financing, inspection and status certificate | buying | conditions in an offer ontario
-- [ ] What a buyer representation agreement commits you to under TRESA | buying | buyer representation agreement ontario
-- [ ] Home insurance basics for a Markham home | buying | home insurance ontario
-- [ ] The 10 day cooling-off period for new condos in Ontario | condos | condo cooling off period ontario
+The land transfer tax rebates, the FHSA, the Home Buyers' Plan, the stress test, closing costs and
+status certificates already have posts. Link to them rather than covering them again.
 
-## Tuesday: probate and estate sales in Markham
+- [ ] Toronto condo prices per square foot: how to compare units | condos | toronto condo prices per square foot
+- [ ] How condo fees change what a Toronto first time buyer can borrow | buying | mortgage calculator toronto condo
+- [ ] Buying a first condo in Toronto: what to check in the listing and the building | condos | toronto condo for sale
+- [ ] The minimum down payment in Ontario and where it can come from | buying | first time home buyer ontario down payment
+- [ ] Are Toronto condo prices falling? What TRREB's figures show | market | toronto condo prices falling
+
+## Tuesday: estates and probate in Toronto
 
 Law heavy. Every post states plainly that it is general information rather than legal advice and
 points the reader to an estates lawyer. Never state a rule that is not on a government or regulator
-page opened during the run.
+page opened during the run. Posts may set `guide: selling-an-estate-home-toronto` and link to
+`/selling-an-estate-home-toronto/`. Say "estate home", never "estate sale".
 
-- [ ] Selling a house during probate in Ontario | selling | selling house in probate ontario
-- [ ] Selling a parent's home in Markham under a power of attorney | selling | sell parents house power of attorney ontario
-- [ ] The estate administration tax in Ontario and how a home is valued for it | costs-and-taxes | estate administration tax ontario
-- [ ] What a Certificate of Appointment of Estate Trustee is and when a sale needs one | selling | certificate of appointment estate trustee ontario
-- [ ] An estate trustee's duties when the estate includes a Markham home | selling | estate trustee duties ontario
-- [ ] Right of survivorship and what happens to jointly owned Ontario homes | costs-and-taxes | right of survivorship ontario
-- [ ] Capital gains on an inherited home in Ontario | costs-and-taxes | inherited property capital gains canada
-- [ ] Clearing an estate home in Markham before it goes on the market | selling | estate clearing markham
-- [ ] Selling an estate home when several beneficiaries have to agree | selling | selling inherited house multiple owners
-- [ ] Insurance and utilities on a vacant estate home in Ontario | selling | vacant home insurance ontario
-- [ ] The small estate certificate in Ontario and what it does not cover | costs-and-taxes | small estate certificate ontario
+- [ ] Selling a parent's house after death: the taxes in Ontario | costs-and-taxes | selling parents house after death canada taxes ontario
+- [ ] Is it better to sell a house before or after death | selling | is it better to sell a house before or after death
+- [ ] Can a power of attorney sell property in Ontario while the owner is alive | selling | can power of attorney sell property in ontario
+- [ ] Selling a house in Ontario when there is no will | selling | probate ontario no will
+- [ ] How long probate takes in Ontario and what it means for a sale | selling | probate ontario how long
 
-## Wednesday: selling a home in Markham
+## Wednesday: selling a home in Toronto
 
-- [ ] Selling your Markham home: a step by step timeline | selling | selling a house in markham
-- [ ] How real estate commission works in Ontario | selling | real estate commission ontario
-- [ ] Pricing a home in Markham: how comparable sales work | selling | how to price a home markham
-- [ ] Preparing a Markham home for sale: what is worth spending on | selling | prepare house for sale
-- [ ] What a listing agreement commits you to under TRESA | selling | listing agreement ontario
-- [ ] The best time of year to sell a home in Markham | selling | best time to sell house ontario
-- [ ] What a seller pays at closing in Ontario | costs-and-taxes | seller closing costs ontario
-- [ ] Building permits in Markham for renovations, and what an open permit does to a sale | selling | markham building permit
-- [ ] Seller property disclosure in Ontario: what you must say | selling | seller disclosure ontario
-- [ ] Open offers versus offer dates: how Markham sellers choose | selling | offer date strategy ontario
-- [ ] Selling a tenanted property in Ontario | investing | selling tenanted property ontario
-- [ ] Markham property assessments and how to appeal to MPAC | costs-and-taxes | mpac appeal
+- [ ] What it costs to sell a house in Toronto | costs-and-taxes | cost of selling a house in toronto
+- [ ] Taxes when you sell a house in Ontario: what applies and what does not | costs-and-taxes | selling a house in ontario taxes
+- [ ] Seller disclosure when selling a house in Ontario | selling | selling a house in ontario
+- [ ] How real estate commission works when you sell in Ontario | selling | selling a house in ontario commission
+- [ ] Toronto home value estimators: what the online figures miss | selling | toronto home value estimator
+- [ ] Toronto home appraisal: what an appraiser looks at | selling | toronto home appraisal
 
-## Thursday: relocating to Markham
+## Thursday: relocating to Toronto
 
-- [ ] Moving to Markham from overseas: a first year checklist | moving-to-markham | moving to markham
-- [ ] Moving from Toronto to Markham: what changes | moving-to-markham | moving from toronto to markham
-- [ ] YRT and Viva: getting around Markham without a car | moving-to-markham | yrt viva markham
-- [ ] Registering for an Ontario health card and a licence after a move | moving-to-markham | ontario health card newcomer
-- [ ] Enrolling a child in a York Region school after a move | moving-to-markham | york region school registration
-- [ ] Setting up utilities, water and waste collection in Markham | moving-to-markham | markham utilities setup
-- [ ] Renting in Markham before you buy: what a year costs | moving-to-markham | renting in markham
-- [ ] Ontario's non-resident speculation tax and who it applies to | buying | non resident speculation tax ontario
-- [ ] Choosing a Markham neighbourhood when you have never lived here | moving-to-markham | best neighbourhood in markham
-- [ ] Moving to Markham for work: commuting to the 404 and 407 employers | moving-to-markham | markham commute work
-- [ ] Rouge National Urban Park and the Markham neighbourhoods near it | neighbourhoods | rouge national urban park markham
+The relocation guide already covers renting first, the TTC, the tax picture and schools. The subway
+commute post covers stop counts to Union.
 
-## Friday: upsizing in Markham
+- [ ] Toronto property tax compared with Markham, Mississauga and Vaughan | costs-and-taxes | property tax toronto vs markham
+- [ ] Don Mills or Leaside: two Line 5 neighbourhoods compared | neighbourhoods | don mills real estate
+- [ ] Willowdale or Yonge-Eglinton for a newcomer without a car | neighbourhoods | is willowdale a good neighbourhood
+- [ ] Moving to Toronto from Vancouver: buying costs that differ | moving-to-toronto | moving to toronto from vancouver
+- [ ] Moving to Toronto from Montreal: land transfer tax and closing compared | moving-to-toronto | moving to toronto from montreal
 
-- [ ] Bridge financing explained for move-up buyers | buying | bridge financing ontario
-- [ ] Porting a mortgage in Canada when you move up | buying | porting a mortgage canada
-- [ ] From townhouse to detached in Markham: what the step up costs | buying | townhouse to detached markham
-- [ ] Buying a detached home in Markham: what to check on older houses | buying | older homes markham
-- [ ] Upsizing for a growing family: how school catchments change the search | buying | markham family homes schools
-- [ ] Multigenerational homes in Markham: what buyers ask for | buying | multigenerational home markham
-- [ ] Angus Glen homes: what buyers should know | neighbourhoods | angus glen markham homes
-- [ ] Cornell vs Greensborough for families | neighbourhoods | cornell vs greensborough
-- [ ] Berczy Village vs Wismer | neighbourhoods | berczy village vs wismer
-- [ ] Buying a pre-construction home in Markham: deposits and your rights | new-construction | pre construction markham
-- [ ] The Tarion and HCRA new home warranty in Ontario | new-construction | new home warranty ontario
-- [ ] HST on new homes and the new housing rebate | costs-and-taxes | hst new home rebate ontario
+## Friday: moving up in Toronto
+
+Move up buyers do not search for "upsizing". Target the house and neighbourhood phrases they do use
+and link to `/upsizing-toronto/`, which already covers bridge financing, porting and sell first or
+buy first.
+
+- [ ] The Beaches or Riverdale: east end family houses compared | neighbourhoods | riverdale toronto real estate
+- [ ] High Park or The Annex: family houses on Line 2 compared | neighbourhoods | high park toronto real estate
+- [ ] Banbury-Don Mills or Bayview Village: detached houses in North York compared | neighbourhoods | banbury don mills homes for sale
+- [ ] Willowdale West or Lawrence Park North: detached houses on Line 1 compared | neighbourhoods | willowdale real estate
+- [ ] Toronto house prices in 2026: detached and semi-detached month by month | market | toronto house prices 2026
 
 ## Saturday: writer's choice
 
-Anything outside the six themes above that a Markham buyer, seller or owner would search. Market
+Anything outside the six themes above that a Toronto buyer, seller or owner would search. Market
 data, neighbourhoods, condos, investing, city services. Pick from this list or add a better idea.
 
-- [ ] What the Markham TRREB numbers mean: average vs median price | market | markham average home price
-- [ ] Markham housing market by property type | market | markham real estate market
-- [ ] Secondary suites and basement apartments in Markham | investing | basement apartment markham
-- [ ] Renting out a condo in Markham: rules landlords must follow | investing | landlord rules ontario
-- [ ] The Ontario standard lease for landlords and tenants | investing | ontario standard lease
-- [ ] Title insurance in Ontario: what it covers | costs-and-taxes | title insurance ontario
-- [ ] Heritage conservation districts in Markham: what owners should know | neighbourhoods | markham heritage district
-- [ ] Parks and trails in Markham neighbourhoods | neighbourhoods | markham parks and trails
-- [ ] Living in Downtown Markham: condos and transit | neighbourhoods | downtown markham condos
-- [ ] Water and wastewater bills in Markham | costs-and-taxes | markham water bill
-- [ ] Reserve funds and special assessments in Markham condos | condos | special assessment ontario condo
-- [ ] Snow clearing, leaf collection and the Markham service calendar | moving-to-markham | markham waste collection calendar
+- [ ] Average home price in Toronto vs the median: why the two differ | market | average home price toronto
+- [ ] Toronto house prices over the last 10 years: what TRREB reported | market | toronto house prices last 10 years
+- [ ] Toronto property tax lookup: checking a home's tax and assessment | costs-and-taxes | toronto property tax lookup
+- [ ] Why Toronto has a municipal land transfer tax | costs-and-taxes | why does toronto have a municipal land transfer tax
+- [ ] Choosing a Toronto real estate agent: what TRESA requires of a registrant | buying | toronto real estate agent

@@ -187,7 +187,7 @@ communities behind the twelve neighbourhood guides. It feeds the homepage ticker
    the oldest `lastReviewed` date. Files with no `lastReviewed` count as oldest. Break ties
    alphabetically.
 2. For each of the three, check every factual claim that can go out of date:
-   - TTC subway, LRT and streetcar lines and station names, and GO stations
+   - TTC subway, LRT and streetcar lines and station names and GO stations
    - named parks, community centres, libraries, hospitals, campuses and landmarks
    - school names and which board runs them
    - any statement that something exists, opened, closed or is planned
@@ -202,7 +202,7 @@ communities behind the twelve neighbourhood guides. It feeds the homepage ticker
 6. Any `TODO` on a neighbourhood page may be replaced only when you have a source you opened this
    run. Otherwise leave it.
 7. In `src/data/why-toronto.json` you may replace a figure with a newer one from the source named
-   in its `source` field, and update the "Figures last checked" date in `note`.
+   in its `source` field and update the "Figures last checked" date in `note`.
 8. Set `lastReviewed` to today's date in `YYYY-MM-DD` form on each of the three files you checked,
    even when nothing needed changing.
 9. Keep `sources` as the list of pages you used for that neighbourhood. Keep the TRREB report

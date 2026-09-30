@@ -17,7 +17,7 @@ page did not exist?**
 If the honest answer is "very little", do not publish it. Google does not decide whether a page is
 good, it decides whether the page is worth the storage. That is what the Search Console status
 "crawled, currently not indexed" means: read, then turned down. It is a harsher verdict than a
-ranking drop, and it is driven by site-wide quality, so thin pages hold back the pages that deserve
+ranking drop and it is driven by site-wide quality, so thin pages hold back the pages that deserve
 to rank.
 
 The corollary is uncomfortable and worth repeating: **every page we publish raises the bar for the
@@ -54,11 +54,11 @@ In this order:
    content can lift the rest of the site.
 
 Two things that do not work and are not worth the time: adding `noindex` to a page that is already
-unindexed, which only moves it between reports, and resubmitting or piling internal links onto it.
+unindexed, which only moves it between reports and resubmitting or piling internal links onto it.
 Neither changes the answer to the question in section 1.
 
 Count the failure rate **per template, not per site**. One page failing is a page problem. Six
-failing from the same generator is the generator's problem, and the trend is the signal: a template
+failing from the same generator is the generator's problem and the trend is the signal: a template
 steady at 8 per cent is noise, one that jumps to 40 per cent after a change says the change made it
 worse. That warning arrives before rankings move.
 
@@ -73,11 +73,11 @@ and the AI assistants treat the profile as the business entity, so:
 
 1. **The profile comes first.** Its categories and services should cover everything the team wants
    to be found for. An error there misinforms every system that reads it.
-2. **The website mirrors the profile.** Service pages should match the profile's services, and
+2. **The website mirrors the profile.** Service pages should match the profile's services and
    internal links should follow the same hierarchy rather than linking loosely related pages
    together. Search engines build their picture of the site from the internal links, not from the
    URL structure, so a link between two pages is a claim that they belong together. In practice:
-   a blog post or neighbourhood page names its services in `relatedServices`, and the service page
+   a blog post or neighbourhood page names its services in `relatedServices` and the service page
    lists everything that names it. Links run up and down that hierarchy, not sideways between
    unrelated services.
 3. **Name, address and phone must match everywhere.** Ours live in `src/data/site.json` and feed the
@@ -93,7 +93,7 @@ and the AI assistants treat the profile as the business entity, so:
    is not local relevance.
 7. **Rankings are measured across a map, not from one spot.** A single search from one location
    proves nothing, because proximity is a major factor in map results. Judge progress by whether
-   enquiries arrive, and by Search Console impressions for the queries we target.
+   enquiries arrive and by Search Console impressions for the queries we target.
 
 ## 5. Bottom of the funnel first
 
@@ -103,46 +103,46 @@ guides and the service pages. Informational posts exist to
 support them and must link to them. `check-blog.mjs` enforces that link.
 
 Specific beats broad. A page about one narrow situation in one place will rank when a general page
-will not, and it converts better. Keep adding narrower pages only while each one is genuinely
+will not and it converts better. Keep adding narrower pages only while each one is genuinely
 different. When two ideas are contextually the same, write one page, not two.
 
 The demand evidence for Toronto queries is in `KEYWORDS.md`. Two rules from it matter on every
 page: put "Toronto" in every neighbourhood title, because names such as High Park, Riverdale and
-The Beaches collide with places elsewhere, and say "estate home" rather than "estate sale".
+The Beaches collide with places elsewhere and say "estate home" rather than "estate sale".
 
 ## 6. What we rejected
 
 - **Doorway and city pages.** Publishing "service plus city" pages at scale with the place name
   swapped. Google treats these as spam and this site would be an obvious target, with twelve
   neighbourhoods and a translation layer. Our neighbourhood pages exist because each carries its own
-  TRREB figures, transit facts and housing stock, and each is reviewed with a date.
+  TRREB figures, transit facts and housing stock and each is reviewed with a date.
 - **Rank and rent, tracking numbers and invented brands.** A registered brokerage advertising under
-  an invented brand name, or routing calls through a number that is not the brokerage's, would
+  an invented brand name or routing calls through a number that is not the brokerage's, would
   breach RECO advertising rules. Everything on this site is published as Kirby Chan & Co. Real
   Estate Team with the brokerage named.
 - **Google Business Profile video verification tricks.** Staging a vehicle magnet or tools to pass
   verification is misrepresentation to Google and, for a registrant, a professional conduct problem.
 - **Taking images from other sites.** Every photo here is licensed and credited. See
   `src/data/photo-credits.json`.
-- **Stripping AI watermarks.** Anthropic watermarks Claude output in the word choices themselves,
+- **Stripping AI watermarks.** Anthropic watermarks Claude output in the word choices themselves
   and a detector is expected. Removing it means paraphrasing by hand or swapping Latin letters for
   lookalike characters from other alphabets. The character swaps break the entities on the page,
-  which is exactly what Google reads, and mixed script text is itself a spam signal. Provenance has
+  which is exactly what Google reads and mixed script text is itself a spam signal. Provenance has
   been detectable in images since 2023 and has never been what decides rankings. So: write accurate,
   specific, sourced content and leave the watermark alone.
 - **A separate AI or "GEO" strategy built on tricks.** Showing up in ChatGPT, Claude, Perplexity
   and AI Overviews follows from the same work as ranking: a clean technical base, accurate
   entities, real local specifics, sourced figures and reviews. What we do on top is small and
-  honest, and it is listed in section 7. Nothing there is a trick.
+  honest and it is listed in section 7. Nothing there is a trick.
 
 ## 7. Answer engines and AI assistants
 
 What an assistant needs is the same as what a careful reader needs, delivered in a form it can lift
-and cite. The site does these things, and each one is generated from the content so it cannot drift:
+and cite. The site does these things and each one is generated from the content so it cannot drift:
 
 1. **Crawlers are welcomed by name.** `public/robots.txt` names OAI-SearchBot and ChatGPT-User
    (ChatGPT search and browsing), ClaudeBot and Claude-SearchBot, PerplexityBot, Google-Extended,
-   Applebot-Extended and Bingbot, and allows each one. Bing also feeds Copilot and ChatGPT search,
+   Applebot-Extended and Bingbot and allows each one. Bing also feeds Copilot and ChatGPT search,
    which is why `scripts/indexnow.mjs` pings it on every publish.
 2. **`/llms.txt` leads with answers.** Built at `src/pages/llms.txt.ts`. It opens with the quick
    answer from every guide, each with the URL to cite and the date it was updated, then lists every
@@ -153,16 +153,16 @@ and cite. The site does these things, and each one is generated from the content
 4. **FAQs are real questions with complete answers**, marked up as `FAQPage`. An assistant can lift
    a question and its answer together.
 5. **Entities are explicit.** The `RealEstateAgent` node carries `knowsAbout`, every guide and post
-   carries `about`, the author is a named `Person` with a page and profiles, and the office address
+   carries `about`, the author is a named `Person` with a page and profiles and the office address
    is the real one in Richmond Hill with Toronto and its neighbourhoods as `areaServed`.
 6. **Figures are dated and sourced on the page.** Assistants prefer claims they can trace.
 
 What we do not do: hidden text for bots, pages that exist only for assistants, invented "as seen
-in" mentions, or any content the reader cannot see.
+in" mentions or any content the reader cannot see.
 
 ## 8. Monthly review
 
-1. Search Console, Pages report: compare "crawled, currently not indexed" against last month, and
+1. Search Console, Pages report: compare "crawled, currently not indexed" against last month and
    group the URLs by what produced them (blog, neighbourhood guide, service, translated page).
 2. Search Console, Performance: note queries where we get impressions but few clicks. Those are
    title and description problems, not content problems.

@@ -1,7 +1,7 @@
-# TinaCMS (test)
+# TinaCMS
 
-A visual editor for agents' quick posts, at
-`https://kirbychanmarkham.com/admin/index.html`. **A save commits straight to `main` and goes live
+A visual editor for agents' quick posts, at `https://kirbychantoronto.com/admin/`
+(`/admin/index.html`). **A save commits straight to `main` and goes live
 within minutes.** The Cloudflare build runs the house style and blog checks first, so an edit that
 breaks them fails to deploy and the site keeps its last good version.
 
@@ -22,7 +22,7 @@ style check applies as usual. The steps for agents are in `AGENT-BLOG-GUIDE.md`.
 ## Import from HTML
 
 `tina/import-html.ts` is the **Import from HTML** box at the top of the Quick post form. It parses
-pasted HTML in the browser, keeps the article (or `main`, or `body`), drops styles, scripts and
+pasted HTML in the browser, keeps the article (or `main` or `body`), drops styles, scripts and
 navigation, moves the first `h1` into Headline, pulls sections headed Quick answer, FAQ and Sources
 into their fields, converts the rest to Markdown with turndown (GFM tables) and loads it into the
 body with Tina's own `parseMDX`. It removes long dashes and commas before "and" or "or" and reports
@@ -33,9 +33,9 @@ values and marks it changed.
 
 `scripts/prepare-quick-posts.mjs` runs first in `scripts/build.mjs` and in CI. In a throwaway checkout
 (`CF_PAGES` or `CI` set) it fixes long dashes, commas before "and" or "or" and American spellings in
-quick posts, re-runs the style and blog checks, and moves any quick post that still fails to
+quick posts, re-runs the style and blog checks and moves any quick post that still fails to
 `.held-quick-posts/` so the rest of the site deploys. The report is published at
-`/admin/status.html`. Run locally without those variables it only reports, and never rewrites a file.
+`/admin/status.html`. Run locally without those variables it only reports and never rewrites a file.
 Full blog posts are unaffected: their problems still fail the build.
 
 ## Try it on this computer (no account needed)
@@ -49,15 +49,38 @@ Then open `http://localhost:4321/admin/index.html`. Saves write straight to the 
 
 ## Turn it on for the live site
 
-1. Create a free project at [app.tina.io](https://app.tina.io), connect the GitHub repository and
-   index the `main` branch. Add `https://kirbychanmarkham.com` under Site URLs.
-2. Copy the project's **Client ID** and a **read only token**.
-3. In the Cloudflare Pages project, under **Settings > Variables and secrets**, add to
-   **Production**: `TINA_CLIENT_ID` (plain) and `TINA_TOKEN` (secret).
-4. Retry the latest production deployment. The editor appears at `/admin/index.html`.
+1. Create a project at [app.tina.io](https://app.tina.io), connect the GitHub repository
+   `KCDryan/kirbychan-toronto` and index the `main` branch.
+2. Under Site URLs add both `https://kirbychantoronto.com` and `https://www.kirbychantoronto.com`.
+   Tina refuses logins from any address that is not listed.
+3. Copy the project's **Client ID** and create a read only **token** with branch access set to `*`,
+   so it works for `main` and for preview branches.
+4. In the Cloudflare Pages project, under **Settings > Variables and secrets**, add to
+   **Production** (and Preview if you want the editor on preview builds): `TINA_CLIENT_ID` (plain)
+   and `TINA_TOKEN` (secret).
+5. Retry the latest production deployment. `scripts/build.mjs` builds the editor only when both
+   variables are set and a Tina Cloud problem never stops the rest of the site deploying.
+6. Open `https://kirbychantoronto.com/admin/` and log in.
 
-The editor commits to the branch it was built from, which for the live site is `main`. If a save
-publishes something wrong, revert that commit on GitHub or use **Rollback** in Cloudflare.
+The editor commits to the branch it was built from (`TINA_BRANCH`, else Cloudflare's
+`CF_PAGES_BRANCH`), which for the live site is `main`. If a save publishes something wrong, revert
+that commit on GitHub or use **Rollback** in Cloudflare.
+
+### Two settings the editor depends on
+
+- **Cross-Origin-Opener-Policy.** The public site sends `same-origin`. Tina's GitHub login runs in a
+  popup that reports back to the editor and `same-origin` breaks that link, so `public/_headers`
+  sets `Cross-Origin-Opener-Policy: unsafe-none` for `/admin/*` (and drops the site's Content
+  Security Policy there). Keep that block if you edit the headers file.
+- **The schema lock.** Tina Cloud compares `tina/tina-lock.json` with `tina/config.ts` on every
+  deploy and will not build the editor when they differ. After any change to `tina/config.ts`, run
+  `npx tinacms dev -c "node -e 0"` and commit the regenerated `tina/tina-lock.json`.
+  `npm run check:tina-lock` fails when you forget.
+
+## Publishing status
+
+After a save, `https://kirbychantoronto.com/admin/status.html` shows what the build fixed in each
+quick post and lists any post it held back, with the reason.
 
 ## What we learned testing it
 

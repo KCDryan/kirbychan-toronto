@@ -59,7 +59,7 @@ because the run fires in the early afternoon UTC and the Toronto day can differ.
    A Tuesday post may set `guide: selling-an-estate-home-toronto` and link to that guide.
 3. Before writing, answer the test in `SEO-PLAYBOOK.md` section 1: what would be missing from the index if this post did not exist? If the honest answer is "very little", skip the topic and note why. Each post must be more specific than the ones already published, not another pass at the same ground.
 4. Skip it (leave it unticked and note why in the log) if an existing post already targets the same
-   search intent, or if the facts it needs cannot be verified from the sources in section 4.
+   search intent or if the facts it needs cannot be verified from the sources in section 4.
 5. If every topic in today's section is ticked or skipped, write five new ideas for that day at
    the bottom of its section in the same format, then use the first. Good topics answer one specific question
    a Toronto buyer, seller, owner or newcomer would type into Google. `KEYWORDS.md` records which
@@ -123,14 +123,14 @@ even for facts that feel well known, because rules and rates change.
   and tell readers to confirm their own situation with a lawyer, accountant or mortgage professional.
 - School rankings, "best schools" claims or promises that an address is in a catchment. Say that
   boundaries are set by the board and must be confirmed for the exact address.
-- Statements about safety or crime in a neighbourhood, or anything describing who "should" live
+- Statements about safety or crime in a neighbourhood or anything describing who "should" live
   somewhere based on ethnicity, religion, age, family status, disability or any other protected
   ground under the Ontario Human Rights Code.
 - Specific listings, addresses of private homes or photos of private homes.
 - The words and patterns that make writing read as machine written: "In today's market",
   "navigating", "delve", "unlock", "game changer", "nestled", "vibrant", "bustling", "hidden gem",
   "look no further", "dream home", "whether you're a first-time buyer or", "In conclusion",
-  "It's important to note", "when it comes to", rhetorical questions as openers, and lists of three
+  "It's important to note", "when it comes to", rhetorical questions as openers and lists of three
   adjectives.
 
 ## 6. House style
@@ -153,7 +153,7 @@ even for facts that feel well known, because rules and rates change.
 **Choose one primary keyword** before writing: the phrase a real person in the Greater Toronto Area
 would search, usually including "Toronto" or "Ontario" (for example "toronto land transfer tax first
 time home buyer", "toronto property tax rate 2026"). Check `KEYWORDS.md`: on estates and probate the
-real searches say "Ontario", and seniors phrases have no demand of their own. Note it in the log.
+real searches say "Ontario" and seniors phrases have no demand of their own. Note it in the log.
 
 **Frontmatter**
 
@@ -215,7 +215,7 @@ existing slug.
   to pages that exist: check `src/content/` and `src/pages/`.
 - External links are optional in the body. When used, link the primary source on the phrase that
   cites it, https only.
-- End with a short practical section (what to do next, a checklist, or questions to ask), then one
+- End with a short practical section (what to do next, a checklist or questions to ask), then one
   sentence inviting the reader to [contact us](/contact/). No hard sell.
 - Keyword use must read naturally. Never repeat the exact primary keyword more than about once per
   300 words.
@@ -227,7 +227,7 @@ After writing, go through the post line by line, including the takeaway and ever
 1. List every factual claim: numbers, percentages, dollar amounts, dates, deadlines, eligibility
    rules, names of programmes, laws, organisations and places, travel times, distances.
 2. For each one, find the exact sentence on a source page you opened this run that supports it. If
-   you cannot, rewrite the claim so it is supported, or delete it.
+   you cannot, rewrite the claim so it is supported or delete it.
 3. Recalculate every worked example and every table total yourself.
 4. Check that "Toronto" facts are about the City of Toronto and not the wider TRREB area or the GTA.
    Buyers of property in the City of Toronto pay the Ontario land transfer tax plus the City's

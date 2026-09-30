@@ -11,14 +11,14 @@ snippet, the date and the byline all come from the few boxes below.
 Paste the whole HTML code into **Import from HTML** at the top of the form and click **Convert**.
 It fills in the post with its headings, bold, bullet points, tables and links, plus the headline,
 summary, quick answer, FAQ and sources when it can find them. It also removes long dashes and
-commas before "and" or "or", which the site does not allow, and tells you what it changed. Then
+commas before "and" or "or", which the site does not allow and tells you what it changed. Then
 pick a category, add your name, read it through and **Save**.
 
 Pasting HTML straight into **Your post** does not work: bold, bullet points and tables are lost.
 
 ## Steps
 
-1. Go to `https://kirbychanmarkham.com/admin/` and log in.
+1. Go to `https://kirbychantoronto.com/admin/` and log in.
 2. Open **Quick posts (agents)** and click **Add File**.
 3. Fill in:
    - **Headline**: the title of your post, 10 to 90 characters.
@@ -32,26 +32,26 @@ Pasting HTML straight into **Your post** does not work: bold, bullet points and 
    If Claude or ChatGPT wrote it, click the **Markdown** button at the right end of the toolbar
    and paste the Markdown there, so headings, lists, tables and links come through exactly.
 5. Optional, but it makes the post look like the team's full posts: fill the **Quick answer
-   box**, add **FAQ** questions and **Sources**, and tick the **Neighbourhoods** and
+   box**, add **FAQ** questions and **Sources** and tick the **Neighbourhoods** and
    **Services** it relates to.
 6. Click **Save**. The post is live within about five minutes at
-   `kirbychanmarkham.com/blog/<your-headline>/`.
+   `kirbychantoronto.com/blog/<your-headline>/`.
 
 Want someone to look at it first? Switch on **Save as draft**. It stays off the site until the
 switch is turned off again.
 
 ## If your post does not appear
 
-Give it five minutes after **Save**. The editor does not show a live preview of quick posts, because a new post is only on the site once the build has finished. Then open `https://kirbychanmarkham.com/admin/status.html`.
+Give it five minutes after **Save**. The editor does not show a live preview of quick posts, because a new post is only on the site once the build has finished. Then open `https://kirbychantoronto.com/admin/status.html`.
 
 The site fixes some things for you when it publishes: long dashes (em dash or en dash), a comma
-directly before "and" or "or", and American spellings such as "neighborhood" or "center". The
+directly before "and" or "or" and common American spellings. The
 status page lists what it fixed.
 
-A post it cannot fix is held back, and only that post: the rest of the site keeps publishing. The
+A post it cannot fix is held back and only that post: the rest of the site keeps publishing. The
 status page lists it with the reason. The usual ones:
 
-- the post is under 300 words, or the summary is shorter than 50 characters
+- the post is under 300 words or the summary is shorter than 50 characters
 - a filler phrase such as "In today's market", "nestled" or "dream home"
 - the same headline as another post
 
@@ -63,6 +63,10 @@ The post is advertising by a registered brokerage and it carries your name.
 
 - Only publish figures you can point to a source for, with the date they apply to.
 - No invented clients, quotes or results.
-- No predictions of prices or rates, and no "best", "top" or "guaranteed" claims.
+- No predictions of prices or rates and no "best", "top" or "guaranteed" claims.
 - Do not promise a school catchment. Boundaries must be confirmed with the school board.
 - Nothing about who "should" live in a neighbourhood.
+- Buying in Toronto means the Ontario land transfer tax plus the City of Toronto's municipal land
+  transfer tax, which applies to property in the City of Toronto. Never write that another city
+  has "no" municipal tax.
+- State a commute as stops on the TTC map, never as minutes.

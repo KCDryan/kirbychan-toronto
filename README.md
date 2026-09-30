@@ -209,7 +209,7 @@ A scheduled Claude agent follows `UPDATE-PLAYBOOK.md` every two weeks and pushes
    publishes a market report when TRREB has something newer.
 2. **Toronto news.** Publishes a sourced roundup at `/news/` from toronto.ca, the TTC, Metrolinx and
    the school boards.
-3. **Fact check.** Re-verifies three neighbourhood guides, oldest first, and stamps them with a
+3. **Fact check.** Re-verifies three neighbourhood guides, oldest first and stamps them with a
    review date and their sources.
 4. **Monthly figures.** Refreshes `trreb-monthly.json` from the newest TRREB Market Watch.
 
