@@ -9,7 +9,7 @@ import { CITIES, MARKHAM, PERIOD, type Stats } from '../lib/comparisons';
 export const getStaticPaths = (() => CITIES.map((c) => ({ params: { city: c.slug }, props: { c } }))) satisfies GetStaticPaths;
 
 const { c } = Astro.props as { c: (typeof CITIES)[number] };
-const path = `/markham-vs-${c.slug}/`;
+const path = `/toronto-vs-${c.slug}/`;
 // A Markham photo that fits each comparison: Main Street for the two suburbs, the skyline against Toronto.
 const PHOTO: Record<string, string> = { 'richmond-hill': 'unionville', vaughan: 'markham-village', toronto: 'downtown' };
 const crumbs = [
@@ -80,20 +80,20 @@ const faq = [
         Markham itself varies a great deal from one neighbourhood to the next, from condo towers in
         Downtown Markham to heritage streets in Unionville and family crescents in Berczy Village. Our
         <a href="/neighbourhoods/">Markham neighbourhood guides</a> compare all twelve and the
-        <a href="/relocating-to-markham/">relocating to Markham guide</a> covers the move itself.
+        <a href="/relocating-to-toronto/">relocating to Markham guide</a> covers the move itself.
       </p>
 
       <h2>Run your own numbers</h2>
       <p>
-        Use the <a href="/land-transfer-tax-calculator-markham/">land transfer tax calculator</a> and the
-        <a href="/mortgage-calculator-markham/">mortgage calculator</a> on a specific price, read the
+        Use the <a href="/land-transfer-tax-calculator-toronto/">land transfer tax calculator</a> and the
+        <a href="/mortgage-calculator-toronto/">mortgage calculator</a> on a specific price, read the
         <a href="/blog/markham-go-train-commute/">Markham GO train commute guide</a> or
         <a href="/contact/">ask us</a> to compare two homes you are considering.
       </p>
 
       <h2>More comparisons</h2>
       <ul>
-        {others.map((o) => <li><a href={`/markham-vs-${o.slug}/`}>Markham vs {o.name}</a></li>)}
+        {others.map((o) => <li><a href={`/toronto-vs-${o.slug}/`}>Markham vs {o.name}</a></li>)}
       </ul>
 
       <h2>Sources</h2>

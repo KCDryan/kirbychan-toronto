@@ -129,7 +129,7 @@ export default defineConfig({
               { value: 'market', label: 'Market' },
               { value: 'condos', label: 'Condos' },
               { value: 'new-construction', label: 'New construction' },
-              { value: 'moving-to-markham', label: 'Moving to Markham' },
+              { value: 'moving-to-toronto', label: 'Moving to Toronto' },
               { value: 'downsizing', label: 'Downsizing' },
               { value: 'investing', label: 'Investing' },
               { value: 'costs-and-taxes', label: 'Costs and taxes' },
@@ -189,7 +189,7 @@ export default defineConfig({
             name: 'draft',
             label: 'Save as draft (not published yet)',
             description:
-              'Leave off to publish. The post is live about five minutes after Save. Long dashes, commas before "and" or "or" and American spellings are fixed automatically. If it does not appear, kirbychanmarkham.com/admin/status.html says why.',
+              'Leave off to publish. The post is live about five minutes after Save. Long dashes, commas before "and" or "or" and American spellings are fixed automatically. If it does not appear, kirbychantoronto.com/admin/status.html says why.',
           },
           {
             ...body(),

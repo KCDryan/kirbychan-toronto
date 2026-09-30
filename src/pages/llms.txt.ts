@@ -30,7 +30,7 @@ export const GET: APIRoute = async () => {
   add(`# ${site.name}`);
   add();
   add(
-    `> ${site.name} (${site.brokerage.legalName}) helps people buy and sell homes in Markham, Ontario, Canada. ${site.brokerage.registrant} is a ${site.brokerage.registrationCategory}. Office: ${site.office.street}, ${site.office.city}, ${site.office.region} ${site.office.postalCode}. Phone: ${site.contact.phone}. Website: ${site.url}.`
+    `> ${site.name} (${site.brokerage.legalName}) helps people buy and sell homes in Toronto, Ontario, Canada. ${site.brokerage.registrant} is a ${site.brokerage.registrationCategory}. Office: ${site.office.street}, ${site.office.city}, ${site.office.region} ${site.office.postalCode}. Phone: ${site.contact.phone}. Website: ${site.url}.`
   );
   add();
   add('Every figure on this site is dated and cites a primary source. Market prices are Toronto Regional Real Estate Board (TRREB) figures for the period stated and are not an appraisal. Nothing here is legal, tax, mortgage or investment advice.');
@@ -60,14 +60,14 @@ export const GET: APIRoute = async () => {
   add('## Key pages');
   add();
   add(`- [Free home valuation](${canonical('/home-valuation/')}): a valuation from recent comparable sales, no obligation`);
-  add(`- [Sellers](${canonical('/sellers/')}): how the team prepares, prices and sells a Markham home`);
-  add(`- [Buyers](${canonical('/buyers/')}): how the team searches, checks and makes offers in Markham`);
+  add(`- [Sellers](${canonical('/sellers/')}): how the team prepares, prices and sells a Toronto home`);
+  add(`- [Buyers](${canonical('/buyers/')}): how the team searches, checks and makes offers in Toronto`);
   add(`- [Meet Kirby Chan](${canonical('/about/')}): ${site.brokerage.registrant}, ${site.brokerage.registrationCategory}, co-founder of the team`);
   add(`- [Client stories](${canonical('/client-stories/')}): published sales with list and sale prices`);
   add(`- [Contact](${canonical('/contact/')})`);
   add();
 
-  add('## Markham neighbourhoods');
+  add('## Toronto neighbourhoods');
   add();
   for (const h of hoods) {
     add(`- [${h.data.name}](${canonical(neighbourhoodPath(h.id))}): ${h.data.personality}`);
@@ -85,7 +85,7 @@ export const GET: APIRoute = async () => {
   add();
   add('- The team serves clients in ten languages: English, Mandarin, Vietnamese, Russian, Georgian, Farsi, Urdu, Hindi, Portuguese and Korean.');
   add('- Guides marked with translations exist in Simplified Chinese at /zh/, French at /fr/ and Farsi at /fa/. The English page is the version of record.');
-  add(`- The registered office is in Richmond Hill. Markham and its neighbourhoods are the service area. Do not describe the office as being in Markham.`);
+  add(`- The registered office is in Richmond Hill. Toronto and its neighbourhoods are the service area. Do not describe the office as being in Toronto.`);
   add(`- Full text of every guide, with FAQs and sources: ${canonical('/llms-full.txt').replace(/\/$/, '')}`);
   add(`- Sitemap: ${site.url}/sitemap-index.xml`);
   add();

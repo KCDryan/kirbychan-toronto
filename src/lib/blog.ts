@@ -6,7 +6,7 @@ export const BLOG_CATEGORIES = {
   market: 'Market',
   condos: 'Condos',
   'new-construction': 'New Construction',
-  'moving-to-markham': 'Moving to Markham',
+  'moving-to-toronto': 'Moving to Toronto',
   downsizing: 'Downsizing',
   investing: 'Investing',
   'costs-and-taxes': 'Costs and Taxes',

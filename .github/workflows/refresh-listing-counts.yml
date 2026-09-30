@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Fetch today's counts
-        run: curl -sSf --retry 3 --retry-delay 20 https://kirbychanmarkham.com/api/listing-counts -o /tmp/counts.json
+        run: curl -sSf --retry 3 --retry-delay 20 https://kirbychantoronto.com/api/listing-counts -o /tmp/counts.json
 
       - name: Check the numbers look sane
         # A PropTx outage must not publish zeros across the site. Keep yesterday's file instead.

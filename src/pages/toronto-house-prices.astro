@@ -24,7 +24,7 @@ const hoods = market.neighbourhoods
 
 const crumbs = [
   { name: 'Home', path: '/' },
-  { name: 'Markham House Prices', path: '/markham-house-prices/' },
+  { name: 'Markham House Prices', path: '/toronto-house-prices/' },
 ];
 
 const faq = [
@@ -108,7 +108,7 @@ const sources = [
           {
             CITIES.map((c) => (
               <tr>
-                <td><a href={`/markham-vs-${c.slug}/`}>{c.name}</a></td>
+                <td><a href={`/toronto-vs-${c.slug}/`}>{c.name}</a></td>
                 <td>{c.stats.sales.toLocaleString('en-CA')}</td>
                 <td>{cad(c.stats.median)}</td>
                 <td>{cad(c.stats.average)}</td>
@@ -129,8 +129,8 @@ const sources = [
       <h2>What these prices mean for you</h2>
       <ul>
         <li>Selling: <a href="/home-valuation/">get a free valuation</a> built from comparable sales near your home. You can also <a href="/sold/">see Markham sold prices</a> street by street with a free account.</li>
-        <li>Downsizing: see <a href="/best-markham-neighbourhoods-for-downsizing/">where to downsize in Markham</a> and what the smaller homes cost.</li>
-        <li>Buying: run the <a href="/mortgage-calculator-markham/">mortgage calculator</a> and the <a href="/land-transfer-tax-calculator-markham/">land transfer tax calculator</a> on the price you are considering.</li>
+        <li>Downsizing: see <a href="/best-toronto-neighbourhoods-for-downsizing/">where to downsize in Markham</a> and what the smaller homes cost.</li>
+        <li>Buying: run the <a href="/mortgage-calculator-toronto/">mortgage calculator</a> and the <a href="/land-transfer-tax-calculator-toronto/">land transfer tax calculator</a> on the price you are considering.</li>
       </ul>
     </div>
 

@@ -26,7 +26,7 @@ interface Context {
   waitUntil(p: Promise<unknown>): void;
 }
 
-const SIGNATURE = 'Kirby Chan & Co. Real Estate Team | eXp Realty Brokerage\n416-305-8008 | kirbychanmarkham.com';
+const SIGNATURE = 'Kirby Chan & Co. Real Estate Team | eXp Realty Brokerage\n416-305-8008 | kirbychantoronto.com';
 /** Sign ups and reset requests from one IP address in an hour. */
 const SENDS_PER_HOUR = 10;
 
@@ -57,7 +57,7 @@ const today = () => new Date().toLocaleDateString('en-CA', { dateStyle: 'long', 
 const verifyEmail = (origin: string, name: string, token: string) =>
   `Hello ${name},
 
-Press this link to confirm your email address and see Markham sold prices:
+Press this link to confirm your email address and see Toronto sold prices:
 ${origin}/sold/#verify=${token}
 
 The link works for ${VERIFY_HOURS} hours.
@@ -76,7 +76,7 @@ ${
   why === 'expired'
     ? 'For your security, passwords for sold prices last 90 days and yours has expired. '
     : why === 'finish'
-      ? 'Someone, probably you, started creating an account for Markham sold prices with this email. '
+      ? 'Someone, probably you, started creating an account for Toronto sold prices with this email. '
       : ''
 }Press this link to choose ${why === 'finish' ? 'your' : 'a new'} password:
 ${origin}/sold/#reset=${token}
@@ -93,12 +93,12 @@ async function forwardLead(env: VowEnv, u: User) {
     env,
     site.leadsEmail,
     `New sold-prices account: ${u.name}`,
-    `Someone created an account to see Markham sold prices on kirbychanmarkham.com. Reply to this email to write to them.
+    `Someone created an account to see Toronto sold prices on kirbychantoronto.com. Reply to this email to write to them.
 
 Name: ${u.name}
 Email: ${u.email}
 Phone: ${u.phone || 'not given'}
-May we contact them about Markham real estate? ${u.contact_ok ? 'Yes, they ticked the box.' : 'No, they did not tick the box. Do not send marketing.'}
+May we contact them about Toronto real estate? ${u.contact_ok ? 'Yes, they ticked the box.' : 'No, they did not tick the box. Do not send marketing.'}
 Confirmed: ${new Date().toLocaleString('en-CA', { dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Toronto' })}`,
     u.email,
   );
@@ -114,9 +114,9 @@ Confirmed: ${new Date().toLocaleString('en-CA', { dateStyle: 'long', timeStyle: 
       neighbourhood: '',
       intent: 'Sold prices account',
       timeline: '',
-      message: 'Created an account to see Markham sold prices.',
+      message: 'Created an account to see Toronto sold prices.',
       consent: !!u.contact_ok,
-      consentText: u.contact_ok ? 'Agreed to be contacted by Kirby Chan & Co. about Markham real estate, with the right to withdraw consent at any time' : '',
+      consentText: u.contact_ok ? 'Agreed to be contacted by Kirby Chan & Co. about Toronto real estate, with the right to withdraw consent at any time' : '',
       source: 'sold-prices-account',
       page: '/sold/',
       submittedAt: new Date().toISOString(),
@@ -198,8 +198,8 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
       const owner = await unsealName(k, existing);
       waitUntil(
         existing.verified_at
-          ? sendEmail(env, email, 'You already have an account for Markham sold prices', `Hello ${owner},\n\nSomeone, probably you, tried to create an account with this email. You already have one. Sign in at ${origin}/sold/ or choose a new password with "Forgot your password?" on that page.\n\n${SIGNATURE}`)
-          : issueToken(db, existing.id, 'reset', RESET_HOURS).then((t) => sendEmail(env, email, 'Finish creating your account for Markham sold prices', resetEmail(origin, owner, t, 'finish'))),
+          ? sendEmail(env, email, 'You already have an account for Toronto sold prices', `Hello ${owner},\n\nSomeone, probably you, tried to create an account with this email. You already have one. Sign in at ${origin}/sold/ or choose a new password with "Forgot your password?" on that page.\n\n${SIGNATURE}`)
+          : issueToken(db, existing.id, 'reset', RESET_HOURS).then((t) => sendEmail(env, email, 'Finish creating your account for Toronto sold prices', resetEmail(origin, owner, t, 'finish'))),
       );
       return json({ ok: true });
     }
@@ -211,7 +211,7 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
       .first<{ id: number }>();
     const token = await issueToken(db, row!.id, 'verify', VERIFY_HOURS);
     // Sent after the reply, like the existing-account emails above, so both take the same time.
-    waitUntil(sendEmail(env, email, 'Confirm your email to see Markham sold prices', verifyEmail(origin, name, token)));
+    waitUntil(sendEmail(env, email, 'Confirm your email to see Toronto sold prices', verifyEmail(origin, name, token)));
     return json({ ok: true });
   }
 
@@ -233,12 +233,12 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
     const u = await loadUser(k, row);
     if (!row.verified_at) {
       const token = await issueToken(db, row.id, 'verify', VERIFY_HOURS);
-      waitUntil(sendEmail(env, u.email, 'Confirm your email to see Markham sold prices', verifyEmail(origin, u.name, token)));
+      waitUntil(sendEmail(env, u.email, 'Confirm your email to see Toronto sold prices', verifyEmail(origin, u.name, token)));
       return json({ error: 'unverified' }, 403);
     }
     if (passwordExpired(row)) {
       const token = await issueToken(db, row.id, 'reset', RESET_HOURS);
-      waitUntil(sendEmail(env, u.email, 'Choose a new password for Markham sold prices', resetEmail(origin, u.name, token, 'expired')));
+      waitUntil(sendEmail(env, u.email, 'Choose a new password for Toronto sold prices', resetEmail(origin, u.name, token, 'expired')));
       await audit(db, row.id, 'login-expired', '', ip);
       return json({ error: 'expired' }, 403);
     }
@@ -255,7 +255,7 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
         (async () => {
           const u = await loadUser(k, row);
           const token = await issueToken(db, row.id, 'reset', RESET_HOURS);
-          await sendEmail(env, u.email, 'Choose a new password for Markham sold prices', resetEmail(origin, u.name, token, 'forgot'));
+          await sendEmail(env, u.email, 'Choose a new password for Toronto sold prices', resetEmail(origin, u.name, token, 'forgot'));
         })(),
       );
     }

@@ -7,57 +7,57 @@ export const GUIDE_LANGS = ['zh', 'fr', 'fa'] as const;
 export type GuideLang = (typeof GUIDE_LANGS)[number];
 
 export const GUIDES = {
-  'downsizing-markham': {
+  'downsizing-toronto': {
     service: 'downsizing',
-    label: 'Markham Downsizing Guide',
+    label: 'Toronto Downsizing Guide',
     short: 'Downsizing',
     langs: GUIDE_LANGS,
   },
-  'new-construction-markham': {
+  'new-construction-toronto': {
     service: 'new-construction',
-    label: 'Markham New Construction Guide',
+    label: 'Toronto New Construction Guide',
     short: 'New construction',
     langs: GUIDE_LANGS,
   },
-  'luxury-homes-markham': {
+  'luxury-homes-toronto': {
     service: 'luxury',
-    label: 'Markham Luxury Home Guide',
+    label: 'Toronto Luxury Home Guide',
     short: 'Luxury homes',
     langs: GUIDE_LANGS,
   },
-  'selling-an-estate-home-markham': {
+  'selling-an-estate-home-toronto': {
     service: 'estate-sales',
-    label: 'Markham Estate Home Guide',
+    label: 'Toronto Estate Home Guide',
     short: 'Estate sales',
     langs: GUIDE_LANGS,
   },
-  'investment-property-markham': {
+  'investment-property-toronto': {
     service: 'investors',
-    label: 'Markham Investment Property Guide',
+    label: 'Toronto Investment Property Guide',
     short: 'Investment property',
     langs: GUIDE_LANGS,
   },
-  'relocating-to-markham': {
+  'relocating-to-toronto': {
     service: 'relocation',
-    label: 'Markham Relocation Guide',
+    label: 'Toronto Relocation Guide',
     short: 'Relocation',
     langs: GUIDE_LANGS,
   },
-  'upsizing-markham': {
+  'upsizing-toronto': {
     service: 'upsizing',
-    label: 'Markham Upsizing Guide',
+    label: 'Toronto Upsizing Guide',
     short: 'Upsizing',
     langs: GUIDE_LANGS,
   },
-  'selling-a-home-after-separation-markham': {
+  'selling-a-home-after-separation-toronto': {
     service: 'separation-and-divorce',
-    label: 'Markham Separation and Divorce Guide',
+    label: 'Toronto Separation and Divorce Guide',
     short: 'Separation and divorce',
     langs: GUIDE_LANGS,
   },
-  'first-time-home-buyers-markham': {
+  'first-time-home-buyers-toronto': {
     service: 'first-time-buyers',
-    label: 'Markham First Time Home Buyer Guide',
+    label: 'Toronto First Time Home Buyer Guide',
     short: 'First time buyers',
     langs: GUIDE_LANGS,
   },
@@ -82,7 +82,7 @@ export function hasGuide(serviceSlug: string): boolean {
 
 /**
  * The languages a root level path is published in, for example
- * /new-construction-markham/. Empty when the path is not a guide, or when the
+ * /new-construction-toronto/. Empty when the path is not a guide, or when the
  * guide has no translations yet, so no hreflang alternates are emitted for it.
  */
 export function guideLangs(path: string): readonly string[] {

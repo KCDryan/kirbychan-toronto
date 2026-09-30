@@ -7,7 +7,7 @@ import MarketTicker from '../components/MarketTicker.astro';
 import NeighbourhoodGrid from '../components/NeighbourhoodGrid.astro';
 import MeetKirby from '../components/MeetKirby.astro';
 import ServiceGrid from '../components/ServiceGrid.astro';
-import WhyMarkham from '../components/WhyMarkham.astro';
+import WhyToronto from '../components/WhyToronto.astro';
 import VideoCard from '../components/VideoCard.astro';
 import BlogCard from '../components/BlogCard.astro';
 import Testimonials from '../components/Testimonials.astro';
@@ -69,7 +69,7 @@ const articles = (await getCollection('blog', ({ data }) => !data.draft))
 
   {en && <Testimonials />}
 
-  {en && <WhyMarkham />}
+  {en && <WhyToronto />}
 
   {
     en && videos.length > 0 && (
@@ -78,7 +78,7 @@ const articles = (await getCollection('blog', ({ data }) => !data.draft))
           <div class="section-head section-head--row">
             <div>
               <p class="eyebrow">Watch</p>
-              <h2>Kirby explains Markham on video</h2>
+              <h2>Kirby explains Toronto on video</h2>
             </div>
             <a class="btn btn--ghost btn--sm" href="/videos/">
               All videos
@@ -110,7 +110,7 @@ const articles = (await getCollection('blog', ({ data }) => !data.draft))
           <div class="section-head section-head--row">
             <div>
               <p class="eyebrow">From the blog</p>
-              <h2>Latest from the Markham real estate blog</h2>
+              <h2>Latest from the Toronto real estate blog</h2>
             </div>
             <a class="btn btn--ghost btn--sm" href="/blog/">
               All blog posts

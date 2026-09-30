@@ -25,7 +25,7 @@ const names = Object.fromEntries(hoods.map((h) => [h.id, h.data.name]));
 
 const crumbs = [
   { name: 'Home', path: '/' },
-  { name: 'Markham news', path: '/news/' },
+  { name: 'Toronto news', path: '/news/' },
   { name: longDate(d.published), path },
 ];
 
@@ -41,7 +41,7 @@ const jsonLd = [
   <article>
     <header class="nr-hero">
       <div class="wrap-narrow">
-        <p class="eyebrow">Markham news &middot; {longDate(d.published)}</p>
+        <p class="eyebrow">Toronto news &middot; {longDate(d.published)}</p>
         <h1><Accent text={d.h1} accent={d.accent} /></h1>
         <p class="lede">{d.summary}</p>
       </div>

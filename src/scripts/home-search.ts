@@ -40,7 +40,7 @@ export function syncChoices(p: URLSearchParams) {
     if ((p.get(c.dataset.key!) || '') === c.dataset.value) c.setAttribute('aria-current', 'true');
     else c.removeAttribute('aria-current');
   }
-  // Neighbourhoods are Markham's, so the row only shows while searching Markham.
+  // Neighbourhoods are Toronto's, so the row only shows while searching Toronto.
   const area = document.getElementById('area-step');
   if (area) area.hidden = !!p.get('city');
 }
@@ -58,7 +58,7 @@ export function bindChoices(load: () => void) {
   load();
 }
 
-/** A plain sentence for the search, e.g. "bungalows for sale in Unionville, Markham under $800,000". */
+/** A plain sentence for the search, e.g. "bungalows for sale in Unionville, Toronto under $800,000". */
 export function describe(p: URLSearchParams, verb: string): string {
   const home = HOMES[p.get('home') ?? ''];
   const price = PRICES[p.get('price') ?? ''];
@@ -66,7 +66,7 @@ export function describe(p: URLSearchParams, verb: string): string {
   return [
     home ? home.label.toLowerCase() : 'homes',
     verb,
-    'in ' + (p.get('city') || (area ? `${area.label}, Markham` : 'Markham')),
+    'in ' + (p.get('city') || (area ? `${area.label}, Toronto` : 'Toronto')),
     price && (price.min && price.max ? `from ${money(price.min)} to ${money(price.max)}` : price.max ? `under ${money(price.max)}` : `over ${money(price.min)}`),
     p.get('beds') && `with ${p.get('beds')} or more bedrooms`,
   ].filter(Boolean).join(' ');

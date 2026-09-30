@@ -10,15 +10,15 @@ const roundups = (await getCollection('news', ({ data }) => !data.draft)).sort(
 
 const crumbs = [
   { name: 'Home', path: '/' },
-  { name: 'Markham news', path: '/news/' },
+  { name: 'Toronto news', path: '/news/' },
 ];
 ---
 
 <Page
-  title="Markham News and Updates"
-  description="A regular roundup of verified Markham news for buyers and sellers. Transit, schools, development and city decisions, each item linked to its original source."
+  title="Toronto News and Updates"
+  description="A regular roundup of verified Toronto news for buyers and sellers. Transit, schools, development and city decisions, each item linked to its original source."
   eyebrow="Updated every two weeks"
-  h1="What changed in Markham"
+  h1="What changed in Toronto"
   accent="changed"
   lede="Transit, schools, development and city decisions that affect where people live and what homes are worth. Every item links to its original source."
   crumbs={crumbs}

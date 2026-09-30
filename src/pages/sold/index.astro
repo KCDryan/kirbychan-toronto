@@ -32,11 +32,11 @@ const faq = [
 ---
 
 <Page
-  title="Markham Sold Prices: See What Homes Sold For"
-  description="See what Markham homes actually sold for, from the MLS®: bungalows, condo apartments, townhouses and houses by neighbourhood. Free account, one-click search."
-  eyebrow="Markham, Ontario"
-  h1="Markham sold prices"
-  lede="See what homes in Markham actually sold for, not just what they were listed at. Board rules ask for a free account first. It takes about a minute."
+  title="Toronto Sold Prices: See What Homes Sold For"
+  description="See what Toronto homes actually sold for, from the MLS®: bungalows, condo apartments, townhouses and houses by neighbourhood. Free account, one-click search."
+  eyebrow="Toronto, Ontario"
+  h1="Toronto sold prices"
+  lede="See what homes in Toronto actually sold for, not just what they were listed at. Board rules ask for a free account first. It takes about a minute."
   crumbs={crumbs}
   faq={faq}
 >
@@ -88,7 +88,7 @@ const faq = [
           </label>
           <label class="hs-check">
             <input type="checkbox" name="contact" />
-            <span>Kirby Chan &amp; Co. may contact me about Markham real estate. <small>(optional)</small></span>
+            <span>Kirby Chan &amp; Co. may contact me about Toronto real estate. <small>(optional)</small></span>
           </label>
           {turnstileSiteKey && <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light" />}
           <button class="btn btn--primary hs__big" type="submit">Create my account</button>
@@ -174,14 +174,14 @@ const faq = [
           The asking price tells you what a seller hopes for. The sold price tells you what buyers
           actually paid. Before you list a family home or make an offer on a smaller one, the sold
           prices on nearby streets are the best guide to what is realistic. With a free account you can
-          see bungalows, condo apartments, townhouses and houses sold in any Markham neighbourhood over
+          see bungalows, condo apartments, townhouses and houses sold in any Toronto neighbourhood over
           the last two years.
         </p>
         <p>
           Would you rather have someone walk you through the numbers? Call us or
           <a href="/home-valuation/">ask for a free valuation</a> of your home, based on the sales
           closest to it. To see what is on the market today, use our
-          <a href="/homes-for-sale/">Markham homes for sale</a> search.
+          <a href="/homes-for-sale/">Toronto homes for sale</a> search.
         </p>
       </div>
 
@@ -364,7 +364,7 @@ const faq = [
         if (status !== 200) throw body;
         const { total, listings } = body as { total: number; listings: Sold[] };
         if (!total) {
-          $('status').textContent = `No ${what}. Try a longer time, "Any price" or "All of Markham".`;
+          $('status').textContent = `No ${what}. Try a longer time, "Any price" or "All of Toronto".`;
           return;
         }
         const from = (page - 1) * SOLD_PAGE_SIZE + 1;

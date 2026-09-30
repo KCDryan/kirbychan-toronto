@@ -5,7 +5,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
-const SITE = 'https://kirbychanmarkham.com';
+const SITE = 'https://kirbychantoronto.com';
 
 /** Read top level frontmatter values from every MDX file in a folder. */
 function frontmatter(folder) {
@@ -41,7 +41,7 @@ for (const guide of frontmatter('./src/content/guides/')) {
 }
 for (const hood of frontmatter('./src/content/neighbourhoods/')) {
   const date = hood.get('lastReviewed');
-  if (date) lastmod.set(`${SITE}/${hood.slug}-markham/`, date);
+  if (date) lastmod.set(`${SITE}/${hood.slug}-toronto/`, date);
 }
 
 // The news index sets noindex while it has nothing to list, so the sitemap has

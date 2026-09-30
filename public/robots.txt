@@ -9,7 +9,7 @@ Disallow: /admin/
 #
 # OAI-SearchBot and ChatGPT-User are what ChatGPT uses to search and browse.
 # GPTBot, ClaudeBot and Google-Extended are training crawlers, allowed on
-# purpose: a Markham buyer asking an assistant about downsizing is better
+# purpose: a Toronto buyer asking an assistant about downsizing is better
 # served if the assistant learned from sourced, dated pages.
 
 User-agent: OAI-SearchBot
@@ -67,4 +67,4 @@ Allow: /
 Disallow: /api/
 Disallow: /admin/
 
-Sitemap: https://kirbychanmarkham.com/sitemap-index.xml
+Sitemap: https://kirbychantoronto.com/sitemap-index.xml

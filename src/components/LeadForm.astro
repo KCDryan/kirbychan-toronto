@@ -92,7 +92,7 @@ const hoods = (await getCollection('neighbourhoods', ({ data }) => !data.draft))
       <select id="lead-hood" name="neighbourhood">
         <option value="">{fs.notSure}</option>
         {hoods.map((h) => <option value={h.data.name}>{h.data.name}</option>)}
-        <option value="Elsewhere in Markham">{fs.elsewhere}</option>
+        <option value="Elsewhere in Toronto">{fs.elsewhere}</option>
       </select>
     </p>
   </div>
@@ -128,7 +128,7 @@ const hoods = (await getCollection('neighbourhoods', ({ data }) => !data.draft))
     {lang === 'en' ? (
     <label for="lead-consent">
       I agree that {site.shortName} may contact me by email, phone or text about my enquiry and
-      about Markham real estate. I can withdraw consent at any time using the unsubscribe link in
+      about Toronto real estate. I can withdraw consent at any time using the unsubscribe link in
       any email or by replying to any message. See the <a href="/privacy/">privacy notice</a>.
       <span aria-hidden="true">*</span>
     </label>

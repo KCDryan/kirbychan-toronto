@@ -6,7 +6,7 @@ import GuideLayout from '../layouts/GuideLayout.astro';
 
 /**
  * Two page types share the site root:
- *   /[neighbourhood]-markham/  the twelve pillar pages
+ *   /[neighbourhood]-toronto/  the twelve pillar pages
  * Static routes such as /buyers/ always win over this catch-all, so a page file
  * in src/pages is never shadowed by a content slug.
  */
@@ -18,7 +18,7 @@ export const getStaticPaths = (async () => {
 
   return [
     ...hoods.map((entry) => ({
-      params: { slug: `${entry.id}-markham` },
+      params: { slug: `${entry.id}-toronto` },
       props: { kind: 'neighbourhood' as const, entry },
     })),
     ...guides.map((entry) => ({

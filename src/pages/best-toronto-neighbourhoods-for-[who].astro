@@ -26,7 +26,7 @@ const sources = picks
   .flatMap((p) => p.n.data.sources)
   .filter((s) => !seen.has(s.url) && seen.add(s.url));
 
-const path = `/best-markham-neighbourhoods-for-${hub.slug}/`;
+const path = `/best-toronto-neighbourhoods-for-${hub.slug}/`;
 const crumbs = [
   { name: 'Home', path: '/' },
   { name: 'Neighbourhoods', path: '/neighbourhoods/' },
@@ -34,9 +34,9 @@ const crumbs = [
 ];
 const others = HUBS.filter((h) => h.slug !== hub.slug);
 const outroLinks: Record<string, [string, string][]> = {
-  downsizing: [['/downsizing-markham/', 'Markham downsizing guide'], ['/blog/markham-downsizing-costs/', 'what downsizing costs in Markham'], ['/blog/markham-neighbourhoods-for-downsizing/', 'downsizing neighbourhoods by property type']],
-  families: [['/upsizing-markham/', 'upsizing guide'], ['/mortgage-calculator-markham/', 'mortgage calculator']],
-  commuters: [['/blog/markham-go-train-commute/', 'Markham GO train guide'], ['/markham-vs-toronto/', 'Markham vs Toronto']],
+  downsizing: [['/downsizing-toronto/', 'Markham downsizing guide'], ['/blog/markham-downsizing-costs/', 'what downsizing costs in Markham'], ['/blog/markham-neighbourhoods-for-downsizing/', 'downsizing neighbourhoods by property type']],
+  families: [['/upsizing-toronto/', 'upsizing guide'], ['/mortgage-calculator-toronto/', 'mortgage calculator']],
+  commuters: [['/blog/markham-go-train-commute/', 'Markham GO train guide'], ['/toronto-vs-toronto/', 'Markham vs Toronto']],
 };
 ---
 
@@ -114,7 +114,7 @@ const outroLinks: Record<string, [string, string][]> = {
       <ul>
         {outroLinks[hub.slug]?.map(([href, label]) => <li><a href={href}>{label.charAt(0).toUpperCase() + label.slice(1)}</a></li>)}
         <li><a href="/neighbourhoods/">All twelve Markham neighbourhood guides</a></li>
-        {others.map((o) => <li><a href={`/best-markham-neighbourhoods-for-${o.slug}/`}>{o.h1}</a></li>)}
+        {others.map((o) => <li><a href={`/best-toronto-neighbourhoods-for-${o.slug}/`}>{o.h1}</a></li>)}
       </ul>
 
       <p>

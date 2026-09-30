@@ -13,7 +13,7 @@ import { join, relative, sep } from 'node:path';
 
 const MIN = 300;
 // Pages that are meant to be short: they are navigation, not answers.
-const ALLOW = new Set(['/', '/videos/', '/blog/', '/neighbourhoods/', '/services/', '/market-reports/', '/news/', '/client-stories/', '/map-of-markham/']);
+const ALLOW = new Set(['/', '/videos/', '/blog/', '/neighbourhoods/', '/services/', '/market-reports/', '/news/', '/client-stories/', '/map-of-toronto/']);
 
 async function walk(dir) {
   const out = [];

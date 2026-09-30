@@ -2,8 +2,8 @@
   "name": "Kirby Chan & Co. Real Estate Team",
   "shortName": "Kirby Chan & Co.",
   "brandLine": "Kirby Chan & Co. Real Estate Team | eXp Realty Brokerage",
-  "tagline": "Markham, neighbourhood by neighbourhood.",
-  "url": "https://kirbychanmarkham.com",
+  "tagline": "Toronto, neighbourhood by neighbourhood.",
+  "url": "https://kirbychantoronto.com",
   "locale": "en_CA",
   "parentSite": "https://kirbychanandco.com",
   "contact": {
@@ -35,6 +35,6 @@
     "linkedin": "https://www.linkedin.com/in/kirbychan/"
   },
   "marketSource": "TRREB",
-  "ga4": "G-HPFLBDZHG5",
-  "leadsEmail": "info@kirbychanmarkham.com"
+  "ga4": "",
+  "leadsEmail": "info@kirbychantoronto.com"
 }

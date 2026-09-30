@@ -59,7 +59,7 @@ const crumbs = [
   { name: d.name, path },
 ];
 
-// Neighbourhood search: the matching TRREB communities, or condos for Downtown Markham, which TRREB does not report as a community.
+// Neighbourhood search: the matching TRREB communities, or condos for Downtown Toronto, which TRREB does not report as a community.
 const areaSlug = entry.id.split('/').pop() ?? entry.id;
 const inArea = areaSlug in AREAS;
 const searchHref = inArea ? `/homes-for-sale/?area=${areaSlug}` : areaSlug === 'downtown' ? '/homes-for-sale/?home=condo' : site.links.loftySearch || '/contact/';
@@ -137,7 +137,7 @@ const jsonLd = [
       <figure class="hood-photo">
         <Photo
           name={`neighbourhoods/${entry.id}`}
-          alt={credit?.shows ?? `${d.name}, Markham`}
+          alt={credit?.shows ?? `${d.name}, Toronto`}
           label={`${d.name} streetscape photo`}
           ratio="4 / 3"
           priority
@@ -209,7 +209,7 @@ const jsonLd = [
           <section class="hood-news" aria-labelledby="hood-news-heading">
             <h2 id="hood-news-heading">Recent news in {d.name}</h2>
             <NewsItems items={news} compact />
-            <a class="hood-news__all" href="/news/">All Markham news</a>
+            <a class="hood-news__all" href="/news/">All Toronto news</a>
           </section>
         )
       }

@@ -6,7 +6,7 @@
  *   node scripts/indexnow.mjs                      every URL in the live sitemap
  *   node scripts/indexnow.mjs /blog/new-post/ ...   only the paths given
  */
-const HOST = 'kirbychanmarkham.com';
+const HOST = 'kirbychantoronto.com';
 const KEY = '93ba57b9073533c73ec904d856dd47c4';
 
 let urls = process.argv.slice(2).map((p) => `https://${HOST}${p.startsWith('/') ? p : `/${p}`}`);

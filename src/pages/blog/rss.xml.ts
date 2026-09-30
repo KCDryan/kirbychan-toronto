@@ -29,10 +29,10 @@ export const GET: APIRoute = async () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${escape(`${site.shortName} Markham Real Estate Blog`)}</title>
+    <title>${escape(`${site.shortName} Toronto Real Estate Blog`)}</title>
     <link>${site.url}/blog/</link>
     <atom:link href="${site.url}/blog/rss.xml" rel="self" type="application/rss+xml" />
-    <description>Buying, selling, neighbourhoods and market updates for Markham, Ontario.</description>
+    <description>Buying, selling, neighbourhoods and market updates for Toronto, Ontario.</description>
     <language>en-CA</language>
 ${lastBuild}${items}
   </channel>

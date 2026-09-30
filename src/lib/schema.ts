@@ -27,7 +27,7 @@ export function person() {
   };
 }
 
-/** Sitewide RealEstateAgent. Address is the real registered office, never Markham. */
+/** Sitewide RealEstateAgent. Address is the real registered office in Richmond Hill, never an invented Toronto one. */
 export function realEstateAgent(areaServed: string[]) {
   const sameAs = Object.values(site.social).filter((u) => typeof u === 'string' && u.length > 0);
 
@@ -55,7 +55,7 @@ export function realEstateAgent(areaServed: string[]) {
       name,
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'Markham',
+        addressLocality: 'Toronto',
         addressRegion: 'ON',
         addressCountry: 'CA',
       },
@@ -160,7 +160,7 @@ export function blog(posts: { headline: string; path: string; published: Date }[
     '@context': 'https://schema.org',
     '@type': 'Blog',
     '@id': `${site.url}/blog/#blog`,
-    name: `${site.shortName} Markham Real Estate Blog`,
+    name: `${site.shortName} Toronto Real Estate Blog`,
     url: canonical('/blog/'),
     inLanguage: 'en-CA',
     publisher: { '@id': AGENT_ID },
@@ -201,21 +201,21 @@ export function place(input: { name: string; description: string; path: string }
   return {
     '@context': 'https://schema.org',
     '@type': 'Place',
-    name: `${input.name}, Markham, Ontario`,
+    name: `${input.name}, Toronto, Ontario`,
     description: input.description,
     url: canonical(input.path),
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Markham',
+      addressLocality: 'Toronto',
       addressRegion: 'ON',
       addressCountry: 'CA',
     },
     containedInPlace: {
       '@type': 'City',
-      name: 'Markham',
+      name: 'Toronto',
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'Markham',
+        addressLocality: 'Toronto',
         addressRegion: 'ON',
         addressCountry: 'CA',
       },
@@ -223,7 +223,7 @@ export function place(input: { name: string; description: string; path: string }
   };
 }
 
-/** A real estate service offered in Markham, provided by the team. */
+/** A real estate service offered in Toronto, provided by the team. */
 export function service(input: { name: string; description: string; path: string }) {
   return {
     '@context': 'https://schema.org',
@@ -234,7 +234,7 @@ export function service(input: { name: string; description: string; path: string
     serviceType: 'Real estate brokerage',
     areaServed: {
       '@type': 'City',
-      name: 'Markham',
+      name: 'Toronto',
       containedInPlace: { '@type': 'AdministrativeArea', name: 'Ontario, Canada' },
     },
     provider: { '@type': 'RealEstateAgent', '@id': AGENT_ID, name: site.name },

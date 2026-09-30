@@ -33,7 +33,7 @@ export function isTodo(value: string | null | undefined): boolean {
   return value.trim().length === 0 || value.trim().toUpperCase().startsWith('TODO');
 }
 
-/** Neighbourhood pillar pages live at the site root, for example /unionville-markham/ */
+/** Neighbourhood pillar pages live at the site root, for example /leaside-toronto/ */
 export function neighbourhoodPath(slug: string): string {
-  return `/${slug}-markham/`;
+  return `/${slug}-toronto/`;
 }

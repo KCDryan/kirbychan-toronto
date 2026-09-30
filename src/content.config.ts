@@ -50,7 +50,7 @@ const neighbourhoods = defineCollection({
     accent: z.string().describe('The italic accent word inside the H1'),
     order: z.number(),
     intro: z.string(),
-    heroEyebrow: z.string().default('Markham, Ontario'),
+    heroEyebrow: z.string().default('Toronto, Ontario'),
     personality: z.string().describe('One line used on the homepage grid card'),
     quickStats: z.object({
       priceRange: z.string(),
@@ -234,7 +234,7 @@ const marketReports = defineCollection({
 });
 
 /**
- * Markham news roundups. One file per update run. Each item must carry a
+ * Toronto news roundups. One file per update run. Each item must carry a
  * source URL, which the schema enforces, so an unsourced item fails the build
  * instead of going live.
  */

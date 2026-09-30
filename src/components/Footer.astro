@@ -51,7 +51,7 @@ const brokerageMissing = isTodo(site.brokerage.legalName);
         <Logo variant="light" />
         <p class="footer__exp">{site.brokerage.legalName}</p>
         <p class="footer__tag">
-          {lang === 'en' ? 'Markham, neighbourhood by neighbourhood. A guide to every neighbourhood, figures with sources and a team that answers the phone.' : dict.meta.home.description}
+          {lang === 'en' ? 'Toronto, neighbourhood by neighbourhood. A guide to every neighbourhood, figures with sources and a team that answers the phone.' : dict.meta.home.description}
         </p>
         {
           socials.length > 0 && (
@@ -72,10 +72,10 @@ const brokerageMissing = isTodo(site.brokerage.legalName);
         <h2>{lang === 'en' ? dict.ui.footer.neighbourhoods : dict.ui.nav.englishGuides}</h2>
         <ul>
           {hoods.map((h) => <li><a href={neighbourhoodPath(h.id)}>{h.data.name}</a></li>)}
-          <li><a href="/map-of-markham/">Map of Markham</a></li>
-          <li><a href="/markham-vs-toronto/">Markham vs Toronto</a></li>
-          <li><a href="/markham-vs-richmond-hill/">Markham vs Richmond Hill</a></li>
-          <li><a href="/markham-vs-vaughan/">Markham vs Vaughan</a></li>
+          <li><a href="/map-of-toronto/">Map of Toronto</a></li>
+          <li><a href="/toronto-vs-markham/">Toronto vs Markham</a></li>
+          <li><a href="/toronto-vs-mississauga/">Toronto vs Mississauga</a></li>
+          <li><a href="/toronto-vs-vaughan/">Toronto vs Vaughan</a></li>
         </ul>
       </nav>
 
@@ -86,8 +86,8 @@ const brokerageMissing = isTodo(site.brokerage.legalName);
             <ul>
               <li><a href="/buyers/">Buyers</a></li>
               <li><a href="/sellers/">Sellers</a></li>
-              <li><a href="/land-transfer-tax-calculator-markham/">Land Transfer Tax Calculator</a></li>
-              <li><a href="/mortgage-calculator-markham/">Mortgage Calculator</a></li>
+              <li><a href="/land-transfer-tax-calculator-toronto/">Land Transfer Tax Calculator</a></li>
+              <li><a href="/mortgage-calculator-toronto/">Mortgage Calculator</a></li>
               {services.map((s) => <li><a href={servicePath(s.id)}>{s.data.name}</a></li>)}
             </ul>
           </nav>
@@ -157,7 +157,7 @@ const brokerageMissing = isTodo(site.brokerage.legalName);
         </p>
         <p>
           Office: {site.office.street}, {site.office.city}, {site.office.region}{' '}
-          {site.office.postalCode}. Serving Markham and the surrounding York Region communities.
+          {site.office.postalCode}. Serving Toronto and the neighbouring communities of the Greater Toronto Area.
         </p>
         <p>
           Market figures shown on this site are general information drawn from Toronto Regional

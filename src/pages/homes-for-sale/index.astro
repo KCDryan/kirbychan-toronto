@@ -13,10 +13,10 @@ const crumbs = [
 ---
 
 <Page
-  title="Markham Homes for Sale: Bungalows, Condos and Houses"
-  description="Search every Markham home for sale on the MLS® in one click: bungalows, condo apartments, townhouses and houses, updated every few minutes from TRREB."
-  eyebrow="Markham, Ontario"
-  h1="Markham homes for sale"
+  title="Toronto Homes for Sale: Bungalows, Condos and Houses"
+  description="Search every Toronto home for sale on the MLS® in one click: bungalows, condo apartments, townhouses and houses, updated every few minutes from TRREB."
+  eyebrow="Toronto, Ontario"
+  h1="Toronto homes for sale"
   lede="Press a button to see homes. There is nothing to type. The list changes as soon as you choose."
   crumbs={crumbs}
 >
@@ -37,7 +37,7 @@ const crumbs = [
         <div class="hs__step">
           <h3>City</h3>
           <div class="hs__choices">
-            {CITIES.map((c) => <a class="hs__choice" data-key="city" data-value={c === 'Markham' ? '' : c} href={`?city=${encodeURIComponent(c)}`}><strong>{c}</strong></a>)}
+            {CITIES.map((c) => <a class="hs__choice" data-key="city" data-value={c === 'Toronto' ? '' : c} href={`?city=${encodeURIComponent(c)}`}><strong>{c}</strong></a>)}
           </div>
           <h3>Buy or rent</h3>
           <div class="hs__choices">
@@ -64,13 +64,13 @@ const crumbs = [
       </nav>
 
       <div class="prose hs__intro">
-        <h2>Downsizing in Markham</h2>
+        <h2>Downsizing in Toronto</h2>
         <p>
           Most people we help downsize are looking for one of three things: a bungalow so everything is
           on one floor, a condo apartment with an elevator or a townhouse with less to look after. The
           buttons above find each one in a single press. See
-          <a href="/best-markham-neighbourhoods-for-downsizing/">where to downsize in Markham</a> for the
-          neighbourhoods with the most of these homes and our <a href="/downsizing-markham/">downsizing guide</a>
+          <a href="/best-toronto-neighbourhoods-for-downsizing/">where to downsize in Toronto</a> for the
+          neighbourhoods with the most of these homes and our <a href="/downsizing-toronto/">downsizing guide</a>
           for the whole move, from pricing your house to moving day.
         </p>
       </div>
@@ -140,7 +140,7 @@ const crumbs = [
       .catch(() => {
         if (mine !== seq) return;
         $('status').textContent = `Homes could not be loaded just now. Please try again in a minute or call us at ${site.contact.phone}. `;
-        const a = el('a', null, 'Or search all Markham listings here.') as HTMLAnchorElement;
+        const a = el('a', null, 'Or search all Toronto listings here.') as HTMLAnchorElement;
         a.href = FALLBACK;
         $('status').append(a);
       });

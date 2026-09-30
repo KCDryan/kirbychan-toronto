@@ -142,7 +142,7 @@ export const onRequestPost = async ({ request, env }: Context): Promise<Response
     message: clean(form.get('message'), MAX_FIELD),
     consent: true,
     consentText:
-      'Agreed to be contacted by Kirby Chan & Co. about this enquiry and about Markham real estate, with the right to withdraw consent at any time',
+      'Agreed to be contacted by Kirby Chan & Co. about this enquiry and about Toronto real estate, with the right to withdraw consent at any time',
     source: clean(form.get('source'), 60) || 'website',
     page: clean(form.get('page'), 200),
     turnstile,
@@ -163,11 +163,11 @@ export const onRequestPost = async ({ request, env }: Context): Promise<Response
     ['Message', payload.message],
   ];
   const body = [
-    'A new enquiry from kirbychanmarkham.com. Reply to this email to write to them.',
+    'A new enquiry from kirbychantoronto.com. Reply to this email to write to them.',
     '',
     ...labels.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`),
     '',
-    `They agreed to be contacted about this enquiry and about Markham real estate.`,
+    `They agreed to be contacted about this enquiry and about Toronto real estate.`,
     `Received: ${new Date().toLocaleString('en-CA', { dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Toronto' })}`,
   ].join('\n');
 

@@ -17,7 +17,7 @@ import { tables, strikethrough } from 'turndown-plugin-gfm';
 import { parseMDX } from '@tinacms/mdx';
 import { Button, TextArea, wrapFieldsWithMeta } from 'tinacms';
 
-const SITE = /^https?:\/\/(www\.)?kirbychanmarkham\.com/i;
+const SITE = /^https?:\/\/(www\.)?kirbychantoronto\.com/i;
 
 const text = (el: Element | null | undefined) => (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
 
