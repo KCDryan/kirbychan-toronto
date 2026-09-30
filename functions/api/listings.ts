@@ -41,7 +41,7 @@ const json = (body: unknown, status = 200) =>
 
 export async function proptx(token: string, path: string): Promise<{ value: Row[]; '@odata.count'?: number }> {
   const res = await fetch(`${PROPTX_BASE}/${path}`, {
-    headers: { authorization: `Bearer ${token}`, accept: 'application/json' },
+    headers: { authorization: `Bearer ${token.trim()}`, accept: 'application/json' },
   });
   if (!res.ok) throw new Error(`PropTx ${res.status}: ${(await res.text()).slice(0, 300)}`);
   return res.json();

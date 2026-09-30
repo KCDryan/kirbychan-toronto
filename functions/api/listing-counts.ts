@@ -31,7 +31,7 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
   // ponytail: 40 pages of 1,000 covers Toronto's residential listings with room to spare and stays under
   // Cloudflare's 50 subrequest limit. If the city ever lists more, split the count by district.
   for (let i = 0; next && i < 40; i++) {
-    const res: Response = await fetch(`${PROPTX_BASE}/${next}`, { headers: { authorization: `Bearer ${env.PROPTX_IDX_TOKEN}` } });
+    const res: Response = await fetch(`${PROPTX_BASE}/${next}`, { headers: { authorization: `Bearer ${env.PROPTX_IDX_TOKEN.trim()}` } });
     if (!res.ok) return new Response(JSON.stringify({ error: 'upstream', status: res.status }), { status: 503 });
     const data = (await res.json()) as { value: Record<string, unknown>[]; '@odata.nextLink'?: string };
     for (const r of data.value) {
