@@ -1,97 +1,97 @@
 {
-  "updated": "",
+  "updated": "2026-09-30T17:57:00.349Z",
   "toronto": {
-    "total": 0,
-    "bungalow": 0,
-    "condo": 0,
-    "townhouse": 0,
-    "house": 0
+    "total": 10215,
+    "bungalow": 720,
+    "condo": 5210,
+    "townhouse": 1022,
+    "house": 3450
   },
   "areas": {
-    "leaside": {
-      "total": 0,
+    "downtown-waterfront": {
+      "total": 874,
       "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
-    },
-    "lawrence-park": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
-    },
-    "yonge-eglinton": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
-    },
-    "don-mills": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
-    },
-    "the-annex": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
-    },
-    "bayview-village": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
+      "condo": 812,
+      "townhouse": 12,
+      "house": 1
     },
     "willowdale": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
+      "total": 448,
+      "bungalow": 16,
+      "condo": 284,
+      "townhouse": 35,
+      "house": 118
     },
-    "downtown-waterfront": {
-      "total": 0,
+    "yonge-eglinton": {
+      "total": 240,
       "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
+      "condo": 203,
+      "townhouse": 8,
+      "house": 18
+    },
+    "don-mills": {
+      "total": 158,
+      "bungalow": 16,
+      "condo": 76,
+      "townhouse": 8,
+      "house": 66
+    },
+    "the-annex": {
+      "total": 198,
+      "bungalow": 0,
+      "condo": 144,
+      "townhouse": 17,
+      "house": 28
     },
     "high-park": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
-    },
-    "the-beaches": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
-    },
-    "riverdale": {
-      "total": 0,
-      "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
+      "total": 133,
+      "bungalow": 2,
+      "condo": 68,
+      "townhouse": 1,
+      "house": 46
     },
     "islington-village": {
-      "total": 0,
+      "total": 252,
+      "bungalow": 19,
+      "condo": 153,
+      "townhouse": 26,
+      "house": 67
+    },
+    "bayview-village": {
+      "total": 208,
+      "bungalow": 12,
+      "condo": 137,
+      "townhouse": 19,
+      "house": 50
+    },
+    "lawrence-park": {
+      "total": 101,
+      "bungalow": 1,
+      "condo": 26,
+      "townhouse": 1,
+      "house": 71
+    },
+    "riverdale": {
+      "total": 112,
       "bungalow": 0,
-      "condo": 0,
-      "townhouse": 0,
-      "house": 0
+      "condo": 43,
+      "townhouse": 24,
+      "house": 37
+    },
+    "the-beaches": {
+      "total": 77,
+      "bungalow": 1,
+      "condo": 23,
+      "townhouse": 6,
+      "house": 35
+    },
+    "leaside": {
+      "total": 44,
+      "bungalow": 4,
+      "condo": 6,
+      "townhouse": 4,
+      "house": 34
     }
   },
-  "complete": false
+  "complete": true
 }
