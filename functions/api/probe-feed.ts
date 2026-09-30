@@ -1,19 +1,34 @@
-// TEMPORARY diagnostic. Returns tallies only (no listing data). Delete after use.
+// TEMPORARY diagnostic. Returns tallies and status codes only (no listing data). Delete after use.
 import { PROPTX_BASE, AREAS } from '../../src/lib/proptx';
 export async function onRequestGet({ request, env }: { request: Request; env: { PROPTX_IDX_TOKEN?: string } }) {
   if (new URL(request.url).searchParams.get('k') !== 'e38056d0e257bd811c1d0d3c' || !env.PROPTX_IDX_TOKEN) return new Response('no', { status: 404 });
-  const filter = "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto')";
+  const get = (path: string) => fetch(`${PROPTX_BASE}/${path}`, { headers: { authorization: `Bearer ${env.PROPTX_IDX_TOKEN}` } });
+  const base = "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale'";
+  const variants: Record<string, string> = {
+    startswithCity: `${base} and startswith(City,'Toronto')`,
+    eqToronto: `${base} and City eq 'Toronto'`,
+    eqMarkham: `${base} and City eq 'Markham'`,
+    base,
+  };
+  const tests: Record<string, unknown> = {};
+  for (const [name, f] of Object.entries(variants)) {
+    for (const extra of ['', '&$count=true']) {
+      const r = await get(`Property?$top=5&$select=City,CityRegion${extra}&$filter=${encodeURIComponent(f)}`);
+      const body = r.ok ? ((await r.json()) as { value: { City: string }[]; '@odata.count'?: number }) : null;
+      tests[name + extra] = r.ok ? { status: r.status, count: body!['@odata.count'] ?? null, cities: body!.value.map((v) => v.City) } : { status: r.status };
+    }
+  }
+  const pick = (tests['startswithCity'] as { status: number }).status === 200 ? variants.startswithCity : variants.eqToronto;
   const city: Record<string, number> = {}, region: Record<string, number> = {}, sub: Record<string, number> = {};
-  let next: string | null = `Property?$top=1000&$count=true&$select=City,CityRegion,PropertySubType&$filter=${encodeURIComponent(filter)}`;
-  let count: unknown = null, pages = 0, rows = 0;
+  let next: string | null = `Property?$top=1000&$select=City,CityRegion,PropertySubType&$filter=${encodeURIComponent(pick)}`;
+  let pages = 0, rows = 0, err: unknown = null;
   while (next && pages < 40) {
-    const res = await fetch(`${PROPTX_BASE}/${next}`, { headers: { authorization: `Bearer ${env.PROPTX_IDX_TOKEN}` } });
-    if (!res.ok) return Response.json({ error: res.status, body: (await res.text()).slice(0, 200) }, { status: 503 });
-    const d = (await res.json()) as { value: Record<string, unknown>[]; '@odata.count'?: number; '@odata.nextLink'?: string };
-    if (count === null) count = d['@odata.count'] ?? null;
+    const res = await get(next);
+    if (!res.ok) { err = res.status; break; }
+    const d = (await res.json()) as { value: Record<string, unknown>[]; '@odata.nextLink'?: string };
     for (const r of d.value) { rows++; city[String(r.City)] = (city[String(r.City)] ?? 0) + 1; region[String(r.CityRegion)] = (region[String(r.CityRegion)] ?? 0) + 1; sub[String(r.PropertySubType)] = (sub[String(r.PropertySubType)] ?? 0) + 1; }
     next = d['@odata.nextLink']?.replace(`${PROPTX_BASE}/`, '') ?? null; pages++;
   }
   const areas = Object.fromEntries(Object.entries(AREAS).map(([k, a]) => [k, Object.fromEntries(a.communities.map((c) => [c, region[c] ?? 0]))]));
-  return Response.json({ count, rows, pages, complete: !next, city, sub, areas, regions: Object.keys(region).length, regionSample: Object.entries(region).sort((a, b) => b[1] - a[1]).slice(0, 200) });
+  return Response.json({ tests, pick, err, rows, pages, complete: !next, city, sub, areas, regions: Object.keys(region).length, regionAll: Object.entries(region).sort((a, b) => b[1] - a[1]) });
 }
