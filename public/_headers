@@ -1,0 +1,51 @@
+# Cloudflare Pages headers. Applied in order, most specific last.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin
+  X-DNS-Prefetch-Control: off
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https://i.ytimg.com https://i9.ytimg.com https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com; frame-src https://challenges.cloudflare.com https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; upgrade-insecure-requests
+
+# Hashed build assets. Safe to cache for a year because the filename changes
+# whenever the contents change.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# HTML must revalidate so a new deploy is picked up straight away.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/api/*
+  Cache-Control: no-store
+
+# TinaCMS editor. It loads its own scripts and talks to Tina Cloud, so it needs
+# a looser policy than the public site. Never indexed.
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+  # Tina's GitHub login runs in a popup that reports back to this page.
+  # same-origin breaks that link, so the editor opts out.
+  ! Cross-Origin-Opener-Policy
+  Cross-Origin-Opener-Policy: unsafe-none
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: blob: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https://*.tinajs.io https://*.tina.io https://cloudflareinsights.com; frame-src 'self'
+
+# MLS® listing search. Listing photos come from PropTx's image host, so images may load from any https source.
+/homes-for-sale/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; frame-src 'none'; connect-src 'self' https://www.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; upgrade-insecure-requests
+
+# Sold prices (VOW). Listing photos from PropTx's image host, plus the Turnstile spam check on sign up.
+/sold/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; upgrade-insecure-requests

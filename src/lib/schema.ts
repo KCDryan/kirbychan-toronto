@@ -1,0 +1,242 @@
+import site from '../data/site.json';
+import { absolute, canonical } from './seo';
+import { isoDate, isoDuration, isTodo } from './format';
+import { GUIDES } from './guides';
+
+const AGENT_ID = `${site.url}/#realestateagent`;
+const ORG_ID = `${site.url}/#organization`;
+const PERSON_ID = `${site.url}/about/#kirby`;
+
+/**
+ * The named registrant behind everything published here. Search engines and AI
+ * assistants read a business as an entity, and a person with a page, a title
+ * and profiles elsewhere is a stronger signal than an unattributed brand.
+ */
+export function person() {
+  const sameAs = [site.social.linkedin, site.social.youtube, site.social.instagram].filter(
+    (u) => typeof u === 'string' && u.length > 0
+  );
+  return {
+    '@type': 'Person',
+    '@id': PERSON_ID,
+    name: site.brokerage.registrant,
+    jobTitle: site.brokerage.registrationCategory,
+    url: canonical('/about/'),
+    worksFor: { '@id': AGENT_ID },
+    ...(sameAs.length > 0 ? { sameAs } : {}),
+  };
+}
+
+/** Sitewide RealEstateAgent. Address is the real registered office, never Markham. */
+export function realEstateAgent(areaServed: string[]) {
+  const sameAs = Object.values(site.social).filter((u) => typeof u === 'string' && u.length > 0);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateAgent',
+    knowsLanguage: ['en', 'zh', 'vi', 'ru', 'ka', 'fa', 'ur', 'hi', 'pt', 'ko'],
+    '@id': AGENT_ID,
+    name: site.name,
+    url: site.url,
+    telephone: site.contact.phone,
+    email: site.contact.email,
+    image: absolute('/og-default.png'),
+    priceRange: '$$$',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: site.office.street,
+      addressLocality: site.office.city,
+      addressRegion: site.office.region,
+      postalCode: site.office.postalCode,
+      addressCountry: site.office.country,
+    },
+    areaServed: areaServed.map((name) => ({
+      '@type': 'Place',
+      name,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Markham',
+        addressRegion: 'ON',
+        addressCountry: 'CA',
+      },
+    })),
+    ...(sameAs.length > 0 ? { sameAs } : {}),
+    // The topics this business publishes on, so an assistant matching a
+    // question to an entity has the list in one place.
+    knowsAbout: [
+      ...Object.values(GUIDES).map((g) => g.label.replace(' Guide', '')),
+      ...areaServed.map((name) => `${name} real estate`),
+    ],
+    employee: person(),
+    ...(isTodo(site.brokerage.legalName)
+      ? {}
+      : {
+          parentOrganization: {
+            '@type': 'Organization',
+            '@id': ORG_ID,
+            name: site.brokerage.legalName,
+          },
+        }),
+  };
+}
+
+export interface Crumb {
+  name: string;
+  path: string;
+}
+
+export function breadcrumbList(crumbs: Crumb[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: canonical(c.path),
+    })),
+  };
+}
+
+/** Only call this when the same Q and A text is rendered visibly on the page. */
+export function faqPage(faq: { q: string; a: string }[]) {
+  if (faq.length === 0) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  };
+}
+
+export function blogPosting(input: {
+  headline: string;
+  description: string;
+  path: string;
+  published: Date;
+  updated?: Date;
+  image?: string;
+  section?: string;
+  wordCount?: number;
+  /** The subject of the piece, so a citation carries the topic, not just a title. */
+  about?: string;
+  /** An agent who wrote a quick post. Omitted means Kirby Chan, the team's broker. */
+  author?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: input.headline,
+    description: input.description,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonical(input.path) },
+    url: canonical(input.path),
+    inLanguage: 'en-CA',
+    datePublished: isoDate(input.published),
+    dateModified: isoDate(input.updated ?? input.published),
+    image: absolute(input.image ?? '/og-default.png'),
+    ...(input.section ? { articleSection: input.section } : {}),
+    ...(input.wordCount ? { wordCount: input.wordCount } : {}),
+    ...(input.about ? { about: { '@type': 'Thing', name: input.about } } : {}),
+    isPartOf: { '@type': 'Blog', '@id': `${site.url}/blog/#blog` },
+    author: input.author
+      ? { '@type': 'Person', name: input.author, worksFor: { '@id': AGENT_ID } }
+      : { '@type': 'Person', '@id': PERSON_ID, name: site.brokerage.registrant, url: canonical('/about/') },
+    publisher: {
+      '@type': 'RealEstateAgent',
+      '@id': AGENT_ID,
+      name: site.name,
+      url: site.url,
+      logo: { '@type': 'ImageObject', url: absolute('/apple-touch-icon.png') },
+    },
+  };
+}
+
+/** The blog itself, for the blog index page. */
+export function blog(posts: { headline: string; path: string; published: Date }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    '@id': `${site.url}/blog/#blog`,
+    name: `${site.shortName} Markham Real Estate Blog`,
+    url: canonical('/blog/'),
+    inLanguage: 'en-CA',
+    publisher: { '@id': AGENT_ID },
+    blogPost: posts.slice(0, 20).map((p) => ({
+      '@type': 'BlogPosting',
+      headline: p.headline,
+      url: canonical(p.path),
+      datePublished: isoDate(p.published),
+    })),
+  };
+}
+
+export function videoObject(input: {
+  name: string;
+  description: string;
+  path: string;
+  published: Date;
+  durationMinutes: number;
+  youtubeId: string;
+}) {
+  if (!input.youtubeId) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: input.name,
+    description: input.description,
+    uploadDate: isoDate(input.published),
+    duration: isoDuration(input.durationMinutes),
+    thumbnailUrl: [`https://i.ytimg.com/vi/${input.youtubeId}/maxresdefault.jpg`],
+    embedUrl: `https://www.youtube-nocookie.com/embed/${input.youtubeId}`,
+    contentUrl: `https://www.youtube.com/watch?v=${input.youtubeId}`,
+    url: canonical(input.path),
+    publisher: { '@id': AGENT_ID, '@type': 'RealEstateAgent', name: site.name },
+  };
+}
+
+export function place(input: { name: string; description: string; path: string }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Place',
+    name: `${input.name}, Markham, Ontario`,
+    description: input.description,
+    url: canonical(input.path),
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Markham',
+      addressRegion: 'ON',
+      addressCountry: 'CA',
+    },
+    containedInPlace: {
+      '@type': 'City',
+      name: 'Markham',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Markham',
+        addressRegion: 'ON',
+        addressCountry: 'CA',
+      },
+    },
+  };
+}
+
+/** A real estate service offered in Markham, provided by the team. */
+export function service(input: { name: string; description: string; path: string }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: input.name,
+    description: input.description,
+    url: canonical(input.path),
+    serviceType: 'Real estate brokerage',
+    areaServed: {
+      '@type': 'City',
+      name: 'Markham',
+      containedInPlace: { '@type': 'AdministrativeArea', name: 'Ontario, Canada' },
+    },
+    provider: { '@type': 'RealEstateAgent', '@id': AGENT_ID, name: site.name },
+  };
+}

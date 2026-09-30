@@ -1,0 +1,40 @@
+{
+  "name": "Kirby Chan & Co. Real Estate Team",
+  "shortName": "Kirby Chan & Co.",
+  "brandLine": "Kirby Chan & Co. Real Estate Team | eXp Realty Brokerage",
+  "tagline": "Markham, neighbourhood by neighbourhood.",
+  "url": "https://kirbychanmarkham.com",
+  "locale": "en_CA",
+  "parentSite": "https://kirbychanandco.com",
+  "contact": {
+    "phone": "416-305-8008",
+    "phoneHref": "tel:+14163058008",
+    "email": "info@kirbychanandco.com"
+  },
+  "office": {
+    "street": "8763 Bayview Ave #127",
+    "city": "Richmond Hill",
+    "region": "ON",
+    "postalCode": "L4B 3V1",
+    "country": "CA"
+  },
+  "brokerage": {
+    "legalName": "eXp Realty Brokerage",
+    "disclosure": "Kirby Chan & Co. Real Estate Team | eXp Realty Brokerage. Kirby Chan, Broker.",
+    "registrant": "Kirby Chan",
+    "registrationCategory": "Broker"
+  },
+  "links": {
+    "loftySearch": "/homes-for-sale/",
+    "booking": ""
+  },
+  "social": {
+    "instagram": "https://www.instagram.com/kirbychanandco/",
+    "facebook": "",
+    "youtube": "https://www.youtube.com/@KirbyChanRealEstate",
+    "linkedin": "https://www.linkedin.com/in/kirbychan/"
+  },
+  "marketSource": "TRREB",
+  "ga4": "G-HPFLBDZHG5",
+  "leadsEmail": "info@kirbychanmarkham.com"
+}

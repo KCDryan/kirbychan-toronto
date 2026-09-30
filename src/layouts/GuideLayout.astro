@@ -1,0 +1,490 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+import { getCollection } from 'astro:content';
+import Base from './Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import BlogCard from '../components/BlogCard.astro';
+import Toc from '../components/Toc.astro';
+import Photo from '../components/Photo.astro';
+import Testimonials from '../components/Testimonials.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { getImage } from 'astro:assets';
+import { photo } from '../lib/photos';
+import site from '../data/site.json';
+import stories from '../data/client-stories.json';
+import { cad, longDate, neighbourhoodPath } from '../lib/format';
+import TranslationNotice from '../components/TranslationNotice.astro';
+import { GUIDES, servicePath, type GuideSlug } from '../lib/guides';
+import { localePath, t, type Lang } from '../i18n';
+import { publishedPosts } from '../lib/blog-posts';
+import { blogPosting, breadcrumbList, faqPage, service } from '../lib/schema';
+
+interface Props {
+  entry: CollectionEntry<'guides'>;
+  headings: MarkdownHeading[];
+  /** Translated guides live in <slug>.<lang>.mdx and render at /<lang>/<slug>/. */
+  lang?: Lang;
+}
+const { entry, headings, lang = 'en' } = Astro.props;
+const d = entry.data;
+// A translated entry's id carries the language folder, for example zh/luxury-markham.
+const slug = entry.id.replace(/^[a-z]{2}\//, '') as GuideSlug;
+const guide = GUIDES[slug];
+const en = lang === 'en';
+const dict = t(lang);
+const gd = dict.guide;
+const englishPath = `/${slug}/`;
+const path = localePath(lang, englishPath);
+
+// The topic cluster: every blog post that names this guide, newest first.
+const clusterPosts = en ? (await publishedPosts()).filter((p) => p.data.guide === slug) : [];
+
+const allHoods = await getCollection('neighbourhoods', ({ data }) => !data.draft);
+const linkedHoods = d.related
+  .map((s) => allHoods.find((h) => h.id === s))
+  .filter((h): h is CollectionEntry<'neighbourhoods'> => Boolean(h));
+
+const allServices = await getCollection('services', ({ data }) => !data.draft);
+const linkedServices = d.relatedServices
+  .map((s) => allServices.find((x) => x.id === s))
+  .filter((s): s is CollectionEntry<'services'> => Boolean(s));
+
+// Client stories published by the team are downsizing and later-life moves.
+const showStories = en && slug === 'downsizing-markham';
+
+// Share image: a Markham streetscape instead of the generic card.
+const sharePhoto = photo('neighbourhoods/markham-village');
+const ogImage = sharePhoto
+  ? (await getImage({ src: sharePhoto, width: 1200, height: 630, format: 'jpg', fit: 'cover' })).src
+  : undefined;
+
+const crumbs = [
+  { name: dict.ui.nav.home, path: localePath(lang, '/') },
+  { name: en ? guide.label : d.h1, path },
+];
+
+const article = { ...blogPosting({ headline: d.h1, description: d.description, path, published: d.updated, updated: d.updated, image: ogImage, about: guide.label.replace(' Guide', '') }) } as Record<string, unknown>;
+article['@type'] = 'Article';
+delete article.isPartOf;
+
+const jsonLd = [
+  breadcrumbList(crumbs),
+  article,
+  service({ name: guide.label.replace(' Guide', ''), description: d.description, path }),
+  faqPage(d.faq),
+].filter(Boolean);
+---
+
+<Base title={d.title} description={d.description} noindex={d.noindex} ogImage={ogImage} ogType="article" jsonLd={jsonLd} article={{ published: d.updated, modified: d.updated, section: guide.short }}>
+  <Breadcrumbs crumbs={crumbs} />
+
+  {!en && (
+    <div class="wrap">
+      <TranslationNotice />
+    </div>
+  )}
+
+  <article>
+    <header class="guide-hero">
+      <div class="wrap guide-hero__inner">
+        <div>
+          <p class="eyebrow">{d.eyebrow}</p>
+          <h1>{d.h1}</h1>
+          <p class="lede">{d.lede}</p>
+          <div class="page-hero__actions">
+            <a class="btn btn--primary" href="#guide-contact">{gd.talk}</a>
+            <a class="btn btn--ghost" href={site.contact.phoneHref}>{dict.ui.callUs} {site.contact.phone}</a>
+          </div>
+          <ul class="guide-trust" role="list">
+            <li><strong>150+</strong> {gd.trustReviews}</li>
+            <li><strong>10</strong> {gd.trustLanguages}</li>
+            <li>{gd.updated} <time datetime={d.updated.toISOString()}>{longDate(d.updated)}</time></li>
+          </ul>
+        </div>
+        <div class="guide-hero__media">
+          <Photo name="kirby-portrait" alt="Kirby Chan, Broker" label="Portrait of Kirby Chan" ratio="1 / 1" priority sizes="(min-width: 900px) 300px, 60vw" />
+          <p class="guide-byline">
+            <strong>Kirby Chan</strong>, {gd.broker}<br />
+            {site.name}<br />
+            {site.brokerage.legalName}
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap guide-body">
+      <div class="guide-shell">
+        <div class="guide-main">
+          <div class="takeaway">
+            <h2>{gd.quickAnswer}</h2>
+            <p>{d.takeaway}</p>
+          </div>
+
+          <div class="prose">
+            <slot />
+          </div>
+
+          {!en && (
+            <p class="guide-english">
+              <a href={englishPath}>{dict.ui.englishGuide}</a>
+            </p>
+          )}
+
+          {
+            showStories && (
+              <section class="guide-stories" aria-labelledby="guide-stories-heading">
+                <h2 id="guide-stories-heading">Downsizing moves the team has handled</h2>
+                <p class="guide-note">
+                  Client stories published by the team on kirbychanandco.com, with the list and sale
+                  prices reported for each home. Every home and market is different, so past results do
+                  not predict the sale price of any other property.
+                </p>
+                <ul role="list">
+                  {stories.stories.map((s) => (
+                    <li>
+                      <p class="guide-stories__area">{s.area}</p>
+                      <h3>{s.names}</h3>
+                      <p>{s.situation}</p>
+                      <p class="guide-stories__prices">
+                        Listed {cad(s.listed)} <span aria-hidden="true">&middot;</span> Sold {cad(s.sold)}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          <FaqAccordion faq={d.faq} heading={gd.faqHeading} />
+
+          {
+            clusterPosts.length > 0 && (
+              <section class="guide-cluster" aria-labelledby="guide-cluster-heading">
+                <h2 id="guide-cluster-heading">More in the {guide.label.replace('Markham ', '')}</h2>
+                <ul class="guide-cluster__list" role="list">
+                  {clusterPosts.map((p) => (
+                    <li>
+                      <BlogCard slug={p.id} title={p.data.h1} subtitle={p.data.subtitle} category={p.data.category} published={p.data.published} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          {
+            (linkedHoods.length > 0 || linkedServices.length > 0) && (
+              <section class="guide-links" aria-labelledby="guide-links-heading">
+                <h2 id="guide-links-heading">{gd.relatedGuides}</h2>
+                <ul>
+                  {linkedHoods.map((h) => (
+                    <li>
+                      <a href={neighbourhoodPath(h.id)}>{h.data.name} neighbourhood guide</a>
+                      <span>{h.data.personality}</span>
+                    </li>
+                  ))}
+                  {linkedServices.map((s) => (
+                    <li>
+                      <a href={servicePath(s.id)}>{s.data.name}</a>
+                      <span>{s.data.summary}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          <section class="guide-sources" aria-labelledby="guide-sources-heading">
+            <h2 id="guide-sources-heading">{gd.sources}</h2>
+            <ul>
+              {d.sources.map((src) => (
+                <li>
+                  <a href={src.url} rel="noopener noreferrer" target="_blank">{src.name}</a>
+                </li>
+              ))}
+            </ul>
+            <p>{gd.checkedOn} {longDate(d.updated)}.</p>
+          </section>
+
+          <div class="disclaimer">
+            <p>
+              <strong>{gd.notAdviceLabel}</strong> {gd.notAdvice}
+            </p>
+            <p>
+              <strong>{gd.marketDataLabel}</strong> {gd.marketData}
+            </p>
+          </div>
+        </div>
+
+        <aside class="guide-aside">
+          <Toc headings={headings} />
+          <div class="aside-cta on-dark">
+            <h2>{gd.asideHeading}</h2>
+            <p>{gd.asideBody}</p>
+            <a class="btn btn--brass btn--sm btn--wide" href="#guide-contact">{gd.sendMessage}</a>
+            <a class="aside-cta__phone" href={site.contact.phoneHref}>{site.contact.phone}</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+
+  <Testimonials />
+
+  <section class="section" id="guide-contact">
+    <div class="wrap-narrow">
+      <LeadForm
+        heading={en && slug === 'downsizing-markham' ? 'Get your free downsizing plan' : gd.leadHeading}
+        intro="Tell us a little about your home and your plans. Kirby will reply personally, with no pressure and no obligation."
+        source={`guide-${slug}`}
+        defaultIntent="Both"
+        submitLabel="Send my request"
+      />
+    </div>
+  </section>
+  <div class="guide-bar" aria-label={gd.quickContact}>
+    <a class="btn btn--ghost btn--sm" href={site.contact.phoneHref}>{dict.ui.callUs}</a>
+    <a class="btn btn--primary btn--sm" href="#guide-contact">{gd.barCta}</a>
+  </div>
+</Base>
+
+<style>
+  .guide-hero {
+    background:
+      radial-gradient(110% 80% at 90% 0%, rgba(31, 80, 69, 0.1), transparent 60%),
+      var(--mist);
+    border-bottom: 1px solid var(--rule);
+    padding-block: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  }
+  .guide-hero__inner {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: center;
+  }
+  .guide-hero h1 {
+    max-width: 22ch;
+  }
+  .guide-hero .lede {
+    margin-top: var(--sp-5);
+    max-width: 60ch;
+  }
+  .guide-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    list-style: none;
+    margin: var(--sp-6) 0 0;
+    padding: 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+  .guide-trust strong {
+    color: var(--brand);
+  }
+  .guide-hero__media {
+    max-width: 300px;
+    width: 100%;
+    justify-self: center;
+  }
+  .guide-byline {
+    margin-top: var(--sp-3);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+  .guide-byline strong {
+    color: var(--ink);
+  }
+
+  .guide-body {
+    padding-block: var(--section-y);
+  }
+  .guide-shell {
+    display: grid;
+    gap: var(--sp-7);
+  }
+  .guide-main {
+    min-width: 0;
+  }
+  .guide-main > * + * {
+    margin-top: var(--sp-7);
+  }
+  .guide-main .prose {
+    max-width: 72ch;
+  }
+
+  .guide-stories h2,
+  .guide-english {
+    margin-top: var(--sp-6);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--rule);
+    font-weight: 600;
+  }
+  .guide-cluster h2,
+  .guide-links h2,
+  .guide-sources h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--sp-4);
+  }
+  .guide-note {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: var(--sp-5);
+  }
+  .guide-stories ul,
+  .guide-cluster__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: var(--sp-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .guide-stories li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-5);
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--brass);
+    border-radius: var(--radius-lg);
+  }
+  .guide-stories h3 {
+    margin: 0;
+    font-size: var(--step-1);
+  }
+  .guide-stories li p {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+  .guide-stories__area {
+    font-size: 0.72rem !important;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand) !important;
+  }
+  .guide-stories__prices {
+    margin-top: auto;
+    padding-top: var(--sp-3);
+    border-top: 1px solid var(--rule);
+    font-weight: 700;
+    color: var(--ink) !important;
+  }
+
+  .guide-links ul {
+    display: grid;
+    gap: var(--sp-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .guide-links li {
+    display: grid;
+    gap: 0.2rem;
+    padding-bottom: var(--sp-4);
+    border-bottom: 1px solid var(--rule);
+  }
+  .guide-links li a {
+    font-family: var(--font-heading);
+    font-size: var(--step-1);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .guide-links li span {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+  .guide-sources ul {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding-inline-start: 1.2em;
+  }
+  .guide-sources p {
+    margin-top: var(--sp-3);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .guide-aside {
+    display: grid;
+    gap: var(--sp-5);
+    align-content: start;
+  }
+  .aside-cta {
+    padding: var(--sp-5);
+    background: var(--ground);
+    border-radius: var(--radius-lg);
+    color: var(--text-on-dark-muted);
+  }
+  .aside-cta h2 {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: var(--sp-3);
+  }
+  .aside-cta p {
+    font-size: 0.88rem;
+    margin-bottom: var(--sp-4);
+  }
+  .aside-cta__phone {
+    display: block;
+    margin-top: var(--sp-4);
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-on-dark-muted);
+  }
+
+  /* Phones: contact stays one tap away while reading. */
+  .guide-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 90;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--paper);
+    border-top: 1px solid var(--rule);
+    box-shadow: 0 -6px 20px rgba(16, 37, 31, 0.08);
+  }
+  :global(body:has(.guide-bar)) {
+    padding-bottom: 4.5rem;
+  }
+  @media (min-width: 900px) {
+    .guide-bar {
+      display: none;
+    }
+    :global(body:has(.guide-bar)) {
+      padding-bottom: 0;
+    }
+  }
+  @media (min-width: 900px) {
+    .guide-hero__inner {
+      grid-template-columns: 1.4fr 0.6fr;
+      gap: var(--sp-8);
+    }
+    .guide-hero__media {
+      justify-self: end;
+    }
+  }
+  @media (min-width: 1000px) {
+    .guide-shell {
+      grid-template-columns: minmax(0, 1fr) 270px;
+      gap: var(--sp-8);
+      align-items: start;
+    }
+    .guide-aside {
+      position: sticky;
+      top: 100px;
+    }
+  }
+</style>

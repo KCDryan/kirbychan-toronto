@@ -1,0 +1,143 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import site from '../data/site.json';
+import { canonical, absolute, DEFAULT_OG } from '../lib/seo';
+import { realEstateAgent } from '../lib/schema';
+import LangSuggest from '../components/LangSuggest.astro';
+import { LOCALES, basePath, langFromPath, langsForPath, localePath, t } from '../i18n';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  noindex?: boolean;
+  ogType?: 'website' | 'article' | 'video.other';
+  jsonLd?: unknown[];
+  bodyClass?: string;
+  /** Open Graph article details for blog posts. */
+  article?: { published: Date; modified?: Date; section?: string };
+  /** Pagination links for numbered listing pages. */
+  prev?: string;
+  next?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = DEFAULT_OG,
+  noindex = false,
+  ogType = 'website',
+  jsonLd = [],
+  bodyClass = '',
+  article,
+  prev,
+  next,
+} = Astro.props;
+
+const url = canonical(Astro.url.pathname);
+const lang = langFromPath(Astro.url.pathname);
+const locale = LOCALES[lang];
+const dict = t(lang);
+
+// hreflang alternates for pages that exist in every language.
+const pageLangs = langsForPath(Astro.url.pathname);
+const alternates = pageLangs.length > 0
+  ? pageLangs.map((l) => ({ hreflang: LOCALES[l].hreflang, href: canonical(localePath(l, basePath(Astro.url.pathname))) }))
+  : [];
+const image = absolute(ogImage);
+
+// Sitewide agent graph. areaServed lists Markham and every neighbourhood.
+const agent = realEstateAgent([
+  'Markham',
+  'Unionville',
+  'Markham Village',
+  'Cornell',
+  'Berczy Village',
+  'Cathedraltown',
+  'Wismer',
+  'Greensborough',
+  'Angus Glen',
+  'Box Grove',
+  'Thornhill',
+  'Milliken Mills',
+  'Downtown Markham',
+]);
+
+const graphs = [agent, ...jsonLd].filter(Boolean);
+---
+
+<!doctype html>
+<html lang={locale.htmlLang} dir={locale.dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    {alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={canonical(basePath(Astro.url.pathname))} />}
+    {/* follow is the default and is wanted: these pages are not for the index, but their links still matter. */}
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <link rel="preload" href="/fonts/montserrat-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/lato-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={locale.ogLocale} />
+    {alternates.length > 0 && pageLangs.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={LOCALES[l].ogLocale} />)}
+
+    {article && <meta property="article:published_time" content={article.published.toISOString()} />}
+    {article && <meta property="article:modified_time" content={(article.modified ?? article.published).toISOString()} />}
+    {article?.section && <meta property="article:section" content={article.section} />}
+    {article && <meta property="article:author" content={`${site.url}/about/`} />}
+    {prev && <link rel="prev" href={canonical(prev)} />}
+    {next && <link rel="next" href={canonical(next)} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <meta name="theme-color" content="#10251f" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="96x96" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.shortName} Markham Real Estate Blog`} href="/blog/rss.xml" />
+
+    {
+      graphs.map((graph) => (
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(graph)} />
+      ))
+    }
+
+    {/* Google Analytics 4. Off until a measurement ID is set in src/data/site.json. */}
+    {
+      site.ga4 && (
+        <>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${site.ga4}`} />
+          <script is:inline define:vars={{ id: site.ga4 }} set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config',id)`} />
+        </>
+      )
+    }
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">{dict.ui.skip}</a>
+    {lang === 'en' && <LangSuggest />}
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

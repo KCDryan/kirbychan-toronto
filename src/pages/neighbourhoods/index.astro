@@ -1,0 +1,131 @@
+---
+import Page from '../../layouts/Page.astro';
+import NeighbourhoodGrid from '../../components/NeighbourhoodGrid.astro';
+import Cta from '../../components/Cta.astro';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Neighbourhoods', path: '/neighbourhoods/' },
+];
+
+const faq = [
+  {
+    q: 'How many neighbourhoods are there in Markham?',
+    a: 'The city has many named communities. We cover the twelve that people actually search for and buy in, each with its own guide to prices, property types, schools, transit and the commute.',
+  },
+  {
+    q: 'Which Markham neighbourhood is the most expensive?',
+    a: 'It depends on the property type. In TRREB figures for January to March 2026, Angus Glen had the highest median across all property types of the twelve neighbourhoods on this site. For detached houses, the historic core of Unionville and the larger lots in Angus Glen and on the Markham side of Thornhill sit near the top. Each guide has the figures.',
+  },
+  {
+    q: 'Which Markham neighbourhood is the most affordable?',
+    a: 'It depends on what you are buying. Condo apartments near Highway 7 and in Downtown Markham are the lowest entry point overall. For a house, compare the detached medians in each guide, because they shift from quarter to quarter.',
+  },
+  {
+    q: 'Which neighbourhoods have a GO station?',
+    a: 'Four Stouffville line stations sit inside Markham: Unionville, Centennial, Markham and Mount Joy. Milliken GO is just across Steeles Avenue in Toronto. Unionville, Markham Village and Greensborough have a station within or beside the neighbourhood and everywhere else means a short drive or bus ride to one.',
+  },
+  {
+    q: 'How do I choose between two neighbourhoods?',
+    a: 'Start with your week rather than with houses. Where you work, how you will get there, who is in school and what you do on a Saturday will narrow twelve options to two or three very quickly.',
+  },
+];
+---
+
+<Page
+  title="Markham Neighbourhoods: Where to Live in Markham"
+  description="Twelve Markham neighbourhood guides covering price bands, property types, schools, parks, transit and the commute downtown, with the trade-offs stated plainly."
+  eyebrow="Markham, Ontario"
+  h1="Markham neighbourhoods, one guide each"
+  accent="one"
+  lede="Each Markham neighbourhood behaves like its own market. What a house costs, how long it sits and who wants it changes street by street. Each guide below is written to answer the questions a buyer actually asks."
+  crumbs={crumbs}
+  faq={faq}
+>
+  <section class="section">
+    <div class="wrap">
+      <NeighbourhoodGrid level={2} />
+      <nav class="hub-links" aria-label="Compare Markham neighbourhoods">
+        <h2>Compare them by what you need</h2>
+        <ul>
+          <li><a href="/best-markham-neighbourhoods-for-downsizing/">Where to downsize in Markham</a></li>
+          <li><a href="/best-markham-neighbourhoods-for-families/">Neighbourhoods with the most room</a></li>
+          <li><a href="/best-markham-neighbourhoods-for-commuters/">Neighbourhoods by commute</a></li>
+          <li><a href="/markham-house-prices/">Markham house prices by neighbourhood</a></li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Which Markham neighbourhood suits you?</h2>
+        <p class="lede">
+          Three questions narrow the list faster than any amount of browsing. Where do you work and
+          how will you get there. Is anyone in school. Do you want a yard or a walk to something.
+        </p>
+      </div>
+      <div class="starters">
+        <div class="starter">
+          <h3>You commute downtown by train</h3>
+          <p>
+            Look first at Unionville, Greensborough, Markham Village and Milliken Mills. All four
+            have a Stouffville line station within or beside the neighbourhood.
+          </p>
+        </div>
+        <div class="starter">
+          <h3>You have school aged children</h3>
+          <p>
+            Berczy Village, Wismer and Unionville carry the strongest local school reputations and
+            the pricing reflects it. Always confirm the catchment for the exact address.
+          </p>
+        </div>
+        <div class="starter">
+          <h3>You want space and a big lot</h3>
+          <p>
+            Angus Glen for executive housing, Markham Village for deep older lots, Thornhill if you
+            are willing to renovate something from the 1960s or 1970s.
+          </p>
+        </div>
+        <div class="starter">
+          <h3>You do not want a suburb</h3>
+          <p>
+            Downtown Markham is the only part of the city built to be walked, with towers,
+            restaurants and a university campus on a real street grid.
+          </p>
+        </div>
+      </div>
+      <p class="map-link">
+        <a href="/map-of-markham/">See where each neighbourhood sits on the map</a>
+      </p>
+    </div>
+  </section>
+
+  <Cta />
+</Page>
+
+<style>
+  .starters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: var(--sp-5);
+  }
+  .starter {
+    padding-top: var(--sp-4);
+    border-top: 2px solid var(--brass);
+  }
+  .starter h3 {
+    font-size: var(--step-1);
+    margin-bottom: var(--sp-3);
+  }
+  .starter p {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+  .map-link {
+    margin-top: var(--sp-7);
+    font-size: 0.9rem;
+  }
+</style>

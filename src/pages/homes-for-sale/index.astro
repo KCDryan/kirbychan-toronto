@@ -1,0 +1,150 @@
+---
+import Page from '../../layouts/Page.astro';
+import IdxDisclaimer from '../../components/IdxDisclaimer.astro';
+import site from '../../data/site.json';
+import HomeChoices from '../../components/HomeChoices.astro';
+import { CITIES } from '../../lib/proptx';
+import '../../styles/home-search.css';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Homes for Sale', path: '/homes-for-sale/' },
+];
+---
+
+<Page
+  title="Markham Homes for Sale: Bungalows, Condos and Houses"
+  description="Search every Markham home for sale on the MLS® in one click: bungalows, condo apartments, townhouses and houses, updated every few minutes from TRREB."
+  eyebrow="Markham, Ontario"
+  h1="Markham homes for sale"
+  lede="Press a button to see homes. There is nothing to type. The list changes as soon as you choose."
+  crumbs={crumbs}
+>
+  <section class="section">
+    <div class="wrap hs">
+      <div class="hs__call">
+        <p>Prefer to talk to a person? We will search for you.</p>
+        <a class="btn btn--primary hs__big" href={site.contact.phoneHref}>Call {site.contact.phone}</a>
+        <a class="btn btn--ghost hs__big" href="/sold/">See what homes sold for</a>
+      </div>
+
+      <HomeChoices />
+
+      <a class="btn btn--primary hs__big hs__jump" id="jump" href="#results-top">See the homes ↓</a>
+
+      <details class="hs__more">
+        <summary>More choices: another city, homes for rent, sort order</summary>
+        <div class="hs__step">
+          <h3>City</h3>
+          <div class="hs__choices">
+            {CITIES.map((c) => <a class="hs__choice" data-key="city" data-value={c === 'Markham' ? '' : c} href={`?city=${encodeURIComponent(c)}`}><strong>{c}</strong></a>)}
+          </div>
+          <h3>Buy or rent</h3>
+          <div class="hs__choices">
+            <a class="hs__choice" data-key="for" data-value="" href="?"><strong>To buy</strong></a>
+            <a class="hs__choice" data-key="for" data-value="lease" href="?for=lease"><strong>To rent</strong></a>
+          </div>
+          <h3>Show first</h3>
+          <div class="hs__choices">
+            <a class="hs__choice" data-key="sort" data-value="" href="?"><strong>Newest</strong></a>
+            <a class="hs__choice" data-key="sort" data-value="low" href="?sort=low"><strong>Lowest price</strong></a>
+            <a class="hs__choice" data-key="sort" data-value="high" href="?sort=high"><strong>Highest price</strong></a>
+          </div>
+        </div>
+      </details>
+
+      <div class="hs__summary" id="results-top">
+        <p id="status" aria-live="polite">Loading homes…</p>
+        <a class="btn btn--ghost" id="reset" href="/homes-for-sale/" hidden>Start over</a>
+      </div>
+      <ul class="hs__results" id="results"></ul>
+      <nav class="hs__pager" aria-label="More homes">
+        <a class="btn btn--ghost hs__big" id="prev" href="#" hidden>Previous homes</a>
+        <a class="btn btn--primary hs__big" id="next" href="#" hidden>Show more homes</a>
+      </nav>
+
+      <div class="prose hs__intro">
+        <h2>Downsizing in Markham</h2>
+        <p>
+          Most people we help downsize are looking for one of three things: a bungalow so everything is
+          on one floor, a condo apartment with an elevator or a townhouse with less to look after. The
+          buttons above find each one in a single press. See
+          <a href="/best-markham-neighbourhoods-for-downsizing/">where to downsize in Markham</a> for the
+          neighbourhoods with the most of these homes and our <a href="/downsizing-markham/">downsizing guide</a>
+          for the whole move, from pricing your house to moving day.
+        </p>
+      </div>
+
+      <IdxDisclaimer />
+    </div>
+  </section>
+</Page>
+
+<script>
+  import site from '../../data/site.json';
+  import { $, bindChoices, current, describe, el, factsLine, money, photo, syncChoices, withValue } from '../../scripts/home-search';
+
+  const KEYS = ['home', 'area', 'price', 'beds', 'city', 'for', 'sort', 'page'];
+  const FALLBACK = 'https://kirbychanandco.com/homes-for-sale-markham';
+  type Listing = { key: string; price: number; address: string | null; city: string; community: string | null; beds: number | null; baths: number | null; type: string | null; style: string | null; lease: boolean; brokerage: string | null; photo: string | null };
+
+  const card = (l: Listing) => {
+    const li = el('li', 'hs__card');
+    const a = el('a', 'hs__link') as HTMLAnchorElement;
+    a.href = '/homes-for-sale/listing/?id=' + encodeURIComponent(l.key);
+    const body = el('div', 'hs__body');
+    body.append(
+      el('p', 'hs__price', money(l.price) + (l.lease ? ' a month' : '')),
+      el('p', 'hs__addr', l.address || 'Address given on request'),
+      el('p', 'hs__where', [l.community, l.city].filter(Boolean).join(', ')),
+      el('p', 'hs__facts', factsLine(l)),
+      el('span', 'btn btn--primary hs__see', 'See photos and details'),
+      el('p', 'hs__brokerage', `Listed by ${l.brokerage || 'the listing brokerage'}. MLS® ${l.key}`),
+    );
+    a.append(photo(l.photo, l.address ? `${l.address}, ${l.city}` : `Home in ${l.city}`), body);
+    li.append(a);
+    return li;
+  };
+
+  let seq = 0;
+  const load = () => {
+    const p = current(KEYS);
+    const verb = p.get('for') === 'lease' ? 'for rent' : 'for sale';
+    const page = Math.max(1, Number(p.get('page')) || 1);
+    syncChoices(p);
+    if (p.get('city') || p.get('for') || p.get('sort')) (document.querySelector('.hs__more') as HTMLDetailsElement).open = true;
+    $('reset').hidden = ![...p.keys()].length;
+    $('status').textContent = 'Finding ' + describe(p, verb) + '…';
+    $('jump').textContent = 'See the homes ↓';
+    $('results').replaceChildren();
+    $('prev').hidden = $('next').hidden = true;
+    const mine = ++seq;
+    fetch('/api/listings?' + p)
+      .then((r) => r.json().then((body) => ({ ok: r.ok, body })))
+      .then(({ ok, body }) => {
+        if (mine !== seq) return;
+        if (!ok) throw body;
+        const { total, listings } = body as { total: number; listings: Listing[] };
+        if (!total) {
+          $('status').textContent = `There are no ${describe(p, verb)} right now. Try "Any price" or "Any" bedrooms. You can also call us at ${site.contact.phone} and we will watch for one.`;
+          return;
+        }
+        const from = (page - 1) * 24 + 1;
+        const to = from + listings.length - 1;
+        $('status').textContent = `${total.toLocaleString('en-CA')} ${describe(p, verb)}.` + (total > 24 ? ` Showing ${from} to ${to}.` : '');
+        $('jump').textContent = `See the ${total.toLocaleString('en-CA')} home${total === 1 ? '' : 's'} ↓`;
+        $('results').replaceChildren(...listings.map(card));
+        if (page > 1) { ($('prev') as HTMLAnchorElement).href = withValue(p, 'page', String(page - 1)); $('prev').hidden = false; }
+        if (to < total) { ($('next') as HTMLAnchorElement).href = withValue(p, 'page', String(page + 1)); $('next').hidden = false; }
+      })
+      .catch(() => {
+        if (mine !== seq) return;
+        $('status').textContent = `Homes could not be loaded just now. Please try again in a minute or call us at ${site.contact.phone}. `;
+        const a = el('a', null, 'Or search all Markham listings here.') as HTMLAnchorElement;
+        a.href = FALLBACK;
+        $('status').append(a);
+      });
+  };
+
+  bindChoices(load);
+</script>

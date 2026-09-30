@@ -1,0 +1,64 @@
+name: Build and check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: astro check, build, link check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        # npm ci when a lockfile is committed, npm install on the very first
+        # push before one exists.
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Fix or hold back agents' quick posts
+        # Same step as the Cloudflare build: one quick post must not fail the run.
+        run: node scripts/prepare-quick-posts.mjs --apply
+
+      - name: Check blog SEO rules
+        run: npm run check:blog
+
+      - name: Check translated guides
+        run: npm run check:translations
+
+      - name: Type and content check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+        env:
+          TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
+
+      - name: Check internal links
+        run: node scripts/check-links.mjs
+
+      - name: Check for thin pages
+        run: npm run check:thin
+
+      - name: Check house style
+        # Em dashes, en dashes, commas before and/or, American spellings.
+        run: npm run check:style

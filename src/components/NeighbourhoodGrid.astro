@@ -1,0 +1,140 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { neighbourhoodPath } from '../lib/format';
+import { neighbourhoodPhoto, photoAlt } from '../lib/photos';
+import { langFromPath, t } from '../i18n';
+
+interface Props {
+  limit?: number;
+  exclude?: string;
+  heading?: boolean;
+  /** Heading level for the card names, so each page keeps a correct outline. */
+  level?: 2 | 3;
+  /** Show the short introduction under each name (translated pages). */
+  detailed?: boolean;
+}
+const { limit, exclude, heading = true, detailed = false, level = 3 } = Astro.props;
+const Name = `h${level}` as 'h2' | 'h3';
+const lang = langFromPath(Astro.url.pathname);
+const dict = t(lang);
+const items = dict.neighbourhoods.items as Record<string, { tagline: string; body: string }>;
+
+let hoods = (await getCollection('neighbourhoods', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+if (exclude) hoods = hoods.filter((h) => h.id !== exclude);
+if (limit) hoods = hoods.slice(0, limit);
+---
+
+<ul class="hood-grid" role="list">
+  {
+    hoods.map((h) => {
+      // Cards show a thumbnail only once a real photo exists. No placeholder
+      // here, so the grid stays clean until photos arrive.
+      const thumb = neighbourhoodPhoto(h.id);
+      return (
+      <li>
+        <a class:list={['hood', thumb && 'hood--photo']} href={neighbourhoodPath(h.id)} hreflang={lang === 'en' ? undefined : 'en-CA'}>
+          {thumb && (
+            <Image
+              class="hood__img"
+              src={thumb}
+              alt={photoAlt(h.id) ?? ''}
+              widths={[320, 560]}
+              sizes="(min-width: 700px) 280px, 100vw"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+          <span class="hood__num">N&deg; {String(h.data.order).padStart(2, '0')}</span>
+          {heading ? <Name class="hood__name">{h.data.name}</Name> : <span class="hood__name">{h.data.name}</span>}
+          <span class="hood__line">{lang === 'en' ? h.data.personality : (items[h.id]?.tagline ?? h.data.personality)}</span>
+          {detailed && lang !== 'en' && items[h.id] && <span class="hood__body">{items[h.id].body}</span>}
+          <span class="hood__cta">{lang === 'en' ? `Explore ${h.data.name}` : dict.ui.englishGuide}</span>
+        </a>
+      </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .hood--photo {
+    padding-top: 0;
+    overflow: hidden;
+  }
+  .hood :global(.hood__img) {
+    display: block;
+    width: calc(100% + var(--sp-5) * 2);
+    max-width: none;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    margin: 0 calc(var(--sp-5) * -1) var(--sp-3);
+  }
+  .hood-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr));
+    gap: var(--sp-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .hood {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    height: 100%;
+    padding: var(--sp-5);
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color 0.2s var(--ease),
+      box-shadow 0.2s var(--ease),
+      transform 0.2s var(--ease);
+  }
+  .hood:hover {
+    border-color: var(--brass);
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+  }
+  .hood__num {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--brass);
+  }
+  .hood__name {
+    font-family: var(--font-heading);
+    font-size: var(--step-1);
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0;
+  }
+  .hood__line {
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .hood__body {
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+  .hood__cta {
+    margin-top: var(--sp-3);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand);
+  }
+  .hood:hover .hood__cta {
+    color: var(--brand-dark);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+</style>

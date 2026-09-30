@@ -1,0 +1,68 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props { variant?: 'light' | 'dark'; class?: string }
+const { variant = 'dark', class: cls = '' } = Astro.props;
+
+// Drop-in logo. Put the files in src/assets/logo/:
+//   logo.svg or logo.png              used on light backgrounds (header)
+//   logo-light.svg or logo-light.png  used on the dark footer
+// Until they exist the CSS wordmark below is shown.
+const logos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/logo/*.{svg,png,webp}', {
+  eager: true,
+});
+const find = (base: string) =>
+  Object.entries(logos).find(([p]) => p.replace(/^.*\//, '').replace(/\.[^.]+$/, '') === base)?.[1]
+    .default;
+const file = variant === 'light' ? (find('logo-light') ?? find('logo')) : find('logo');
+---
+{file ? (
+  <Image class:list={['logo-img', cls]} src={file} alt="Kirby Chan & Co. Real Estate Team" height={44} densities={[1, 2]} loading="eager" />
+) : (
+<span class:list={['logo', `logo--${variant}`, cls]}>
+  <span class="logo__mark" aria-hidden="true">KC</span>
+  <span class="logo__text">
+    <span class="logo__name">Kirby Chan &amp; Co.</span>
+    <span class="logo__sub">Real Estate Team | Markham</span>
+  </span>
+</span>
+)}
+
+<style>
+  :global(.logo-img) { display: block; height: 44px; width: auto; }
+  .logo { display: inline-flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+  .logo__mark {
+    display: grid;
+    place-items: center;
+    width: 38px; height: 38px;
+    flex: 0 0 38px;
+    border: 1px solid var(--brass);
+    color: var(--brass);
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    border-radius: 2px;
+  }
+  .logo__text { display: flex; flex-direction: column; line-height: 1.15; }
+  .logo__name {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .logo__sub {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .logo--light .logo__name { color: var(--text-on-dark); }
+  .logo--light .logo__sub { color: var(--text-on-dark-muted); }
+  .logo--dark .logo__name { color: var(--ink); }
+  @media (max-width: 420px) {
+    .logo__sub { font-size: 0.55rem; letter-spacing: 0.1em; }
+    .logo__name { font-size: 0.95rem; }
+  }
+</style>

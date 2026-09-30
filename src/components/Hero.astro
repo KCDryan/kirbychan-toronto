@@ -1,0 +1,94 @@
+---
+import site from '../data/site.json';
+import Photo from './Photo.astro';
+import { langFromPath, localePath, t } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+const dict = t(lang);
+
+const searchHref = site.links.loftySearch || '/contact/';
+const searchExternal = searchHref.startsWith('http');
+---
+
+<section class="hero">
+  <div class="wrap hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow">{dict.home.eyebrow}</p>
+      <h1>{dict.home.h1}</h1>
+      <p class="lede">{dict.home.lede}</p>
+      <div class="hero__actions">
+        <a
+          class="btn btn--primary"
+          href={searchHref}
+          rel={searchExternal ? 'noopener' : undefined}
+          target={searchExternal ? '_blank' : undefined}
+        >
+          {dict.ui.nav.searchHomes}{
+            searchExternal && <span class="visually-hidden"> ({dict.ui.opensNewTab})</span>
+          }
+        </a>
+        {lang !== 'en' && <a class="btn btn--brass" href={localePath(lang, '/contact/')}>{dict.home.ctaContact}</a>}
+        <a class="btn btn--ghost" href={localePath(lang, '/neighbourhoods/')}>{dict.home.ctaNeighbourhoods}</a>
+      </div>
+    </div>
+    <div class="hero__media">
+      <Photo
+        name="home-hero"
+        alt={dict.home.photoAlt}
+        label="Photo of Kirby Chan"
+        ratio="873 / 1080"
+        sizes="(min-width: 900px) 460px, 80vw"
+        priority
+        cutout
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 85% 10%, rgba(31, 80, 69, 0.1), transparent 60%),
+      var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero__inner {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: center;
+    padding-block: clamp(3rem, 1.8rem + 6vw, 6rem);
+  }
+  .hero .lede {
+    margin-top: var(--sp-5);
+    max-width: 52ch;
+  }
+  .hero h1 {
+    max-width: 18ch;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-6);
+  }
+  .hero__media {
+    max-width: 380px;
+    width: 100%;
+    justify-self: center;
+    /* The photo is cut off at the waist, so it sits flush on the section edge. */
+    align-self: end;
+    margin-bottom: calc(-1 * clamp(3rem, 1.8rem + 6vw, 6rem));
+  }
+
+  @media (min-width: 900px) {
+    .hero__inner {
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: var(--sp-8);
+    }
+    .hero__media {
+      justify-self: end;
+      max-width: 460px;
+    }
+  }
+</style>

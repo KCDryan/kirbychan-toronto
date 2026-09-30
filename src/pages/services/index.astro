@@ -1,0 +1,30 @@
+---
+import Page from '../../layouts/Page.astro';
+import ServiceGrid from '../../components/ServiceGrid.astro';
+import Cta from '../../components/Cta.astro';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services/' },
+];
+---
+
+<Page
+  title="How We Work | Kirby Chan & Co. Markham"
+  description="How we help in Markham: buying, selling, luxury, relocation, downsizing, first-time buyers, new construction, estate sales and separation, each explained plainly."
+  eyebrow="How we help"
+  h1="Most people arrive with a situation, not a search"
+  accent="situation"
+  lede="A job that starts in eight weeks. A parent's house that has to be sold. A condo that has become too small. The work is different in each case, so these pages are written one situation at a time."
+  crumbs={crumbs}
+>
+  <section class="section">
+    <div class="wrap">
+      <ServiceGrid level={2} />
+    </div>
+  </section>
+
+
+  <Cta />
+</Page>
+

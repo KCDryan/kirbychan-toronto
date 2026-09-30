@@ -1,0 +1,47 @@
+# Cloudflare Pages redirects. One rule per line, first match wins.
+# Format: /source /destination [status]
+
+# Neighbourhood pillar pages live at /[name]-markham/. These catch the URL
+# shapes people type or that older links may point at.
+/unionville/ /unionville-markham/ 301
+/markham-village/ /markham-village-markham/ 301
+/cornell/ /cornell-markham/ 301
+/berczy-village/ /berczy-village-markham/ 301
+/berczy/ /berczy-village-markham/ 301
+/cathedraltown/ /cathedraltown-markham/ 301
+/wismer/ /wismer-markham/ 301
+/greensborough/ /greensborough-markham/ 301
+/angus-glen/ /angus-glen-markham/ 301
+/box-grove/ /box-grove-markham/ 301
+/thornhill/ /thornhill-markham/ 301
+/milliken-mills/ /milliken-mills-markham/ 301
+/milliken/ /milliken-mills-markham/ 301
+/downtown/ /downtown-markham/ 301
+/neighbourhoods/unionville/ /unionville-markham/ 301
+/neighborhoods/ /neighbourhoods/ 301
+
+# Common alternates
+/articles/ /blog/ 301
+/articles/* /blog/ 301
+/unionville-vs-markham-village/ /blog/unionville-vs-markham-village/ 301
+/blogs/ /blog/ 301
+/map/ /map-of-markham/ 301
+/team/ /about/ 301
+/listings/ /contact/ 301
+/search/ /contact/ 302
+/case-studies/ /client-stories/ 301
+/case-studies/* /client-stories/ 301
+/services/services/new-construction/ /new-construction-markham/ 301
+/new-construction/ /new-construction-markham/ 301
+/pre-construction/ /new-construction-markham/ 301
+/services/luxury/ /luxury-homes-markham/ 301
+/services/estate-sales/ /selling-an-estate-home-markham/ 301
+/services/investors/ /investment-property-markham/ 301
+/services/relocation/ /relocating-to-markham/ 301
+/services/upsizing/ /upsizing-markham/ 301
+/services/separation-and-divorce/ /selling-a-home-after-separation-markham/ 301
+/downsizing/ /downsizing-markham/ 301
+/first-time-buyers/ /first-time-home-buyers-markham/ 301
+/services/first-time-buyers/ /first-time-home-buyers-markham/ 301
+/first-time-home-buyers/ /first-time-home-buyers-markham/ 301
+/downsizing/ /downsizing-markham/ 301

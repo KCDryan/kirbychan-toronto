@@ -1,0 +1,33 @@
+{
+  "note": "Every figure here must be checkable against a public source. Put the number in the value field and the source in the source field. Nothing on this band may be an estimate. Figures last checked 2026-09-17.",
+  "points": [
+    {
+      "value": "4",
+      "unit": "",
+      "label": "GO stations inside Markham",
+      "body": "Four Stouffville line stations sit inside Markham: Unionville, Centennial, Markham and Mount Joy. Milliken GO, just south of Steeles, is in Toronto.",
+      "source": "GO Transit station pages"
+    },
+    {
+      "value": "41",
+      "unit": "min",
+      "label": "Unionville GO to Union Station",
+      "body": "Scheduled weekday morning train time on the Stouffville line, not a drive estimate.",
+      "source": "GO Transit Stouffville line timetable, September 2026"
+    },
+    {
+      "value": "2",
+      "unit": "",
+      "label": "Public school boards",
+      "body": "York Region District School Board and York Catholic District School Board both serve Markham and boundaries are reviewed periodically. Always confirm the catchment for a specific address before you buy.",
+      "source": "YRDSB and YCDSB"
+    },
+    {
+      "value": "8",
+      "unit": "",
+      "label": "Public library branches",
+      "body": "Aaniin, Angus Glen, Cornell, Markham Village, Milliken Mills, Thornhill Community Centre, Thornhill Village and Unionville.",
+      "source": "Markham Public Library"
+    }
+  ]
+}

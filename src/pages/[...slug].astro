@@ -1,0 +1,47 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import { getCollection, render } from 'astro:content';
+import NeighbourhoodLayout from '../layouts/NeighbourhoodLayout.astro';
+import GuideLayout from '../layouts/GuideLayout.astro';
+
+/**
+ * Two page types share the site root:
+ *   /[neighbourhood]-markham/  the twelve pillar pages
+ * Static routes such as /buyers/ always win over this catch-all, so a page file
+ * in src/pages is never shadowed by a content slug.
+ */
+export const getStaticPaths = (async () => {
+  const hoods = await getCollection('neighbourhoods', ({ data }) => !data.draft);
+
+  // Translated guides (<slug>.<lang>.mdx) are served by [lang]/[slug].astro instead.
+  const guides = await getCollection('guides', (e) => !e.data.draft && !e.id.includes('/'));
+
+  return [
+    ...hoods.map((entry) => ({
+      params: { slug: `${entry.id}-markham` },
+      props: { kind: 'neighbourhood' as const, entry },
+    })),
+    ...guides.map((entry) => ({
+      params: { slug: entry.id },
+      props: { kind: 'guide' as const, entry },
+    })),
+  ];
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const props = Astro.props as Props;
+const { Content, headings } = await render(props.entry);
+---
+
+{
+  props.kind === 'guide' ? (
+    <GuideLayout entry={props.entry} headings={headings}>
+      <Content />
+    </GuideLayout>
+  ) : (
+    <NeighbourhoodLayout entry={props.entry}>
+      <Content />
+    </NeighbourhoodLayout>
+  )
+}

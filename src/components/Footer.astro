@@ -1,0 +1,344 @@
+---
+import { getCollection } from 'astro:content';
+import Logo from './Logo.astro';
+import site from '../data/site.json';
+import nav from '../data/nav.json';
+import { neighbourhoodPath, isTodo } from '../lib/format';
+import { servicePath } from '../lib/guides';
+import { LANGS, LOCALES, langFromPath, localePath, switchHref, t } from '../i18n';
+
+const path = Astro.url.pathname;
+const lang = langFromPath(path);
+const dict = t(lang);
+const L = (p: string) => localePath(lang, p);
+const translatedLinks = [
+  { label: dict.ui.nav.home, href: L('/') },
+  { label: dict.ui.nav.neighbourhoods, href: L('/neighbourhoods/') },
+  { label: dict.ui.nav.services, href: L('/services/') },
+  { label: dict.ui.nav.about, href: L('/about/') },
+  { label: dict.ui.nav.contact, href: L('/contact/') },
+];
+const legalLinks = [
+  { label: dict.ui.footer.privacy, href: '/privacy/' },
+  { label: dict.ui.footer.terms, href: '/terms/' },
+  { label: dict.ui.footer.accessibility, href: '/accessibility/' },
+];
+
+const hoods = (await getCollection('neighbourhoods', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const socials = (
+  [
+    ['Instagram', site.social.instagram],
+    ['Facebook', site.social.facebook],
+    ['YouTube', site.social.youtube],
+    ['LinkedIn', site.social.linkedin],
+  ] as const
+).filter(([, url]) => url && url.length > 0);
+
+const year = new Date().getFullYear();
+const brokerageMissing = isTodo(site.brokerage.legalName);
+---
+
+<footer class="site-footer on-dark">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <Logo variant="light" />
+        <p class="footer__exp">{site.brokerage.legalName}</p>
+        <p class="footer__tag">
+          {lang === 'en' ? 'Markham, neighbourhood by neighbourhood. A guide to every neighbourhood, figures with sources and a team that answers the phone.' : dict.meta.home.description}
+        </p>
+        {
+          socials.length > 0 && (
+            <ul class="footer__social">
+              {socials.map(([label, url]) => (
+                <li>
+                  <a href={url} rel="noopener noreferrer" target="_blank">
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      <nav class="footer__col" aria-label="Neighbourhoods">
+        <h2>{lang === 'en' ? dict.ui.footer.neighbourhoods : dict.ui.nav.englishGuides}</h2>
+        <ul>
+          {hoods.map((h) => <li><a href={neighbourhoodPath(h.id)}>{h.data.name}</a></li>)}
+          <li><a href="/map-of-markham/">Map of Markham</a></li>
+          <li><a href="/markham-vs-toronto/">Markham vs Toronto</a></li>
+          <li><a href="/markham-vs-richmond-hill/">Markham vs Richmond Hill</a></li>
+          <li><a href="/markham-vs-vaughan/">Markham vs Vaughan</a></li>
+        </ul>
+      </nav>
+
+      {
+        lang === 'en' ? (
+          <nav class="footer__col" aria-label="Services">
+            <h2>Services</h2>
+            <ul>
+              <li><a href="/buyers/">Buyers</a></li>
+              <li><a href="/sellers/">Sellers</a></li>
+              <li><a href="/land-transfer-tax-calculator-markham/">Land Transfer Tax Calculator</a></li>
+              <li><a href="/mortgage-calculator-markham/">Mortgage Calculator</a></li>
+              {services.map((s) => <li><a href={servicePath(s.id)}>{s.data.name}</a></li>)}
+            </ul>
+          </nav>
+        ) : (
+          <nav class="footer__col" aria-label={dict.ui.footer.explore}>
+            <h2>{dict.ui.footer.explore}</h2>
+            <ul>
+              {translatedLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+            </ul>
+          </nav>
+        )
+      }
+
+      <nav class="footer__col" aria-label="Connect">
+        <h2>{lang === 'en' ? 'Connect' : dict.ui.nav.contact}</h2>
+        <ul>
+          {lang === 'en' && nav.footer.connect.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          <li><a href={site.contact.phoneHref}>{site.contact.phone}</a></li>
+          <li><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>
+          <li>
+            <a href={site.parentSite} rel="noopener noreferrer" target="_blank">
+              kirbychanandco.com
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <nav class="footer__langs" aria-label={dict.ui.footer.languages}>
+      <h2>{dict.ui.footer.languages}</h2>
+      <ul>
+        {
+          LANGS.map((l) => (
+            <li>
+              <a
+                href={switchHref(path, l)}
+                hreflang={LOCALES[l].hreflang}
+                lang={LOCALES[l].htmlLang}
+                aria-current={l === lang ? 'true' : undefined}
+              >
+                {LOCALES[l].native}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="footer__legal">
+      <div class="footer__disclosure">
+        <p class="footer__brokerage">
+          <strong>{site.name}</strong>
+        </p>
+        {
+          brokerageMissing ? (
+            <p>
+              <span class="todo">TODO: add the brokerage name in src/data/site.json</span>
+            </p>
+          ) : (
+            <p class="footer__brokerage-name">
+              {dict.ui.footer.brokerage}: <strong>{site.brokerage.legalName}</strong>
+            </p>
+          )
+        }
+        <p>
+          {site.brokerage.registrant}, {site.brokerage.registrationCategory}
+        </p>
+        <p>
+          Office: {site.office.street}, {site.office.city}, {site.office.region}{' '}
+          {site.office.postalCode}. Serving Markham and the surrounding York Region communities.
+        </p>
+        <p>
+          Market figures shown on this site are general information drawn from Toronto Regional
+          Real Estate Board data for the stated period. They are not an appraisal, not an opinion
+          of value for any specific property and not guaranteed. Nothing here is legal, tax,
+          mortgage or investment advice. Speak to a qualified professional before you act.
+        </p>
+        <p>
+          Not intended to solicit buyers or sellers currently under contract with another
+          brokerage.
+        </p>
+      </div>
+      <div class="footer__meta">
+        <p>&copy; {year} {site.name}</p>
+        <ul>
+          {legalLinks.map((l) => <li><a href={l.href} hreflang={lang === 'en' ? undefined : 'en-CA'}>{l.label}{lang !== 'en' && ` (${dict.ui.footer.inEnglish})`}</a></li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ground);
+    color: var(--text-on-dark-muted);
+    padding-block: var(--sp-8) var(--sp-6);
+    font-size: 0.88rem;
+  }
+  .footer__top {
+    display: grid;
+    gap: var(--sp-7);
+    grid-template-columns: 1fr;
+    padding-bottom: var(--sp-7);
+    border-bottom: 1px solid var(--rule-dark);
+  }
+  .footer__exp {
+    margin-top: var(--sp-3);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-on-dark);
+  }
+  .footer__brokerage-name strong {
+    color: var(--text-on-dark);
+    font-weight: 500;
+  }
+  .footer__tag {
+    margin-top: var(--sp-4);
+    max-width: 34ch;
+    color: var(--text-on-dark-muted);
+    line-height: 1.6;
+  }
+  .footer__social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    list-style: none;
+    margin: var(--sp-5) 0 0;
+    padding: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .footer__col h2 {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: var(--sp-4);
+  }
+  .footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .site-footer a {
+    color: var(--text-on-dark-muted);
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    color: var(--brass);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .footer__langs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1.2rem;
+    padding-block: var(--sp-5);
+    border-bottom: 1px solid var(--rule-dark);
+  }
+  .footer__langs h2 {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+  .footer__langs ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer__langs a {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--rule-dark);
+    border-radius: 999px;
+    font-size: 0.85rem;
+  }
+  .site-footer .footer__langs a:hover {
+    text-decoration: none;
+    border-color: var(--brass);
+  }
+  .site-footer .footer__langs a[aria-current='true'] {
+    background: var(--brass);
+    border-color: var(--brass);
+    color: var(--ground);
+  }
+  .footer__legal {
+    padding-top: var(--sp-6);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    color: #8fa39c;
+  }
+  .footer__disclosure {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 90ch;
+  }
+  .footer__brokerage strong {
+    color: var(--text-on-dark);
+    font-weight: 500;
+  }
+  .todo {
+    display: inline-block;
+    margin-inline-start: 0.4rem;
+    padding: 0.1rem 0.5rem;
+    border: 1px dashed var(--brass);
+    border-radius: 2px;
+    color: var(--brass);
+  }
+  .footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--sp-6);
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--rule-dark);
+  }
+  .footer__meta ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 620px) {
+    .footer__top {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1000px) {
+    .footer__top {
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    }
+  }
+</style>

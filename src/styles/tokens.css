@@ -1,0 +1,195 @@
+/* ==========================================================================
+   Kirby Chan & Co. | Markham - design tokens
+   Evergreen sister palette to the crimson kirbychanandco.com brand.
+
+   Contrast (WCAG 2.1 AA, verified):
+     ink #1B2320 on paper #F8F8F5          15.1:1  body text
+     muted #4F5E58 on paper                 6.4:1  secondary text
+     brand #1F5045 on paper / white     8.6 / 9.2:1  links, eyebrows, italic accents
+     paper on brand                          8.6:1  primary button text
+     brass #C2A06A on ground #10251F         6.5:1  small accents on the dark footer
+     ground on brass                         6.5:1  brass button text
+     brass on paper                          2.3:1  FAILS. Decorative only on light
+                                                    grounds: rules, numerals, borders.
+   ========================================================================== */
+
+:root {
+  /* brand */
+  --brand: #1f5045;
+  --brand-dark: #163c34;
+  --brass: #c2a06a;
+  --brass-soft: #e0cda8;
+  --ground: #10251f;
+  --ground-lift: #1b3a32;
+  --paper: #f8f8f5;
+  --mist: #ecf1ee;
+  --ink: #1b2320;
+
+  /* semantic */
+  --bg: var(--paper);
+  --bg-alt: var(--mist);
+  --bg-dark: var(--ground);
+  --text: var(--ink);
+  --text-muted: #4f5e58;
+  --text-on-dark: #eef3f0;
+  --text-on-dark-muted: #a9bbb4;
+  --link: var(--brand);
+  --link-hover: var(--brand-dark);
+  --accent: var(--brass);
+  --rule: #d6dfda;
+  --rule-dark: #2a4a41;
+  --focus: #1f5045;
+
+  /* type */
+  --font-heading: 'Montserrat', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-body: 'Lato', 'Segoe UI', Helvetica, Arial, sans-serif;
+
+  /* fluid type scale, 320px to 1280px */
+  --step--1: clamp(0.83rem, 0.80rem + 0.13vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.19vw, 1.09rem);
+  --step-1: clamp(1.2rem, 1.13rem + 0.35vw, 1.42rem);
+  --step-2: clamp(1.44rem, 1.32rem + 0.6vw, 1.84rem);
+  --step-3: clamp(1.73rem, 1.53rem + 0.98vw, 2.39rem);
+  --step-4: clamp(2.07rem, 1.76rem + 1.55vw, 3.11rem);
+  --step-5: clamp(2.49rem, 2.02rem + 2.36vw, 4.04rem);
+
+  /* space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4rem;
+  --sp-9: 6rem;
+  --section-y: clamp(3rem, 1.8rem + 6vw, 6rem);
+
+  /* layout */
+  --wrap: 1180px;
+  --wrap-narrow: 760px;
+  --gutter: clamp(1.15rem, 0.8rem + 1.8vw, 2.5rem);
+
+  /* misc */
+  --radius: 2px;
+  --radius-lg: 4px;
+  --shadow: 0 1px 2px rgba(16, 37, 31, 0.05), 0 8px 24px rgba(16, 37, 31, 0.07);
+  --shadow-lift: 0 2px 4px rgba(16, 37, 31, 0.07), 0 16px 40px rgba(16, 37, 31, 0.11);
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Self hosted fonts. Montserrat for headings and Lato for body text, the same
+   pair used on kirbychanandco.com. Both SIL Open Font License 1.1. Served from
+   this origin, so there is no third party font request.
+   -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/lato-400-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/lato-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/lato-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/lato-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/montserrat-400-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/montserrat-400-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* --------------------------------------------------------------------------
+   Translated pages. Montserrat and Lato cover Latin text only, so each script
+   falls back to a font made for it. Vazirmatn (Persian) and the Cyrillic cut
+   of Montserrat are self hosted under the SIL Open Font License 1.1. Chinese,
+   Japanese and Greek use the high quality system fonts every platform ships.
+   -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-arabic-400-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-arabic-700-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/montserrat-cyrillic-ext-wght-normal.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/montserrat-cyrillic-wght-normal.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+:root:lang(zh) {
+  --font-heading: 'Montserrat', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Source Han Sans SC', sans-serif;
+  --font-body: 'Lato', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Source Han Sans SC', sans-serif;
+}
+:root:lang(ja) {
+  --font-heading: 'Montserrat', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', sans-serif;
+  --font-body: 'Lato', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', sans-serif;
+}
+:root:lang(fa) {
+  --font-heading: 'Montserrat', 'Vazirmatn', Tahoma, sans-serif;
+  --font-body: 'Lato', 'Vazirmatn', Tahoma, sans-serif;
+}
+:root:lang(ru) {
+  --font-heading: 'Montserrat', 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-body: 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+:root:lang(el) {
+  --font-heading: 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+}
