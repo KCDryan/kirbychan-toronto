@@ -196,7 +196,9 @@ const crumbs = [
         const off = body.hidden as number;
         $('status').textContent = pins.length
           ? `${pins.length.toLocaleString('en-CA')} ${describe(p, verb)} on the map.` + (off ? ` ${off.toLocaleString('en-CA')} more ${off === 1 ? 'is' : 'are'} in the list, without a mapped address.` : '')
-          : `There are no ${describe(p, verb)} on the map right now. Try "Any price" or "All of Toronto".`;
+          : body.total
+            ? `The ${(body.total as number).toLocaleString('en-CA')} ${describe(p, verb, body.total === 1)} ${body.total === 1 ? 'is' : 'are'} still being placed on the map. Please see them in the list for now.`
+            : `There are no ${describe(p, verb)} on the map right now. Try "Any price" or "All of Toronto".`;
         $('jump').textContent = pins.length ? `See the ${pins.length.toLocaleString('en-CA')} homes on the map ↓` : 'See the map ↓';
       })
       .catch((err: { error?: string }) => {
