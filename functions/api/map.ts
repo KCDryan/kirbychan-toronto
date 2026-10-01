@@ -27,8 +27,8 @@ interface Context {
   waitUntil(p: Promise<unknown>): void;
 }
 
-/** Off until five test addresses come back right and the owner approves the first full lookup. */
-const LOOKUPS_ON = false;
+/** On since 2026-10-01: five test addresses came back rooftop inside Toronto and the owner chose the free pace. */
+const LOOKUPS_ON = true;
 /** Below this Geocodio accuracy the point is a street or area guess, not the house, so no pin. */
 const MIN_ACCURACY = 0.8;
 /** Most new lookups one request starts. */
