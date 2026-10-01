@@ -11,8 +11,12 @@
  * them; new pins appear on a later visit. The daily listing-counts workflow calls this endpoint so
  * new listings are placed each morning.
  *
- * Geocodio gives 2,500 lookups a day free, then charges. GEOCODIO_DAILY_LIMIT (default 2,400) caps
- * what this site spends in any 24 hours; raise it only to pay for a faster first fill.
+ * Geocodio gives 2,500 lookups a day free. The key is shared with kirbychanmarkham.com, so this site
+ * spends at most GEOCODIO_DAILY_LIMIT (default 2,000) in any 24 hours, leaving room for Markham's.
+ * The owner wants the free lookups only: never raise it past the free quota.
+ *
+ * With no city or neighbourhood chosen the map covers the whole GTA (GTA in src/lib/proptx.ts).
+ * Toronto addresses are looked up first, so the view the map opens on fills in first.
  */
 import { MAP_PAGE, PROPTX_BASE, mapQuery } from '../../src/lib/proptx';
 import type { D1 } from '../../src/lib/vow';
@@ -29,8 +33,10 @@ const LOOKUPS_ON = false;
 const MIN_ACCURACY = 0.8;
 /** Most new lookups one request starts. */
 const MAX_LOOKUPS = 1000;
-/** 12 pages of 1,000 covers every Toronto search with room to spare, well under the subrequest limit. */
-const MAX_PAGES = 12;
+/** 40 pages of 1,000 covers every GTA search, inside the 50 subrequests a request may make. */
+const MAX_PAGES = 40;
+/** PropTx pages fetched at once. */
+const AT_ONCE = 8;
 /** Anything outside southern Ontario is a wrong match (for example a same-named US street). */
 const ONTARIO = { s: 41.6, n: 46.5, w: -83.2, e: -74.3 };
 type Geo = { key: string; lat: number | null; lng: number | null };
@@ -152,7 +158,10 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
     const first = await page(0);
     total = first['@odata.count'] ?? first.value.length;
     const pages = Math.min(Math.ceil(total / MAP_PAGE), MAX_PAGES);
-    const rest = await Promise.all(Array.from({ length: Math.max(pages - 1, 0) }, (_, i) => page(i + 1)));
+    const rest: Awaited<ReturnType<typeof page>>[] = [];
+    for (let n = 1; n < pages; n += AT_ONCE) {
+      rest.push(...(await Promise.all(Array.from({ length: Math.min(AT_ONCE, pages - n) }, (_, i) => page(n + i)))));
+    }
     rows = [first, ...rest].flatMap((p) => p.value);
   } catch (e) {
     console.error(String(e));
@@ -162,12 +171,16 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
   // Seller choices first: a hidden listing or a hidden address never gets a pin or a lookup.
   const shown = rows.filter((r) => r.InternetEntireListingDisplayYN !== false && r.InternetAddressDisplayYN !== false && geocodeAddress(r));
   const known = await stored(env.VOW_DB, shown.map((r) => String(r.ListingKey)));
-  const todo = shown.filter((r) => !known.has(String(r.ListingKey))).map((r) => ({ key: String(r.ListingKey), address: geocodeAddress(r)! }));
+  const isToronto = (r: Record<string, unknown>) => String(r.City ?? '').startsWith('Toronto');
+  const todo = shown
+    .filter((r) => !known.has(String(r.ListingKey)))
+    .sort((a, b) => Number(isToronto(b)) - Number(isToronto(a)))
+    .map((r) => ({ key: String(r.ListingKey), address: geocodeAddress(r)! }));
 
   let pending = false;
   if (LOOKUPS_ON && env.GEOCODIO_API_KEY && todo.length) {
     const db = env.VOW_DB;
-    const limit = Number(env.GEOCODIO_DAILY_LIMIT) || 2400;
+    const limit = Math.min(Number(env.GEOCODIO_DAILY_LIMIT) || 2000, 2400);
     const room = Math.min(MAX_LOOKUPS, limit - (await spentToday(db)));
     if (room > 0) {
       pending = true;

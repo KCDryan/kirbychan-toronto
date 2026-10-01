@@ -125,11 +125,25 @@ export function searchQuery(params: URLSearchParams): string {
   });
 }
 
-/** Map pins: every match, lightly, a page of 1,000 at a time in a fixed order (PropTx's nextLink fails). */
+/** The Greater Toronto Area: Toronto and the municipalities of Durham, Halton, Peel and York. */
+export const GTA = [
+  'Toronto',
+  'Ajax', 'Brock', 'Clarington', 'Oshawa', 'Pickering', 'Scugog', 'Uxbridge', 'Whitby',
+  'Burlington', 'Halton Hills', 'Milton', 'Oakville',
+  'Brampton', 'Caledon', 'Mississauga',
+  'Aurora', 'East Gwillimbury', 'Georgina', 'King', 'Markham', 'Newmarket', 'Richmond Hill', 'Vaughan', 'Whitchurch-Stouffville',
+];
+
+/**
+ * Map pins: every match, lightly, a page of 1,000 at a time in a fixed order (PropTx's nextLink fails).
+ * With no city or neighbourhood chosen the map covers the whole GTA; it opens on Toronto.
+ */
 export const MAP_PAGE = 1000;
 export function mapQuery(params: URLSearchParams, page: number): string {
   const lease = params.get('for') === 'lease';
-  const f = ["ContractStatus eq 'Available'", "startswith(PropertyType,'Residential')", `TransactionType eq ${q(lease ? 'For Lease' : 'For Sale')}`, ...shared(params, 'ListPrice')];
+  const gta = !params.get('city') && !params.get('area');
+  const where = shared(params, 'ListPrice').map((x) => (gta && x === cityFilter(HOME_CITY) ? `(${GTA.map(cityFilter).join(' or ')})` : x));
+  const f = ["ContractStatus eq 'Available'", "startswith(PropertyType,'Residential')", `TransactionType eq ${q(lease ? 'For Lease' : 'For Sale')}`, ...where];
   return odata({
     $filter: f.join(' and '),
     $select: 'ListingKey,ListPrice,BedroomsTotal,BathroomsTotalInteger,PropertySubType,ArchitecturalStyle,UnparsedAddress,StreetNumber,StreetName,StreetSuffix,StreetDirSuffix,City,StateOrProvince,PostalCode,InternetEntireListingDisplayYN,InternetAddressDisplayYN',
@@ -228,5 +242,9 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   if (cleanKey("N1' or 1") !== null || cleanKey('n12345678') !== 'N12345678') throw new Error('key');
   const p = photos([{ MediaURL: 'b', Order: 2 }, { MediaURL: 'a-s', Order: 1, ImageSizeDescription: 'Thumbnail' }, { MediaURL: 'a-l', Order: 1, ImageSizeDescription: 'Large' }]);
   if (p.join() !== 'a-l,b') throw new Error(p.join());
+  const gta = new URLSearchParams(mapQuery(new URLSearchParams('home=condo'), 0)).get('$filter')!;
+  if (!gta.includes("(startswith(City,'Toronto') or City eq 'Ajax'") || !gta.includes("City eq 'Markham'")) throw new Error('map gta ' + gta);
+  const hood = new URLSearchParams(mapQuery(new URLSearchParams('area=leaside'), 1)).get('$filter')!;
+  if (hood.includes("City eq 'Ajax'") || !hood.includes("CityRegion in ('Leaside')")) throw new Error('map area ' + hood);
   console.log('proptx ok');
 }
