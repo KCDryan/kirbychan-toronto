@@ -3,7 +3,8 @@ import Page from '../../layouts/Page.astro';
 import IdxDisclaimer from '../../components/IdxDisclaimer.astro';
 import site from '../../data/site.json';
 import HomeChoices from '../../components/HomeChoices.astro';
-import { CITIES } from '../../lib/proptx';
+import { AREAS, CITIES } from '../../lib/proptx';
+import { TYPE_PAGES } from '../../lib/landing';
 import '../../styles/home-search.css';
 
 const crumbs = [
@@ -83,6 +84,9 @@ const crumbs = [
           shows where those homes are concentrated. The <a href="/downsizing-toronto/">Toronto downsizing guide</a>
           covers the sale, the purchase and the move in order.
         </p>
+        <h2>Browse Toronto homes for sale</h2>
+        <p><strong>By type of home:</strong> {Object.entries(TYPE_PAGES).map(([s, t], i) => <>{i > 0 && ' · '}<a href={`/homes-for-sale/${s}/`}>{t.label}</a></>)}</p>
+        <p><strong>By neighbourhood:</strong> {Object.entries(AREAS).map(([s, a], i) => <>{i > 0 && ' · '}<a href={`/homes-for-sale/${s}/`}>{a.label}</a></>)}</p>
       </div>
 
       <IdxDisclaimer />
@@ -121,7 +125,7 @@ const crumbs = [
       el('p', 'hs__where', [l.community, l.city].filter(Boolean).join(', ')),
       factsRow(l),
       el('span', 'btn btn--primary hs__see', 'See photos and details'),
-      el('p', 'hs__brokerage', `Listed by ${l.brokerage || 'the listing brokerage'}. MLS® ${l.key}`),
+      el('p', 'hs__brokerage', `Listed by ${(l.brokerage || 'the listing brokerage').replace(/\.$/, '')}. MLS® ${l.key}`),
     );
     a.append(media(l.photo, l.address ? `${l.address}, ${l.city}` : `Home in ${l.city}`, homeType(l)), body);
     li.append(a);

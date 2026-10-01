@@ -5,7 +5,7 @@
  * by .github/workflows/refresh-listing-counts.yml, which saves it to src/data/listing-counts.json
  * so the counts are in the static pages. Counts only: no prices or other listing data.
  */
-import { HOME_CITY, PROPTX_BASE, areaOf, cityFilter, homeKinds } from '../../src/lib/proptx';
+import { HOME_CITY, PROPTX_BASE, areaOf, cityFilter, homeKinds, homesOnly } from '../../src/lib/proptx';
 
 interface Context {
   request: Request;
@@ -13,7 +13,7 @@ interface Context {
   waitUntil(p: Promise<unknown>): void;
 }
 
-const FILTER = `ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and ${cityFilter(HOME_CITY)}`;
+const FILTER = `ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and ${cityFilter(HOME_CITY)} and ${homesOnly}`;
 
 export async function onRequestGet({ request, env, waitUntil }: Context): Promise<Response> {
   if (!env.PROPTX_IDX_TOKEN) return new Response('{"error":"not-configured"}', { status: 503 });

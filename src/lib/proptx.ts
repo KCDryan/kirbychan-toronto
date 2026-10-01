@@ -31,6 +31,13 @@ export const HOMES: Record<string, { label: string; hint: string; filter: string
   house: { label: 'Houses', hint: 'Detached and semi-detached', filter: "(PropertySubType eq 'Detached' or startswith(PropertySubType,'Semi-Detached'))" },
 };
 
+/**
+ * Residential listings that are not homes. Left out of every search and count that has no home type
+ * chosen, so "homes for sale" never lists a parking space, a locker or a vacant lot.
+ */
+export const NOT_HOMES = ['Parking Space', 'Locker', 'Vacant Land'];
+export const homesOnly = NOT_HOMES.map((t) => `PropertySubType ne '${t}'`).join(' and ');
+
 /** Every HOMES button a listing appears under, matching the filters above. A detached bungalow is under both. */
 export function homeKinds(r: { PropertySubType?: unknown; ArchitecturalStyle?: unknown }): string[] {
   const sub = String(r.PropertySubType ?? '').trim();
@@ -93,7 +100,7 @@ function shared(params: URLSearchParams, priceField: string): string[] {
   const area = city === HOME_CITY ? AREAS[params.get('area') ?? ''] : undefined;
   if (area) f.push(`CityRegion in (${area.communities.map(q).join(',')})`);
   const home = HOMES[params.get('home') ?? ''];
-  if (home) f.push(home.filter);
+  f.push(home ? home.filter : homesOnly);
   const price = PRICES[params.get('price') ?? ''];
   if (price?.min) f.push(`${priceField} ge ${price.min}`);
   if (price?.max) f.push(`${priceField} le ${price.max}`);
@@ -193,7 +200,7 @@ if (typeof process !== 'undefined' && import.meta.filename === process.argv[1]) 
   if (filter !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto') and ArchitecturalStyle/any(a:a eq 'Bungalow' or a eq 'Bungaloft') and ListPrice ge 800000 and ListPrice le 1200000 and BedroomsTotal ge 2") throw new Error(filter);
   if (s.get('$skip') !== '24' || s.get('$orderby') !== 'ListPrice asc,ListingKey') throw new Error('paging');
   const evil = new URLSearchParams(searchQuery(new URLSearchParams("city=Toronto' or 1 eq 1&home=x' or 1&price=5 or true")));
-  if (evil.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale'") throw new Error('injection ' + evil.get('$filter'));
+  if (evil.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and " + homesOnly) throw new Error('injection ' + evil.get('$filter'));
   const a = new URLSearchParams(searchQuery(new URLSearchParams('area=willowdale&home=condo'))).get('$filter')!;
   if (!a.includes("startswith(City,'Toronto') and CityRegion in ('Willowdale East','Willowdale West')")) throw new Error(a);
   const m = new URLSearchParams(searchQuery(new URLSearchParams('city=Markham&area=leaside'))).get('$filter')!;

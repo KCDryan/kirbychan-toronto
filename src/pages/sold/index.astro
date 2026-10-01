@@ -347,7 +347,7 @@ const faq = [
       factsRow(l),
       l.days != null ? el('p', 'hs__where', `On the market ${l.days} day${l.days === 1 ? '' : 's'}`) : '',
       ask,
-      el('p', 'hs__brokerage', `Listed by ${l.brokerage || 'the listing brokerage'}. MLS® ${l.key}`),
+      el('p', 'hs__brokerage', `Listed by ${(l.brokerage || 'the listing brokerage').replace(/\.$/, '')}. MLS® ${l.key}`),
     );
     li.append(media(l.photo, l.address ? `${l.address}, ${l.city}` : `Home in ${l.city}`, homeType(l) ? `Sold · ${homeType(l)}` : 'Sold'), body);
     return li;

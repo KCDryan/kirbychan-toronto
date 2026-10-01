@@ -59,10 +59,10 @@ const crumbs = [
   { name: d.name, path },
 ];
 
-// Neighbourhood search: the TRREB communities each guide maps to in src/lib/proptx.ts.
+// Each guide's main button opens its /homes-for-sale/<slug>/ landing page, listings in the HTML.
 const areaSlug = entry.id.split('/').pop() ?? entry.id;
 const inArea = areaSlug in AREAS;
-const searchHref = inArea ? `/homes-for-sale/?area=${areaSlug}` : site.links.loftySearch || '/contact/';
+const searchHref = inArea ? `/homes-for-sale/${areaSlug}/` : site.links.loftySearch || '/contact/';
 const searchExternal = searchHref.startsWith('http');
 // Refreshed every morning by .github/workflows/refresh-listing-counts.yml.
 const counts = inArea ? (listingCounts.areas as Record<string, Record<string, number>>)[areaSlug] : undefined;
