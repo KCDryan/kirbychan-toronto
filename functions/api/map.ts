@@ -43,11 +43,10 @@ type Geo = { key: string; lat: number | null; lng: number | null };
 
 let tableReady: Promise<unknown> | null = null;
 const ensureTable = (db: D1) =>
-  (tableReady ??= db
-    .prepare('CREATE TABLE IF NOT EXISTS geocodes_v2 (key TEXT PRIMARY KEY, lat REAL, lng REAL, accuracy REAL, address TEXT NOT NULL, at INTEGER NOT NULL)')
-    .bind()
-    .run()
-    .catch((e) => {
+  (tableReady ??= Promise.all([
+    db.prepare('CREATE TABLE IF NOT EXISTS geocodes_v2 (key TEXT PRIMARY KEY, lat REAL, lng REAL, accuracy REAL, address TEXT NOT NULL, at INTEGER NOT NULL)').bind().run(),
+    db.prepare('CREATE TABLE IF NOT EXISTS geocode_status (id INTEGER PRIMARY KEY, at INTEGER NOT NULL, text TEXT NOT NULL)').bind().run(),
+  ]).catch((e) => {
       tableReady = null;
       throw e;
     }));
@@ -115,12 +114,19 @@ async function write(db: D1, rows: { key: string; lat: number | null; lng: numbe
   for (let i = 0; i < writes.length; i += 100) await db.batch!(writes.slice(i, i + 100));
 }
 
+/** The outcome of the latest batch, shown at /api/map?status=1, so a failure is visible without logs. */
+const note = (db: D1, text: string) =>
+  db.prepare('INSERT OR REPLACE INTO geocode_status (id, at, text) VALUES (1, ?, ?)').bind(Date.now(), text.slice(0, 500)).run();
+
 /** Looks up and saves new addresses. On a Geocodio failure the claims are dropped so the next request retries. */
 async function lookup(db: D1, apiKey: string, todo: { key: string; address: string }[]) {
   try {
-    await write(db, await geocode(apiKey, todo));
+    const rows = await geocode(apiKey, todo);
+    await write(db, rows);
+    await note(db, `${rows.length} looked up, ${rows.filter((r) => r.lat != null).length} placed`);
   } catch (e) {
     console.error(String(e));
+    await note(db, String(e)).catch(() => undefined);
     await db.prepare('DELETE FROM geocodes_v2 WHERE accuracy = ? AND key IN (SELECT value FROM json_each(?))').bind(CLAIMED, JSON.stringify(todo.map((t) => t.key))).run();
   }
 }
@@ -139,6 +145,15 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
   for (const k of ['home', 'area', 'price', 'beds', 'city', 'for']) {
     const v = url.searchParams.get(k);
     if (v) params.set(k, v.slice(0, 40));
+  }
+  if (url.searchParams.has('status') && env.VOW_DB) {
+    const db = env.VOW_DB;
+    await ensureTable(db);
+    const last = await db.prepare('SELECT at, text FROM geocode_status WHERE id = 1').bind().first<{ at: number; text: string }>();
+    const placed = await db.prepare('SELECT COUNT(*) AS n FROM geocodes_v2 WHERE lat IS NOT NULL').bind().first<{ n: number }>();
+    return new Response(JSON.stringify({ placed: placed?.n ?? 0, spentLast24h: await spentToday(db), last: last ? { at: new Date(last.at).toISOString(), text: last.text } : null }), {
+      headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-robots-tag': 'noindex' },
+    });
   }
   const cacheKey = new Request(`${url.origin}/api/map?${params}`);
   const cache = (caches as unknown as { default: Cache }).default;
