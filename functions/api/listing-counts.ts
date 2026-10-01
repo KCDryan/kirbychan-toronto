@@ -27,13 +27,17 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
   const toronto = blank();
   const areas: Record<string, Counts> = {};
 
-  let next: string | null = `Property?$top=1000&$select=CityRegion,PropertySubType,ArchitecturalStyle&$filter=${encodeURIComponent(FILTER)}`;
+  // Pages are requested by offset, ordered by ListingKey so they do not overlap. PropTx's own
+  // @odata.nextLink stopped resolving ("Resource not found"), so it is not used.
+  const PAGE = 1000;
+  const query = `$top=${PAGE}&$orderby=ListingKey&$select=CityRegion,PropertySubType,ArchitecturalStyle&$filter=${encodeURIComponent(FILTER)}`;
+  let done = false;
   // ponytail: 40 pages of 1,000 covers Toronto's residential listings with room to spare and stays under
   // Cloudflare's 50 subrequest limit. If the city ever lists more, split the count by district.
-  for (let i = 0; next && i < 40; i++) {
-    const res: Response = await fetch(`${PROPTX_BASE}/${next}`, { headers: { authorization: `Bearer ${env.PROPTX_IDX_TOKEN.trim()}` } });
+  for (let i = 0; !done && i < 40; i++) {
+    const res: Response = await fetch(`${PROPTX_BASE}/Property?${query}&$skip=${i * PAGE}`, { headers: { authorization: `Bearer ${env.PROPTX_IDX_TOKEN.trim()}` } });
     if (!res.ok) return new Response(JSON.stringify({ error: 'upstream', status: res.status, page: i + 1, detail: (await res.text()).slice(0, 200) }), { status: 503 });
-    const data = (await res.json()) as { value: Record<string, unknown>[]; '@odata.nextLink'?: string };
+    const data = (await res.json()) as { value: Record<string, unknown>[] };
     for (const r of data.value) {
       const kinds = homeKinds(r) as (keyof Counts)[];
       const area = areaOf(r.CityRegion);
@@ -43,10 +47,10 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
         for (const k of kinds) b[k]++;
       }
     }
-    next = data['@odata.nextLink']?.replace(`${PROPTX_BASE}/`, '') ?? null;
+    done = data.value.length < PAGE;
   }
 
-  const res = new Response(JSON.stringify({ updated: new Date().toISOString(), toronto, areas, complete: !next }, null, 2), {
+  const res = new Response(JSON.stringify({ updated: new Date().toISOString(), toronto, areas, complete: done }, null, 2), {
     headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=3600', 'x-robots-tag': 'noindex' },
   });
   waitUntil(cache.put(cacheKey, res.clone()));
