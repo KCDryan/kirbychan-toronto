@@ -11,6 +11,7 @@ import MarkdownIt from 'markdown-it';
 import { BLOG_CATEGORIES, readingMinutes, wordCount } from './blog.ts';
 import { longDate } from './format.ts';
 import type { D1 } from './vow.ts';
+import { HOODS, SERVICES, autoLinks } from './post-links.ts';
 
 export interface UploadEnv {
   VOW_DB?: D1;
@@ -28,6 +29,11 @@ export interface Post {
   faq: { q: string; a: string }[];
   sources: { name: string; url: string }[];
   markdown: string;
+  author: string;
+  authorTitle: string;
+  related: string[];
+  relatedServices: string[];
+  draft: boolean;
   published: number;
   updated: number;
 }
@@ -49,7 +55,7 @@ export const ensureUploadSchema = (db: D1) =>
 
 export async function getUpload(db: D1, slug: string): Promise<{ live: boolean; post: Post } | null> {
   const row = await db.prepare('SELECT live, post FROM uploads WHERE slug = ?').bind(slug).first<{ live: number; post: string }>();
-  return row ? { live: row.live === 1, post: JSON.parse(row.post) } : null;
+  return row ? { live: row.live === 1, post: { author: '', authorTitle: '', related: [], relatedServices: [], draft: false, ...JSON.parse(row.post) } } : null;
 }
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');
@@ -94,6 +100,11 @@ export function cleanPost(raw: unknown): Post | string {
     faq,
     sources,
     markdown,
+    author: str(r.author, 80),
+    authorTitle: str(r.authorTitle, 80),
+    related: [...new Set(list(r.related))].filter((id): id is string => typeof id === 'string' && id in HOODS),
+    relatedServices: [...new Set(list(r.relatedServices))].filter((id): id is string => typeof id === 'string' && id in SERVICES),
+    draft: r.draft === true,
     published: 0,
     updated: 0,
   };
@@ -157,6 +168,24 @@ export function fillShell(shell: string, post: Post): string {
     .replace(/(https:\/\/kirbychantoronto\.com)?\/blog\/upload-shell\/[a-z-]+\//g, (_m, origin) => `${origin ?? ''}${path}`)
     .replaceAll('/blog/kcupload-slug/', path)
     .replace(/\s*<meta name="robots" content="noindex"\s*\/?>/, '');
+  // Byline, and the "Keep exploring" links: the post's choices, or what the layout would pick for it.
+  if (post.author) html = html.replace(/(<p class="post-meta"[^>]*>\s*<span[^>]*>)By [^<]*/, '$1KCUPLOAD-BYLINE');
+  const auto = autoLinks(`${post.headline} ${clip(post.summary, 160)}`, post.category);
+  const keep = (attr: string, ids: string[]) => {
+    const items = new Map([...html.matchAll(new RegExp(`<li ${attr}="([a-z-]+)"[^>]*>[\\s\\S]*?</li>`, 'g'))].map((m) => [m[1], m[0]]));
+    let first = true;
+    html = html.replace(new RegExp(`\\s*<li ${attr}="[a-z-]+"[^>]*>[\\s\\S]*?</li>`, 'g'), () => (first ? ((first = false), ids.map((id) => items.get(id) ?? '').join('')) : ''));
+  };
+  const hoods = post.related.length ? post.related : auto.hoods;
+  keep('data-hood', hoods);
+  const photos = JSON.parse(html.match(/<template data-hood-photos="([^"]*)"><\/template>/)?.[1].replace(/&#34;|&quot;/g, '"').replace(/&amp;/g, '&') ?? '{}');
+  html = html.replace(/\s*<template data-hood-photos="[^"]*"><\/template>/, '');
+  const share = hoods.length === 1 ? photos[hoods[0]] : undefined;
+  const defaultShare = html.match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? '';
+  const shareUrl = share ? new URL(share, defaultShare).href : '';
+  if (shareUrl) html = html.replace(/(<meta (?:property="og:image"|name="twitter:image") content=")[^"]*/g, `$1${shareUrl}`);
+  keep('data-service', post.relatedServices.length ? post.relatedServices : auto.services);
+  html = html.replace(/<section class="post-links"[\s\S]*?<\/section>/, (s) => (s.includes('<li') ? s : ''));
   if (!post.quickAnswer) html = html.replace(/<div class="takeaway"[^>]*>[\s\S]*?<\/div>/, '');
   html = post.faq.length
     ? repeat(/<details class="faq__item"[\s\S]*?<\/details>/, post.faq.length, 'KCUPLOAD-FAQ')(html)
@@ -177,6 +206,7 @@ export function fillShell(shell: string, post: Post): string {
     'KCUPLOAD-SUB': post.summary,
     'KCUPLOAD-TAKEAWAY': post.quickAnswer || post.summary,
     'KCUPLOAD-MIN': String(readingMinutes(words)),
+    'KCUPLOAD-BYLINE': `By ${post.authorTitle ? `${post.author}, ${post.authorTitle}` : post.author}`,
     'KCUPLOAD-DATE': longDate(published),
     'KCUPLOAD-ISO': published.toISOString(),
   };
@@ -195,7 +225,11 @@ export function fillShell(shell: string, post: Post): string {
     if (v && typeof v === 'object') {
       const o = Object.fromEntries(Object.entries(v).map(([k, x]) => [k, walk(x)]));
       if (o['@type'] === 'FAQPage') o.mainEntity = post.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }));
-      if (o['@type'] === 'BlogPosting') o.wordCount = words;
+      if (o['@type'] === 'BlogPosting') {
+        o.wordCount = words;
+        if (shareUrl) o.image = shareUrl;
+        if (post.author) o.author = { '@type': 'Person', name: post.author, worksFor: { '@id': (o.publisher as { '@id': string })['@id'] } };
+      }
       return o;
     }
     return v;

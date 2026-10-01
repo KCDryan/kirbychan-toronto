@@ -3,7 +3,8 @@
  * /api/upload/login      POST  password
  * /api/upload/logout     POST
  * /api/upload/preview    POST  post   the finished page, exactly as it will look
- * /api/upload/publish    POST  post   live at once; replace: true to update a post already up
+ * /api/upload/publish    POST  post   live at once (or saved only, when post.draft); replace: true to update a post already up
+ * /api/upload/get        POST  slug   a saved post, to edit it
  * /api/upload/list       GET   uploaded posts, newest first
  * /api/upload/unpublish  POST  slug
  * /api/upload/export     GET   public: live uploaded posts, read by scripts/pull-uploads.mjs at build
@@ -92,7 +93,7 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
     return json({
       posts: results.map((r) => {
         const p = JSON.parse(r.post) as Post;
-        return { slug: p.slug, headline: p.headline, live: r.live === 1, updated: p.updated, url: postUrl(p.slug) };
+        return { slug: p.slug, headline: p.headline, live: r.live === 1, draft: !!p.draft, updated: p.updated, url: postUrl(p.slug) };
       }),
     });
   }
@@ -115,11 +116,16 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
     }
     if (existing?.live && body.replace !== true) return json({ error: 'exists', url: postUrl(post.slug) }, 409);
     await db
-      .prepare('INSERT INTO uploads (slug, live, post, updated) VALUES (?, 1, ?, ?) ON CONFLICT(slug) DO UPDATE SET live = 1, post = excluded.post, updated = excluded.updated')
-      .bind(post.slug, JSON.stringify(post), now)
+      .prepare('INSERT INTO uploads (slug, live, post, updated) VALUES (?, ?, ?, ?) ON CONFLICT(slug) DO UPDATE SET live = excluded.live, post = excluded.post, updated = excluded.updated')
+      .bind(post.slug, post.draft ? 0 : 1, JSON.stringify(post), now)
       .run();
-    waitUntil(rebuild(env));
-    return json({ ok: true, url: postUrl(post.slug) });
+    if (!post.draft || existing?.live) waitUntil(rebuild(env));
+    return json({ ok: true, draft: post.draft, url: postUrl(post.slug) });
+  }
+
+  if (action === 'get' && request.method === 'POST') {
+    const found = await getUpload(db, typeof body.slug === 'string' ? body.slug : '');
+    return found ? json({ post: found.post, live: found.live }) : problem('That post was not found.', 404);
   }
 
   if (action === 'unpublish' && request.method === 'POST') {

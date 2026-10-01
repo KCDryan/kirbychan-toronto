@@ -12,7 +12,8 @@
  * agent clicks Save.
  */
 import React from 'react';
-import { convertHtml } from '../src/lib/html-import';
+import { convertHtml, guessCategory } from '../src/lib/html-import';
+import { hoodsIn, servicesIn } from '../src/lib/post-links';
 import { parseMDX } from '@tinacms/mdx';
 import { Button, TextArea, wrapFieldsWithMeta } from 'tinacms';
 
@@ -30,7 +31,13 @@ function ImportHtmlInput(props: any) {
       const r = convertHtml(html);
       const form = props.form ?? props.tinaForm?.finalForm;
       const values = { ...(form.getState().values ?? {}) };
+      const fresh = !values.headline;
       if (r.headline && !values.headline) values.headline = r.headline.slice(0, 90);
+      // First guesses for a new post, so the agent only changes what is wrong.
+      const about = `${r.headline ?? ''} ${r.summary ?? ''}`;
+      if (fresh && r.headline) values.category = guessCategory(r.headline);
+      if (!values.related?.length) values.related = hoodsIn(about, 3);
+      if (!values.relatedServices?.length) values.relatedServices = servicesIn(about, 2);
       if (r.summary && !values.summary) values.summary = r.summary.slice(0, 300);
       if (r.quickAnswer && !values.quickAnswer) values.quickAnswer = r.quickAnswer;
       if (r.faq.length) values.faq = r.faq;
@@ -48,7 +55,7 @@ function ImportHtmlInput(props: any) {
         r.sources.length && `${r.sources.length} sources`,
         'the post',
       ].filter(Boolean);
-      setReport([`Filled in: ${filled.join(', ')}. Check each box below, pick a category and add your name.`, ...r.warnings.map((w) => (w.startsWith('Fixed') ? `${w}.` : `Fix before saving: ${w}.`))]);
+      setReport([`Filled in: ${filled.join(', ')}, a category, neighbourhoods and services. Check each box below and add your name and title.`, ...r.warnings.map((w) => (w.startsWith('Fixed') ? `${w}.` : `Fix before saving: ${w}.`))]);
       setHtml('');
     } catch (e: any) {
       setError(`Could not convert this HTML: ${e?.message ?? e}`);

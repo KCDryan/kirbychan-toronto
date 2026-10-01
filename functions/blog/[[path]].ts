@@ -40,5 +40,12 @@ export async function onRequest({ request, env, next }: Context): Promise<Respon
   const headers = new Headers(shell.headers);
   headers.delete('x-robots-tag');
   headers.set('cache-control', 'public, max-age=0, must-revalidate');
-  return new Response(fillShell(await shell.text(), upload.post), { status: 200, headers });
+  let html: string;
+  try {
+    html = fillShell(await shell.text(), upload.post);
+  } catch {
+    // Never show a broken page: fall back to the built one, or not found until the next build.
+    return next();
+  }
+  return new Response(html, { status: 200, headers });
 }

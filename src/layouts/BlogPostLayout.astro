@@ -16,6 +16,7 @@ import { BLOG_CATEGORIES } from '../lib/blog';
 import { neighbourhoodPhoto } from '../lib/photos';
 import { GUIDES, servicePath } from '../lib/guides';
 import { blogPosting, breadcrumbList, faqPage } from '../lib/schema';
+import { autoLinks } from '../lib/post-links';
 
 interface Props {
   entry: CollectionEntry<'blog'>;
@@ -33,35 +34,6 @@ const guide = d.guide ? { path: `/${d.guide}/`, label: GUIDES[d.guide].label } :
 // Posts that list no links of their own (agents' quick posts, mostly) get them from the headline,
 // description and category, so every post leads on to a neighbourhood, a guide and a tool.
 const topic = `${d.h1} ${d.description}`;
-const HOOD_WORDS: Record<string, RegExp> = {
-  leaside: /\bleaside\b/i,
-  'lawrence-park': /\blawrence park\b/i,
-  'yonge-eglinton': /\byonge (and|&) eglinton\b|\byonge-eglinton\b/i,
-  'don-mills': /\bdon mills\b/i,
-  'the-annex': /\bannex\b/i,
-  'bayview-village': /\bbayview village\b/i,
-  willowdale: /\bwillowdale\b|\bnorth york centre\b/i,
-  'downtown-waterfront': /\bwaterfront\b|\bcityplace\b|\bst\.? lawrence\b/i,
-  'high-park': /\bhigh park\b/i,
-  'the-beaches': /\bthe beach(es)?\b/i,
-  riverdale: /\briverdale\b|\bleslieville\b/i,
-  'islington-village': /\bislington\b|\betobicoke city centre\b/i,
-};
-const SERVICE_WORDS: [string, RegExp][] = [
-  ['estate-sales', /\b(estate|probate|executor)/i],
-  ['separation-and-divorce', /\b(separation|divorce)/i],
-  ['new-construction', /\b(pre-construction|new construction|builder|assignment)/i],
-  ['luxury', /\bluxury\b/i],
-  ['upsizing', /\b(upsiz|move up|moving up)/i],
-  ['relocation', /\b(relocat|moving to toronto|newcomer)/i],
-  ['investors', /\b(invest|rental|landlord)/i],
-  ['downsizing', /\b(downsiz|reverse mortgage|senior|bungalow)/i],
-  ['first-time-buyers', /\bfirst[- ]time\b/i],
-];
-const CATEGORY_SERVICE: Partial<Record<string, string>> = {
-  downsizing: 'downsizing', buying: 'first-time-buyers', 'costs-and-taxes': 'first-time-buyers', condos: 'downsizing',
-  'new-construction': 'new-construction', 'moving-to-toronto': 'relocation', investing: 'investors', neighbourhoods: 'relocation', selling: 'downsizing',
-};
 const TOOLS: Partial<Record<string, { href: string; label: string; note: string }[]>> = (() => {
   const ltt = { href: '/land-transfer-tax-calculator-toronto/', label: 'Toronto land transfer tax calculator', note: 'Both the Ontario and the City tax on any price, with the first-time buyer rebates.' };
   const mortgage = { href: '/mortgage-calculator-toronto/', label: 'Toronto mortgage calculator', note: 'Monthly payment, smallest down payment allowed and the qualifying rate.' };
@@ -78,15 +50,14 @@ const TOOLS: Partial<Record<string, { href: string; label: string; note: string 
 })();
 
 const allHoods = await getCollection('neighbourhoods', ({ data }) => !data.draft);
-const hoodIds = d.related.length ? d.related : Object.keys(HOOD_WORDS).filter((id) => HOOD_WORDS[id].test(topic)).slice(0, 2);
+const auto = autoLinks(topic, d.category);
+const hoodIds = d.related.length ? d.related : auto.hoods;
 const linkedHoods = hoodIds
   .map((slug) => allHoods.find((h) => h.id === slug))
   .filter((h): h is CollectionEntry<'neighbourhoods'> => Boolean(h));
 
 const allServices = await getCollection('services', ({ data }) => !data.draft);
-const serviceIds = d.relatedServices.length
-  ? d.relatedServices
-  : [...new Set([...SERVICE_WORDS.filter(([, re]) => re.test(topic)).map(([id]) => id), CATEGORY_SERVICE[d.category]].filter((x): x is string => Boolean(x)))].slice(0, 2);
+const serviceIds = d.relatedServices.length ? d.relatedServices : auto.services;
 const linkedServices = serviceIds
   .map((slug) => allServices.find((s) => s.id === slug))
   .filter((s): s is CollectionEntry<'services'> => Boolean(s));
@@ -202,13 +173,13 @@ const jsonLd = [
                 <h2 id="post-links-heading">Keep exploring</h2>
                 <ul>
                   {linkedHoods.map((h) => (
-                    <li>
+                    <li data-hood={h.id}>
                       <a href={neighbourhoodPath(h.id)}>{h.data.name} neighbourhood guide</a>
                       <span>{h.data.personality}</span>
                     </li>
                   ))}
                   {linkedServices.map((s) => (
-                    <li>
+                    <li data-service={s.id}>
                       <a href={servicePath(s.id)}>{s.data.name}</a>
                       <span>{s.data.summary}</span>
                     </li>

@@ -1,11 +1,13 @@
 ---
 /**
  * Blog upload. Paste the HTML of an article (for example from onecutcontent.com), check the
- * preview, press Publish: the post is live straight away in the site's own style. One shared
- * password, set as UPLOAD_PASSWORD in Cloudflare. The API is functions/api/upload/[action].ts.
+ * details and the preview, then press Publish: the post is live straight away in the site's own
+ * style. Or save it as a draft and finish it later. One shared password, set as UPLOAD_PASSWORD in
+ * Cloudflare. The API is functions/api/upload/[action].ts.
  */
 import Base from '../../layouts/Base.astro';
 import { BLOG_CATEGORIES } from '../../lib/blog';
+import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
 ---
 
 <Base title="Upload a blog post" description="Upload a blog post to the Kirby Chan & Co. Toronto website." noindex>
@@ -26,7 +28,7 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
     <div id="up-main" hidden>
       <section class="up__box">
         <h2><span class="up__num">1</span> Paste the article</h2>
-        <p>On onecutcontent.com, copy the HTML of your finished article. Then click in the box below and paste it.</p>
+        <p>Copy the HTML of the finished article.</p>
         <textarea id="up-html" rows="8" spellcheck="false" placeholder="Paste here"></textarea>
         <p class="up__or">
           Or <label class="up__file">choose the saved HTML file<input id="up-file" type="file" accept=".html,.htm,.txt,text/html" /></label>
@@ -34,13 +36,40 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
       </section>
 
       <section class="up__box" id="up-check" hidden>
-        <h2><span class="up__num">2</span> Check it</h2>
-        <label for="up-title">Title</label>
-        <input id="up-title" maxlength="90" />
-        <label for="up-category">Topic</label>
-        <select id="up-category">
-          {Object.entries(BLOG_CATEGORIES).map(([k, v]) => <option value={k}>{v}</option>)}
-        </select>
+        <h2><span class="up__num">2</span> Check the details</h2>
+        <p class="up__hint">These are filled in for you. Change anything that is not right.</p>
+        <form id="up-details" class="up__fields">
+          <label for="up-title">Title</label>
+          <input id="up-title" maxlength="90" />
+          <label for="up-category">Topic</label>
+          <select id="up-category">
+            {Object.entries(BLOG_CATEGORIES).map(([k, v]) => <option value={k}>{v}</option>)}
+          </select>
+          <div class="up__pair">
+            <div>
+              <label for="up-author">Written by</label>
+              <input id="up-author" list="up-authors" maxlength="80" placeholder="Leave empty for the team" />
+              <datalist id="up-authors"><option value="Kirby Chan"></option></datalist>
+            </div>
+            <div>
+              <label for="up-role">Their title</label>
+              <input id="up-role" list="up-roles" maxlength="80" placeholder="Choose or type" />
+              <datalist id="up-roles">{ROLES.map((r) => <option value={r} />)}</datalist>
+            </div>
+          </div>
+          <fieldset>
+            <legend>Neighbourhoods this post is about</legend>
+            <div class="up__ticks">
+              {Object.entries(HOODS).map(([k, h]) => <label><input type="checkbox" name="related" value={k} /> {h.label}</label>)}
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Service guides it relates to</legend>
+            <div class="up__ticks">
+              {Object.entries(SERVICES).map(([k, s]) => <label><input type="checkbox" name="relatedServices" value={k} /> {s.label}</label>)}
+            </div>
+          </fieldset>
+        </form>
         <ul class="up__notes" id="up-notes"></ul>
         <p>This is exactly how the post will look on the website:</p>
         <iframe id="up-preview" title="Preview of the post" sandbox="allow-same-origin"></iframe>
@@ -49,8 +78,9 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
       <section class="up__box" id="up-go" hidden>
         <h2><span class="up__num">3</span> Publish</h2>
         <button class="btn btn--primary up__big" id="up-publish" type="button">Publish now</button>
+        <button class="btn btn--ghost" id="up-draft" type="button">Save as a draft (not on the website yet)</button>
         <div id="up-done" class="up__done" hidden>
-          <p><strong>Your post is live.</strong> <a id="up-link" target="_blank" rel="noopener">Open the post</a></p>
+          <p id="up-done-text"></p>
           <button class="btn btn--ghost" id="up-again" type="button">Upload another post</button>
         </div>
       </section>
@@ -67,8 +97,10 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
 
 <script>
   import { convertHtml, guessCategory, slugFor, type Imported } from '../../lib/html-import';
+  import { hoodsIn, servicesIn } from '../../lib/post-links';
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const input = (id: string) => $<HTMLInputElement>(id);
   const status = $('up-status');
   const say = (text: string, bad = false) => {
     status.textContent = text;
@@ -79,11 +111,36 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
     return { status: res.status, data: (await res.json().catch(() => ({}))) as Record<string, any> };
   };
   const show = (id: string, on: boolean) => ($(id).hidden = !on);
+  const ticked = (name: string) => [...document.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`)].map((c) => c.value);
+  const tick = (name: string, ids: string[]) =>
+    document.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`).forEach((c) => (c.checked = ids.includes(c.value)));
+  // The writer's name and title are remembered on this computer for the next post.
+  const remember = (key: string, value?: string) => {
+    try {
+      if (value === undefined) return localStorage.getItem(key) ?? '';
+      localStorage.setItem(key, value);
+    } catch {}
+    return '';
+  };
 
-  let article: Imported | null = null;
-  const post = () => {
-    const headline = $<HTMLInputElement>('up-title').value.trim();
-    return { ...article, headline, slug: slugFor(headline), category: $<HTMLSelectElement>('up-category').value };
+  type Article = Pick<Imported, 'summary' | 'quickAnswer' | 'faq' | 'sources' | 'markdown'>;
+  let article: Article | null = null;
+  /** Set while changing a post that was saved before: it keeps its web address. */
+  let editing = '';
+
+  const post = (draft = false) => {
+    const headline = input('up-title').value.trim();
+    return {
+      ...article,
+      headline,
+      slug: editing || slugFor(headline),
+      category: $<HTMLSelectElement>('up-category').value,
+      author: input('up-author').value.trim(),
+      authorTitle: input('up-author').value.trim() ? input('up-role').value.trim() : '',
+      related: ticked('related'),
+      relatedServices: ticked('relatedServices'),
+      draft,
+    };
   };
 
   async function start() {
@@ -95,24 +152,36 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
     if (data.signedIn) list();
   }
 
+  const button = (text: string, onclick: () => void) => {
+    const b = Object.assign(document.createElement('button'), { type: 'button', className: 'btn btn--ghost btn--sm', textContent: text });
+    b.onclick = onclick;
+    return b;
+  };
+
   async function list() {
     const { data } = await api('list');
     const ul = $('up-list');
     ul.replaceChildren();
     for (const p of data.posts ?? []) {
       const li = document.createElement('li');
-      const a = Object.assign(document.createElement('a'), { href: p.url, target: '_blank', rel: 'noopener', textContent: p.headline });
-      li.append(a, ` ${p.live ? '' : '(taken down)'}`);
+      const name = p.live
+        ? Object.assign(document.createElement('a'), { href: p.url, target: '_blank', rel: 'noopener', textContent: p.headline })
+        : Object.assign(document.createElement('span'), { textContent: p.headline });
+      const state = Object.assign(document.createElement('span'), { className: 'up__state', textContent: p.live ? 'Live' : p.draft ? 'Draft' : 'Taken down' });
+      const actions = document.createElement('span');
+      actions.className = 'up__actions';
+      actions.append(button('Edit', () => open(p.slug)));
       if (p.live) {
-        const b = Object.assign(document.createElement('button'), { type: 'button', className: 'btn btn--ghost btn--sm', textContent: 'Take down' });
-        b.onclick = async () => {
-          if (!confirm(`Take "${p.headline}" off the website?`)) return;
-          await api('unpublish', { slug: p.slug });
-          say('The post has been taken down.');
-          list();
-        };
-        li.append(b);
+        actions.append(
+          button('Take down', async () => {
+            if (!confirm(`Take "${p.headline}" off the website?`)) return;
+            await api('unpublish', { slug: p.slug });
+            say('The post has been taken down.');
+            list();
+          })
+        );
       }
+      li.append(name, state, actions);
       ul.append(li);
     }
     if (!ul.children.length) ul.innerHTML = '<li>None yet.</li>';
@@ -127,35 +196,89 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
     $<HTMLIFrameElement>('up-preview').srcdoc = data.html;
     show('up-check', true);
     show('up-go', true);
-    $('up-publish').textContent = data.exists ? 'Replace the post that is up now' : 'Publish now';
-    say('Preview ready. Read it through, then press Publish below.');
+    $('up-publish').textContent = data.exists ? 'Publish the changes' : 'Publish now';
+    say('Preview ready. Check the details and read the post, then press Publish below.');
+  }
+
+  /** Fills every box from a post, then shows the preview. */
+  function fill(p: Partial<ReturnType<typeof post>> & Article) {
+    article = { summary: p.summary, quickAnswer: p.quickAnswer, faq: p.faq, sources: p.sources, markdown: p.markdown };
+    input('up-title').value = (p.headline ?? '').slice(0, 90);
+    $<HTMLSelectElement>('up-category').value = p.category ?? 'neighbourhoods';
+    input('up-author').value = p.author ?? '';
+    input('up-role').value = p.authorTitle ?? '';
+    tick('related', p.related ?? []);
+    tick('relatedServices', p.relatedServices ?? []);
+    preview();
   }
 
   function load(html: string) {
     if (!html.trim()) return;
+    let r: Imported | null = null;
     try {
-      article = convertHtml(html);
-    } catch {
-      article = null;
-    }
-    if (!article?.headline || !article.markdown) {
+      r = convertHtml(html);
+    } catch {}
+    if (!r?.headline || !r.markdown) {
       show('up-check', false);
       show('up-go', false);
-      return say('That does not look like a whole article. Copy all of the HTML from onecutcontent.com and paste it again.', true);
+      return say('That does not look like a whole article. Copy all of the HTML of the article and paste it again.', true);
     }
-    $<HTMLInputElement>('up-title').value = article.headline.slice(0, 90);
-    $<HTMLSelectElement>('up-category').value = guessCategory(article.headline);
-    const notes = $('up-notes');
-    notes.replaceChildren(...article.warnings.map((w) => Object.assign(document.createElement('li'), { textContent: w.replace(/^the /, 'The ') })));
-    preview();
+    editing = '';
+    const about = `${r.headline} ${r.summary ?? ''}`;
+    $('up-notes').replaceChildren(...r.warnings.map((w) => Object.assign(document.createElement('li'), { textContent: w.replace(/^the /, 'The ') })));
+    fill({
+      ...r,
+      category: guessCategory(r.headline),
+      author: remember('up-author'),
+      authorTitle: remember('up-role'),
+      related: hoodsIn(about, 3),
+      relatedServices: servicesIn(about, 2),
+    });
+  }
+
+  async function open(slug: string) {
+    say('Opening the post…');
+    const { data } = await api('get', { slug });
+    if (data.error) return say(data.error, true);
+    editing = slug;
+    $('up-notes').replaceChildren();
+    fill(data.post);
+    $('up-check').scrollIntoView();
+  }
+
+  async function save(draft: boolean) {
+    say(draft ? 'Saving the draft…' : 'Publishing…');
+    remember('up-author', input('up-author').value.trim());
+    remember('up-role', input('up-role').value.trim());
+    let { status: code, data } = await api('publish', { post: post(draft), replace: !!editing });
+    if (code === 409 && data.error === 'exists') {
+      const question = draft
+        ? 'A post with this title is live on the website. Take it down and keep this version as a draft?'
+        : 'A post with this title is already on the website. Replace it with this one?';
+      if (!confirm(question)) return say('Nothing was changed.');
+      ({ data } = await api('publish', { post: post(draft), replace: true }));
+    }
+    if (data.error) return say(data.error, true);
+    editing = post().slug;
+    const done = $('up-done-text');
+    done.replaceChildren();
+    if (data.draft) {
+      done.append(Object.assign(document.createElement('strong'), { textContent: 'Draft saved.' }), ' It is not on the website. Press Edit next to it in the list below to finish it later.');
+    } else {
+      const link = Object.assign(document.createElement('a'), { href: data.url, target: '_blank', rel: 'noopener', textContent: 'Open the post' });
+      done.append(Object.assign(document.createElement('strong'), { textContent: 'Your post is live.' }), ' ', link);
+    }
+    show('up-done', true);
+    say(data.draft ? 'Draft saved.' : 'Your post is live on the website.');
+    list();
   }
 
   $('up-login').addEventListener('submit', async (e) => {
     e.preventDefault();
     say('Signing in…');
-    const { data } = await api('login', { password: $<HTMLInputElement>('up-password').value });
+    const { data } = await api('login', { password: input('up-password').value });
     if (data.error) return say(data.error, true);
-    $<HTMLInputElement>('up-password').value = '';
+    input('up-password').value = '';
     start();
   });
   $('up-html').addEventListener('input', (e) => load((e.target as HTMLTextAreaElement).value));
@@ -163,23 +286,13 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
     const file = (e.target as HTMLInputElement).files?.[0];
     if (file) load(await file.text());
   });
-  $('up-title').addEventListener('change', preview);
-  $('up-category').addEventListener('change', preview);
-  $('up-publish').addEventListener('click', async () => {
-    say('Publishing…');
-    let { status: code, data } = await api('publish', { post: post() });
-    if (code === 409 && data.error === 'exists') {
-      if (!confirm('A post with this title is already on the website. Replace it with this one?')) return say('Nothing was changed.');
-      ({ data } = await api('publish', { post: post(), replace: true }));
-    }
-    if (data.error) return say(data.error, true);
-    $<HTMLAnchorElement>('up-link').href = data.url;
-    show('up-done', true);
-    say('Your post is live on the website.');
-    list();
-  });
+  $('up-details').addEventListener('change', preview);
+  $('up-details').addEventListener('submit', (e) => e.preventDefault());
+  $('up-publish').addEventListener('click', () => save(false));
+  $('up-draft').addEventListener('click', () => save(true));
   $('up-again').addEventListener('click', () => {
     article = null;
+    editing = '';
     $<HTMLTextAreaElement>('up-html').value = '';
     ['up-check', 'up-go', 'up-done'].forEach((id) => show(id, false));
     say('Ready for the next post.');
@@ -228,7 +341,7 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
   .up label {
     font-weight: 700;
   }
-  .up input:not([type='file']),
+  .up input:not([type='file'], [type='checkbox']),
   .up select,
   .up textarea {
     width: 100%;
@@ -304,6 +417,62 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+  .up__hint {
+    color: var(--text-muted);
+  }
+  .up__fields {
+    display: grid;
+    gap: var(--sp-3);
+  }
+  .up__pair {
+    display: grid;
+    gap: var(--sp-3);
+  }
+  .up__pair > div {
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .up fieldset {
+    margin: var(--sp-3) 0 0;
+    padding: 0;
+    border: 0;
+  }
+  .up legend {
+    margin-bottom: var(--sp-3);
+    font-weight: 700;
+  }
+  .up__ticks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: var(--sp-2) var(--sp-4);
+  }
+  .up__ticks label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .up__ticks input {
+    width: 1.4rem;
+    height: 1.4rem;
+    accent-color: var(--brand);
+  }
+  .up__state {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .up__actions {
+    display: flex;
+    gap: var(--sp-2);
+  }
+  @media (min-width: 640px) {
+    .up__pair {
+      grid-template-columns: 1fr 1fr;
+    }
   }
   .up__list li {
     display: flex;
