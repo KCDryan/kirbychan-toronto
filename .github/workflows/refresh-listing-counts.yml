@@ -18,7 +18,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Fetch today's counts
-        run: curl -sSf --retry 3 --retry-delay 20 https://kirbychantoronto.com/api/listing-counts -o /tmp/counts.json
+        # The Pages project address works with or without the custom domain.
+        run: curl -sSf --connect-timeout 20 --max-time 120 --retry 3 --retry-delay 20 https://kirbychan-toronto.pages.dev/api/listing-counts -o /tmp/counts.json
 
       - name: Check the numbers look sane
         # A PropTx outage must not publish zeros across the site. Keep yesterday's file instead.
