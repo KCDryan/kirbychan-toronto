@@ -18,7 +18,8 @@ const FILTER = `ContractStatus eq 'Available' and startswith(PropertyType,'Resid
 export async function onRequestGet({ request, env, waitUntil }: Context): Promise<Response> {
   if (!env.PROPTX_IDX_TOKEN) return new Response('{"error":"not-configured"}', { status: 503 });
   // Up to forty PropTx calls per answer, so one answer is shared for an hour whoever asks.
-  const cacheKey = new Request(new URL('/api/listing-counts', request.url));
+  // Bump the version whenever the counting changes, so an hour-old answer from the old code is not reused.
+  const cacheKey = new Request(new URL('/api/listing-counts?v=2', request.url));
   const cache = (caches as unknown as { default: Cache }).default;
   const hit = await cache.match(cacheKey);
   if (hit) return hit;
