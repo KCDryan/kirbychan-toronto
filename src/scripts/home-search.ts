@@ -3,7 +3,7 @@
  * Choices are links, so the address bar always holds the search and Back works. A click updates
  * the list in place instead of reloading, so the page never jumps back to the top.
  */
-import { AREAS, HOMES, PRICES, SOLD_WINDOWS } from '../lib/proptx';
+import { AREAS, HOMES, PRICES } from '../lib/proptx';
 
 export const $ = (id: string) => document.getElementById(id)!;
 export const money = (n: unknown) => (typeof n === 'number' ? '$' + n.toLocaleString('en-CA') : '');
@@ -43,68 +43,11 @@ export function syncChoices(p: URLSearchParams) {
   // Neighbourhoods are Toronto's, so the row only shows while searching Toronto.
   const area = document.getElementById('area-step');
   if (area) area.hidden = !!p.get('city');
-  syncCounts(p);
-}
-
-type Counts = Record<string, number>;
-const fmt = (v: number | undefined) => (v ?? 0).toLocaleString('en-CA');
-
-/**
- * Today's for-sale counts on the buttons follow the other choice: pick condos and each neighbourhood
- * shows its condos, pick a neighbourhood and each home type shows that neighbourhood's. Hidden for
- * other cities and rentals, which the daily counts do not cover.
- */
-function syncCounts(p: URLSearchParams) {
-  const panel = document.querySelector<HTMLElement>('.hs__panel[data-counts]');
-  if (!panel) return;
-  const data = JSON.parse(panel.dataset.counts!) as { toronto: Counts; areas: Record<string, Counts> };
-  const off = !!(p.get('city') || p.get('for'));
-  panel.classList.toggle('hs__panel--nocounts', off);
-  const chosen = p.get('home') ?? '';
-  const home = chosen in HOMES ? chosen : 'total';
-  const area = data.areas[p.get('area') ?? ''];
-  for (const e of panel.querySelectorAll<HTMLElement>('[data-count-home]')) e.textContent = fmt((area ?? data.toronto)[e.dataset.countHome!]);
-  for (const e of panel.querySelectorAll<HTMLElement>('[data-count-area]')) e.textContent = fmt(data.areas[e.dataset.countArea!]?.[home]);
-}
-
-/** Plain words for one chosen filter, for the chips above the results. */
-function chipLabel(key: string, value: string): string | null {
-  switch (key) {
-    case 'home': return HOMES[value]?.label ?? null;
-    case 'area': return AREAS[value]?.label ?? null;
-    case 'price': return PRICES[value]?.label ?? null;
-    case 'beds': return `${value} or more bedrooms`;
-    case 'city': return value;
-    case 'for': return value === 'lease' ? 'Homes to rent' : null;
-    case 'sort': return { low: 'Lowest price first', high: 'Highest price first' }[value] ?? null;
-    case 'sold': return SOLD_WINDOWS[value]?.label ?? null;
-    default: return null;
-  }
-}
-
-/** One chip per chosen filter. Pressing a chip removes that filter, like every other choice a link. */
-export function renderChips(p: URLSearchParams) {
-  const box = document.getElementById('chips');
-  if (!box) return;
-  const chips = [...p.entries()]
-    .filter(([k]) => k !== 'page')
-    .map(([k, v]) => {
-      const label = chipLabel(k, v);
-      if (!label) return null;
-      const a = el('a', 'hs__chip') as HTMLAnchorElement;
-      a.href = withValue(p, k, '');
-      a.append(el('span', null, label), el('span', 'hs__chip-x', '×'));
-      a.setAttribute('aria-label', `Remove ${label}`);
-      return a;
-    })
-    .filter((a): a is HTMLAnchorElement => !!a);
-  box.replaceChildren(...chips);
-  box.hidden = !chips.length;
 }
 
 export function bindChoices(load: () => void) {
   document.addEventListener('click', (e) => {
-    const a = (e.target as Element).closest<HTMLAnchorElement>('.hs__choice, .hs__chip, #prev, #next');
+    const a = (e.target as Element).closest<HTMLAnchorElement>('.hs__choice, .hs__choice-remove, #prev, #next');
     if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
     e.preventDefault();
     history.pushState(null, '', a.getAttribute('href'));
@@ -132,21 +75,96 @@ export function describe(p: URLSearchParams, verb: string, one = false): string 
 
 type Facts = { style?: string | null; type?: string | null; beds?: number | null; baths?: number | null };
 
+/** The home type in plain words: "Bungalow" when the style says so, else the property type. */
+export const homeType = (l: Facts) => (l.style && !/storey|apartment|other/i.test(l.style) ? l.style : l.type) || '';
+
 /** "Bungalow · 3 bedrooms · 2 bathrooms", in words rather than abbreviations. */
 export const factsLine = (l: Facts) =>
-  [
-    l.style && !/storey|apartment|other/i.test(l.style) ? l.style : l.type,
-    l.beds != null && `${l.beds} bedroom${l.beds === 1 ? '' : 's'}`,
-    l.baths != null && `${l.baths} bathroom${l.baths === 1 ? '' : 's'}`,
-  ].filter(Boolean).join(' · ');
+  [homeType(l), l.beds != null && `${l.beds} bedroom${l.beds === 1 ? '' : 's'}`, l.baths != null && `${l.baths} bathroom${l.baths === 1 ? '' : 's'}`]
+    .filter(Boolean)
+    .join(' · ');
 
-export function photo(src: string | null | undefined, alt: string) {
-  const img = el('img', 'hs__img') as HTMLImageElement;
-  img.alt = alt;
+const svg = (inner: string) =>
+  `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+const BED = svg('<path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7M3 14h18M3 18v2M21 18v2M7 9V7a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2"/>');
+const BATH = svg('<path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3ZM6 12V6a2 2 0 0 1 4 0M7 19l-1 2M17 19l1 2"/>');
+
+/** Bedrooms and bathrooms with small pictures, each also written out in words. */
+export function factsRow(l: Facts) {
+  const row = el('p', 'hs__facts');
+  const add = (icon: string, text: string) => {
+    const f = el('span', 'hs__fact');
+    f.innerHTML = icon; // fixed SVG markup from this file, never listing data
+    f.append(text);
+    row.append(f);
+  };
+  if (l.beds != null) add(BED, `${l.beds} bedroom${l.beds === 1 ? '' : 's'}`);
+  if (l.baths != null) add(BATH, `${l.baths} bathroom${l.baths === 1 ? '' : 's'}`);
+  return row;
+}
+
+/** The photo area of a card: the photo with a home-type badge, or a clear "photo coming soon". */
+export function media(src: string | null | undefined, alt: string, badge: string) {
+  const box = el('div', 'hs__media');
   if (src) {
-    img.src = src;
+    const img = el('img', 'hs__img') as HTMLImageElement;
+    img.alt = alt;
     img.loading = 'lazy';
     img.referrerPolicy = 'no-referrer';
+    img.src = src;
+    box.append(img);
+  } else {
+    const none = el('div', 'hs__noimg');
+    none.innerHTML = '<svg class="hs-icon" viewBox="0 0 64 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><path d="M8 22 32 6l24 16"/><path d="M13 19v25h38V19"/><path d="M28 44V34h8v10"/></svg>';
+    none.append(el('span', null, 'Photo coming soon'));
+    box.append(none);
   }
-  return img;
+  if (badge) box.append(el('span', 'hs__badge', badge));
+  return box;
+}
+
+/** Removable chips for each choice in effect, so it is always clear what the list is showing. */
+export function activeChips(p: URLSearchParams, holder: HTMLElement, label: (key: string, value: string) => string) {
+  holder.replaceChildren();
+  for (const key of ['home', 'area', 'price', 'beds', 'sold', 'city', 'for', 'sort']) {
+    const value = p.get(key);
+    if (!value) continue;
+    const a = el('a') as HTMLAnchorElement;
+    a.className = 'hs__choice-remove';
+    a.href = withValue(p, key, '');
+    a.setAttribute('aria-label', `Remove ${label(key, value)}`);
+    a.append(label(key, value), Object.assign(el('span', null, '✕'), { ariaHidden: 'true' }));
+    holder.append(a);
+  }
+  holder.hidden = !holder.children.length;
+}
+
+/** Today's for-sale counts on the buttons, following the chosen neighbourhood and home type. */
+export function syncCounts(p: URLSearchParams) {
+  const box = document.querySelector<HTMLElement>('.hs-filters[data-counts]');
+  if (!box) return;
+  const data = JSON.parse(box.dataset.counts!) as { toronto: Record<string, number>; areas: Record<string, Record<string, number>> };
+  const off = !!(p.get('city') || p.get('for'));
+  const scope = (p.get('area') && data.areas[p.get('area')!]) || data.toronto;
+  const fmt = (v?: number) => (!off && v ? v.toLocaleString('en-CA') : '');
+  for (const c of box.querySelectorAll<HTMLElement>('[data-count]')) c.textContent = fmt(scope[c.dataset.count!]);
+  const home = p.get('home') || 'total';
+  for (const c of box.querySelectorAll<HTMLElement>('[data-area-count]')) c.textContent = fmt(data.areas[c.dataset.areaCount!]?.[home]);
+  // The daily counts cover Toronto homes for sale only, so the note goes with them.
+  const note = document.getElementById('count-note');
+  if (note) note.hidden = off;
+}
+
+/** On phones, the bottom bar hides while the results are on screen and comes back when they are not. */
+export function watchJump() {
+  const bar = document.getElementById('jump');
+  const results = document.getElementById('results-top');
+  if (!bar || !results || !('IntersectionObserver' in window)) return;
+  let resultsInView = false;
+  const update = () => bar.classList.toggle('is-away', resultsInView || results.getBoundingClientRect().top < 0);
+  new IntersectionObserver((entries) => {
+    resultsInView = entries[0].isIntersecting;
+    update();
+  }).observe(results);
+  addEventListener('scroll', update, { passive: true });
 }

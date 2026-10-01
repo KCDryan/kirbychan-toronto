@@ -1,100 +1,92 @@
 ---
 /**
- * The one-click steps (home type, neighbourhood, price, bedrooms), shared by /homes-for-sale/ and /sold/.
- * Wired up by src/scripts/home-search.ts. With `counts`, each home type and neighbourhood shows how many
- * Toronto homes are for sale today, from src/data/listing-counts.json (refreshed every morning).
+ * The one-click filters for /homes-for-sale/ and /sold/: home type, neighbourhood, price and bedrooms.
+ * Every control is a plain link carrying data-key and data-value; src/scripts/home-search.ts turns
+ * clicks into in-place updates and marks the chosen one with aria-current. With counts on, home types
+ * and neighbourhoods show today's Toronto for-sale counts from src/data/listing-counts.json.
  */
+import HomeIcon from './HomeIcon.astro';
+import counts from '../data/listing-counts.json';
 import { AREAS, HOMES, PRICES } from '../lib/proptx';
-import listingCounts from '../data/listing-counts.json';
 
 interface Props {
   /** Label for the price step: asking price or sold price. */
   priceLabel?: string;
-  /** Show today's for-sale counts on the buttons. Only true where the search is of homes for sale. */
-  counts?: boolean;
+  /** Show today's for-sale counts on the buttons. Off for sold prices. */
+  showCounts?: boolean;
 }
-const { priceLabel = 'Your price', counts = false } = Astro.props;
+const { priceLabel = 'Your price', showCounts: wantCounts = true } = Astro.props;
 const BEDS = ['1', '2', '3', '4'];
-const showCounts = counts && listingCounts.toronto.total > 0;
-const n = (v: number | undefined) => (v ?? 0).toLocaleString('en-CA');
-const areaCounts = listingCounts.areas as Record<string, Record<string, number>>;
-const torontoCounts = listingCounts.toronto as Record<string, number>;
-const countsDate = listingCounts.updated
-  ? new Date(listingCounts.updated).toLocaleDateString('en-CA', { month: 'long', day: 'numeric', timeZone: 'America/Toronto' })
+const toronto = counts.toronto as Record<string, number>;
+const areas = counts.areas as Record<string, Record<string, number>>;
+const showCounts = wantCounts && toronto.total > 0;
+const n = (v: number | undefined) => (typeof v === 'number' && v > 0 ? v.toLocaleString('en-CA') : '');
+const countsDate = counts.updated
+  ? new Date(counts.updated).toLocaleDateString('en-CA', { month: 'long', day: 'numeric', timeZone: 'America/Toronto' })
   : '';
-
-/** Simple line icons, one per home type. Decorative: the label beside each says what it is. */
-const ICONS: Record<string, string> = {
-  any: 'M4 10.5 12 4l8 6.5M6 9v10h12V9M10 19v-5h4v5',
-  bungalow: 'M2.5 12 12 5l9.5 7M5 10.5V19h14v-8.5M10.5 19v-4.5h3V19',
-  condo: 'M6 21V4h12v17M3 21h18M9 7h2M13 7h2M9 10.5h2M13 10.5h2M9 14h2M13 14h2M11 21v-3h2v3',
-  townhouse: 'M2 20V10l4-4 4 4 4-4 4 4 4-4v14M2 20h20M5 20v-4h2v4M11 20v-4h2v4M17 20v-4h2v4',
-  house: 'M3 11 12 3.5 21 11M5.5 9v11h13V9M10 20v-5h4v5M8 12.5h2M14 12.5h2',
-};
-const icon = (k: string) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${ICONS[k]}"/></svg>`;
 ---
 
-<div class="hs__panel" data-counts={showCounts ? JSON.stringify({ toronto: listingCounts.toronto, areas: listingCounts.areas }) : undefined}>
-  <div class="hs__step">
-    <h2><span class="hs__num">1</span> What kind of home?</h2>
-    <div class="hs__choices hs__choices--tiles">
-      <a class="hs__choice hs__tile" data-key="home" data-value="" href="?">
-        <Fragment set:html={icon('any')} />
-        <strong>Any home</strong><span>Show everything</span>
-        {showCounts && <em class="hs__count" data-count-home="total">{n(listingCounts.toronto.total)}</em>}
-      </a>
+<div class="hs-filters" data-counts={showCounts ? JSON.stringify({ toronto, areas }) : undefined}>
+  <section class="hs-group" aria-labelledby="hs-g-home">
+    <h2 class="hs-group__title" id="hs-g-home"><span class="hs__num">1</span> What kind of home?</h2>
+    <div class="hs-tiles">
       {Object.entries(HOMES).map(([k, h]) => (
-        <a class="hs__choice hs__tile" data-key="home" data-value={k} href={`?home=${k}`}>
-          <Fragment set:html={icon(k)} />
-          <strong>{h.label}</strong><span>{h.hint}</span>
-          {showCounts && <em class="hs__count" data-count-home={k}>{n(torontoCounts[k])}</em>}
+        <a class="hs__choice hs-tile" data-key="home" data-value={k} href={`?home=${k}`}>
+          <HomeIcon kind={k} />
+          <strong>{h.label}</strong>
+          <span class="hs-tile__hint">{h.hint}</span>
+          {showCounts && <span class="hs-count" data-count={k}>{n(toronto[k])}</span>}
         </a>
       ))}
+      <a class="hs__choice hs-tile hs-tile--any" data-key="home" data-value="" href="?">
+        <HomeIcon kind="any" />
+        <strong>Any home</strong>
+        <span class="hs-tile__hint">All four types together</span>
+        {showCounts && <span class="hs-count" data-count="total">{n(toronto.total)}</span>}
+      </a>
     </div>
-  </div>
+  </section>
 
-  <div class="hs__step" id="area-step">
-    <h2><span class="hs__num">2</span> Where in Toronto? <small>(optional)</small></h2>
-    <div class="hs__choices hs__choices--pills">
-      <a class="hs__choice hs__pill" data-key="area" data-value="" href="?"><strong>All of Toronto</strong></a>
+  <section class="hs-group" id="area-step" aria-labelledby="hs-g-area">
+    <h2 class="hs-group__title" id="hs-g-area"><span class="hs__num">2</span> Where in Toronto? <small>Optional</small></h2>
+    <div class="hs-chips hs-chips--areas">
+      <a class="hs__choice hs-chip" data-key="area" data-value="" href="?">All of Toronto</a>
       {Object.entries(AREAS).map(([k, a]) => (
-        <a class="hs__choice hs__pill" data-key="area" data-value={k} href={`?area=${k}`}>
-          <strong>{a.label}</strong>
-          {showCounts && <em class="hs__count" data-count-area={k}>{n(areaCounts[k]?.total)}</em>}
+        <a class="hs__choice hs-chip" data-key="area" data-value={k} href={`?area=${k}`}>
+          {a.label}
+          {showCounts && <span class="hs-chip__count" data-area-count={k}>{n(areas[k]?.total)}</span>}
         </a>
       ))}
     </div>
-  </div>
+  </section>
 
-  <div class="hs__pair">
-    <div class="hs__step">
-      <h2><span class="hs__num">3</span> {priceLabel} <small>(optional)</small></h2>
-      <div class="hs__choices hs__choices--pills">
-        <a class="hs__choice hs__pill" data-key="price" data-value="" href="?"><strong>Any price</strong></a>
-        {Object.entries(PRICES).map(([k, p]) => (
-          <a class="hs__choice hs__pill" data-key="price" data-value={k} href={`?price=${k}`}><strong>{p.label}</strong></a>
-        ))}
-      </div>
+  <section class="hs-group" aria-labelledby="hs-g-price">
+    <h2 class="hs-group__title" id="hs-g-price"><span class="hs__num">3</span> {priceLabel} <small>Optional</small></h2>
+    <div class="hs-chips hs-chips--price">
+      <a class="hs__choice hs-chip" data-key="price" data-value="" href="?">Any price</a>
+      {Object.entries(PRICES).map(([k, p]) => (
+        <a class="hs__choice hs-chip" data-key="price" data-value={k} href={`?price=${k}`}>{p.label}</a>
+      ))}
     </div>
+  </section>
 
-    <div class="hs__step">
-      <h2><span class="hs__num">4</span> Bedrooms <small>(optional)</small></h2>
-      <div class="hs__choices hs__choices--pills">
-        <a class="hs__choice hs__pill" data-key="beds" data-value="" href="?"><strong>Any</strong></a>
-        {BEDS.map((b) => (
-          <a class="hs__choice hs__pill" data-key="beds" data-value={b} href={`?beds=${b}`}><strong>{b} or more</strong></a>
-        ))}
-      </div>
+  <section class="hs-group" aria-labelledby="hs-g-beds">
+    <h2 class="hs-group__title" id="hs-g-beds"><span class="hs__num">4</span> Bedrooms <small>Optional</small></h2>
+    <div class="hs-seg" role="group" aria-labelledby="hs-g-beds">
+      <a class="hs__choice hs-seg__item" data-key="beds" data-value="" href="?">Any</a>
+      {BEDS.map((b) => (
+        <a class="hs__choice hs-seg__item" data-key="beds" data-value={b} href={`?beds=${b}`} aria-label={`${b} or more bedrooms`}>{b}+</a>
+      ))}
     </div>
-  </div>
+  </section>
 
   <slot />
 
   {
     showCounts && (
-      <p class="hs__note" id="count-note">
-        The numbers are Toronto homes for sale on {countsDate}, before any price or bedroom choice. They
-        are updated every morning.
+      <p class="hs-note" id="count-note">
+        Numbers on the buttons are Toronto homes for sale on {countsDate}, before price and bedrooms are
+        chosen. They refresh every morning.
       </p>
     )
   }
