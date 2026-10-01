@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
 import site from '../data/site.json';
 import { canonical, absolute, DEFAULT_OG } from '../lib/seo';
-import { realEstateAgent } from '../lib/schema';
+import { realEstateAgent, website } from '../lib/schema';
 import LangSuggest from '../components/LangSuggest.astro';
 import { LOCALES, basePath, langFromPath, langsForPath, localePath, t } from '../i18n';
 
@@ -52,7 +52,8 @@ const image = absolute(ogImage);
 // Sitewide agent graph. areaServed lists Toronto and every neighbourhood guide.
 const agent = realEstateAgent(['Toronto', ...(await getCollection('neighbourhoods')).map((n) => n.data.name)]);
 
-const graphs = [agent, ...jsonLd].filter(Boolean);
+const isHome = Astro.url.pathname === '/';
+const graphs = [agent, isHome && website(), ...jsonLd].filter(Boolean);
 ---
 
 <!doctype html>

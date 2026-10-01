@@ -30,15 +30,67 @@ const categoryName = BLOG_CATEGORIES[d.category];
 const categoryPath = `/blog/category/${d.category}/`;
 const guide = d.guide ? { path: `/${d.guide}/`, label: GUIDES[d.guide].label } : undefined;
 
+// Posts that list no links of their own (agents' quick posts, mostly) get them from the headline,
+// description and category, so every post leads on to a neighbourhood, a guide and a tool.
+const topic = `${d.h1} ${d.description}`;
+const HOOD_WORDS: Record<string, RegExp> = {
+  leaside: /\bleaside\b/i,
+  'lawrence-park': /\blawrence park\b/i,
+  'yonge-eglinton': /\byonge (and|&) eglinton\b|\byonge-eglinton\b/i,
+  'don-mills': /\bdon mills\b/i,
+  'the-annex': /\bannex\b/i,
+  'bayview-village': /\bbayview village\b/i,
+  willowdale: /\bwillowdale\b|\bnorth york centre\b/i,
+  'downtown-waterfront': /\bwaterfront\b|\bcityplace\b|\bst\.? lawrence\b/i,
+  'high-park': /\bhigh park\b/i,
+  'the-beaches': /\bthe beach(es)?\b/i,
+  riverdale: /\briverdale\b|\bleslieville\b/i,
+  'islington-village': /\bislington\b|\betobicoke city centre\b/i,
+};
+const SERVICE_WORDS: [string, RegExp][] = [
+  ['estate-sales', /\b(estate|probate|executor)/i],
+  ['separation-and-divorce', /\b(separation|divorce)/i],
+  ['new-construction', /\b(pre-construction|new construction|builder|assignment)/i],
+  ['luxury', /\bluxury\b/i],
+  ['upsizing', /\b(upsiz|move up|moving up)/i],
+  ['relocation', /\b(relocat|moving to toronto|newcomer)/i],
+  ['investors', /\b(invest|rental|landlord)/i],
+  ['downsizing', /\b(downsiz|reverse mortgage|senior|bungalow)/i],
+  ['first-time-buyers', /\bfirst[- ]time\b/i],
+];
+const CATEGORY_SERVICE: Partial<Record<string, string>> = {
+  downsizing: 'downsizing', buying: 'first-time-buyers', 'costs-and-taxes': 'first-time-buyers', condos: 'downsizing',
+  'new-construction': 'new-construction', 'moving-to-toronto': 'relocation', investing: 'investors', neighbourhoods: 'relocation', selling: 'downsizing',
+};
+const TOOLS: Partial<Record<string, { href: string; label: string; note: string }[]>> = (() => {
+  const ltt = { href: '/land-transfer-tax-calculator-toronto/', label: 'Toronto land transfer tax calculator', note: 'Both the Ontario and the City tax on any price, with the first-time buyer rebates.' };
+  const mortgage = { href: '/mortgage-calculator-toronto/', label: 'Toronto mortgage calculator', note: 'Monthly payment, smallest down payment allowed and the qualifying rate.' };
+  const prices = { href: '/toronto-house-prices/', label: 'Toronto house prices', note: 'TRREB figures for the city by property type and community.' };
+  const sold = { href: '/sold/', label: 'Toronto sold prices', note: 'Look up what homes sold for with a free account.' };
+  const downsizeHub = { href: '/best-toronto-neighbourhoods-for-downsizing/', label: 'Toronto neighbourhoods for downsizing', note: 'Where the condos, condo townhouses and semis are listed.' };
+  const houses = { href: '/best-toronto-neighbourhoods-for-families/', label: 'Toronto neighbourhoods with the most houses', note: 'Detached, semi-detached and freehold townhouse sales by area.' };
+  const commute = { href: '/best-toronto-neighbourhoods-for-commuters/', label: 'Toronto neighbourhoods by subway commute', note: 'Stations and stops to Union for each neighbourhood.' };
+  return {
+    buying: [mortgage, ltt], 'costs-and-taxes': [ltt, mortgage], condos: [downsizeHub, prices], 'new-construction': [mortgage, ltt],
+    selling: [prices, sold], market: [prices, sold], downsizing: [downsizeHub, sold], investing: [prices, mortgage],
+    neighbourhoods: [houses, commute], 'moving-to-toronto': [commute, houses],
+  };
+})();
+
 const allHoods = await getCollection('neighbourhoods', ({ data }) => !data.draft);
-const linkedHoods = d.related
+const hoodIds = d.related.length ? d.related : Object.keys(HOOD_WORDS).filter((id) => HOOD_WORDS[id].test(topic)).slice(0, 2);
+const linkedHoods = hoodIds
   .map((slug) => allHoods.find((h) => h.id === slug))
   .filter((h): h is CollectionEntry<'neighbourhoods'> => Boolean(h));
 
 const allServices = await getCollection('services', ({ data }) => !data.draft);
-const linkedServices = d.relatedServices
+const serviceIds = d.relatedServices.length
+  ? d.relatedServices
+  : [...new Set([...SERVICE_WORDS.filter(([, re]) => re.test(topic)).map(([id]) => id), CATEGORY_SERVICE[d.category]].filter((x): x is string => Boolean(x)))].slice(0, 2);
+const linkedServices = serviceIds
   .map((slug) => allServices.find((s) => s.id === slug))
   .filter((s): s is CollectionEntry<'services'> => Boolean(s));
+const linkedTools = (TOOLS[d.category] ?? []).filter((t) => t.href !== Astro.url.pathname);
 
 // Related posts: same category first, then the newest of the rest.
 const others = (await getCollection('blog', ({ data }) => !data.draft))
@@ -57,7 +109,8 @@ const crumbs = [
 ];
 
 // Share image: the neighbourhood photo when the post is about one.
-const hoodPhoto = d.neighbourhood ? neighbourhoodPhoto(d.neighbourhood) : undefined;
+const photoHood = d.neighbourhood ?? (linkedHoods.length === 1 ? linkedHoods[0].id : undefined);
+const hoodPhoto = photoHood ? neighbourhoodPhoto(photoHood) : undefined;
 const ogImage = hoodPhoto
   ? (await getImage({ src: hoodPhoto, width: 1200, height: 630, format: 'jpg', fit: 'cover' })).src
   : undefined;
@@ -144,7 +197,7 @@ const jsonLd = [
           <FaqAccordion faq={d.faq} />
 
           {
-            (linkedHoods.length > 0 || linkedServices.length > 0) && (
+            (linkedHoods.length > 0 || linkedServices.length > 0 || linkedTools.length > 0) && (
               <section class="post-links" aria-labelledby="post-links-heading">
                 <h2 id="post-links-heading">Keep exploring</h2>
                 <ul>
@@ -158,6 +211,12 @@ const jsonLd = [
                     <li>
                       <a href={servicePath(s.id)}>{s.data.name}</a>
                       <span>{s.data.summary}</span>
+                    </li>
+                  ))}
+                  {linkedTools.map((t) => (
+                    <li>
+                      <a href={t.href}>{t.label}</a>
+                      <span>{t.note}</span>
                     </li>
                   ))}
                 </ul>

@@ -1,5 +1,5 @@
 // @ts-check
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
@@ -7,10 +7,10 @@ import sitemap from '@astrojs/sitemap';
 
 const SITE = 'https://kirbychantoronto.com';
 
-/** Read top level frontmatter values from every MDX file in a folder. */
-function frontmatter(folder) {
+/** Read top level frontmatter values from every MDX file in a folder, including agents' quick/ posts under blog/. */
+function frontmatter(folder, sub = '') {
   // Resolved from this file, so the config works from any working directory.
-  const dir = fileURLToPath(new URL(folder, import.meta.url));
+  const dir = fileURLToPath(new URL(folder + sub, import.meta.url));
   const out = [];
   for (const name of readdirSync(dir)) {
     if (!name.endsWith('.mdx') || name.startsWith('_')) continue;
@@ -28,7 +28,7 @@ function frontmatter(folder) {
 // lastmod rather than a made up one.
 const lastmod = new Map();
 const categoryCounts = new Map();
-for (const post of frontmatter('./src/content/blog/')) {
+for (const post of [...frontmatter('./src/content/blog/'), ...frontmatter('./src/content/blog/', 'quick/')]) {
   if (post.get('draft') === 'true') continue;
   const date = post.get('updated') ?? post.get('published');
   if (date) lastmod.set(`${SITE}/blog/${post.slug}/`, date);
@@ -57,6 +57,10 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) => {
+        // Whatever a page decides about indexing, the sitemap follows: a built page that carries
+        // noindex (thin video notes, empty listings) is left out. The sitemap runs after the pages build.
+        const built = fileURLToPath(new URL(`./dist${new URL(page).pathname}index.html`, import.meta.url));
+        if (existsSync(built) && /<meta name="robots" content="[^"]*noindex/.test(readFileSync(built, 'utf8'))) return false;
         if (page.includes('/contact/thank-you/')) return false;
         // The single-listing page is filled in the browser and is noindex.
         if (page.includes('/homes-for-sale/listing/')) return false;

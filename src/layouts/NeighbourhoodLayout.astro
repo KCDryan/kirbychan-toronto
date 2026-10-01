@@ -14,6 +14,7 @@ import { getImage } from 'astro:assets';
 import { neighbourhoodPhoto } from '../lib/photos';
 import site from '../data/site.json';
 import listingCounts from '../data/listing-counts.json';
+import monthly from '../data/trreb-monthly.json';
 import { AREAS } from '../lib/proptx';
 import NewsItems from '../components/NewsItems.astro';
 import credits from '../data/photo-credits.json';
@@ -194,7 +195,7 @@ const jsonLd = [
             </div>
             <p class="bands__note">
               Figures are general information for the period stated and are not an appraisal of any
-              specific property.
+              specific property. Citywide figures are on <a href="/toronto-house-prices/">Toronto house prices by property type</a>{monthly.report && <> and in the <a href={monthly.report}>{monthly.period} Toronto market report</a></>}.
             </p>
           </section>
         )
@@ -285,6 +286,16 @@ const jsonLd = [
           </div>
         )
       }
+
+      <div class="aside-card">
+        <h2>Compare Toronto neighbourhoods</h2>
+        <ul>
+          <li><a href="/best-toronto-neighbourhoods-for-downsizing/">Neighbourhoods for downsizing</a><span>Where condos, condo townhouses and semis are listed.</span></li>
+          <li><a href="/best-toronto-neighbourhoods-for-families/">Neighbourhoods with the most houses</a><span>Detached, semi-detached and freehold townhouse areas.</span></li>
+          <li><a href="/best-toronto-neighbourhoods-for-commuters/">Neighbourhoods by subway commute</a><span>Stations and stops to Union station.</span></li>
+          <li><a href="/toronto-house-prices/">Toronto house prices</a><span>TRREB figures by property type and community.</span></li>
+        </ul>
+      </div>
 
       <div class="aside-card aside-card--dark on-dark">
         <h2>Thinking about {d.name}?</h2>
