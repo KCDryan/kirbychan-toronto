@@ -196,7 +196,10 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
   if (LOOKUPS_ON && env.GEOCODIO_API_KEY && todo.length) {
     const db = env.VOW_DB;
     const limit = Math.min(Number(env.GEOCODIO_DAILY_LIMIT) || 2000, 2400);
-    const room = Math.min(MAX_LOOKUPS, limit - (await spentToday(db)));
+    // After Geocodio refuses (free quota used up for the day), wait an hour before asking again.
+    const last = await db.prepare('SELECT at, text FROM geocode_status WHERE id = 1').bind().first<{ at: number; text: string }>();
+    const refused = !!last && last.text.includes('Geocodio 403') && Date.now() - last.at < 36e5;
+    const room = refused ? 0 : Math.min(MAX_LOOKUPS, limit - (await spentToday(db)));
     if (room > 0) {
       pending = true;
       const batch = todo.slice(0, room);
