@@ -144,7 +144,7 @@ const jsonLd = [
 >
   <Breadcrumbs crumbs={crumbs} />
 
-  <article>
+  <article data-upload={d.quick ? d.uploadVersion : undefined}>
     <header class="post-hero">
       <div class="wrap-narrow">
         <p class="post-cat"><a href={categoryPath}>{categoryName}</a></p>

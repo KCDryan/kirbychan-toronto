@@ -18,13 +18,14 @@ import site from '../src/data/site.json' with { type: 'json' };
 
 const out = mkdtempSync(join(tmpdir(), 'vow-test-'));
 await build({
-  entryPoints: { vow: 'functions/api/vow/[action].ts', sold: 'functions/api/sold.ts', lead: 'functions/api/lead.ts' },
-  bundle: true, format: 'esm', platform: 'neutral', outdir: out, outExtension: { '.js': '.mjs' }, logLevel: 'error',
+  entryPoints: { vow: 'functions/api/vow/[action].ts', sold: 'functions/api/sold.ts', lead: 'functions/api/lead.ts', upload: 'functions/api/upload/[action].ts' },
+  bundle: true, format: 'esm', platform: 'neutral', mainFields: ['module', 'main'], outdir: out, outExtension: { '.js': '.mjs' }, logLevel: 'error',
 });
 const { onRequest: vow } = await import(pathToFileURL(join(out, 'vow.mjs')).href);
 const { onRequestGet: sold } = await import(pathToFileURL(join(out, 'sold.mjs')).href);
 const leadModule = await import(pathToFileURL(join(out, 'lead.mjs')).href);
 const lead = leadModule.onRequestPost ?? leadModule.onRequest;
+const { onRequest: upload } = await import(pathToFileURL(join(out, 'upload.mjs')).href);
 
 /** D1's prepare/bind/first/run/all over node:sqlite. */
 const sqlite = new DatabaseSync(':memory:');
@@ -165,5 +166,23 @@ ok(lr.status === 200 && leadMail?.reply_to === 'bob@example.com' && leadMail.tex
 const bad = new FormData();
 for (const [k, v] of Object.entries({ name: 'Bot', email: 'bot@example.com', consent: 'yes', 'cf-turnstile-response': 'robot' })) bad.append(k, v);
 ok((await lead({ request: new Request(`${ORIGIN}/api/lead`, { method: 'POST', headers: { accept: 'application/json' }, body: bad }), env })).status === 403, 'an enquiry that fails Turnstile is refused');
+
+console.log('Blog upload sign in');
+const uploadEnv = { VOW_DB: db, UPLOAD_PASSWORD: 'shared test pass 42', ASSETS: { fetch: async () => new Response('', { status: 404 }) } };
+const up = async (action, body, { cookie, origin = ORIGIN, ip = '203.0.113.70' } = {}) => {
+  const headers = { 'content-type': 'application/json', origin, 'cf-connecting-ip': ip, ...(cookie ? { cookie } : {}) };
+  const init = body === undefined ? { headers } : { method: 'POST', headers, body: JSON.stringify(body) };
+  const res = await upload({ request: new Request(`${ORIGIN}/api/upload/${action}`, init), env: uploadEnv, params: { action }, waitUntil: () => {} });
+  return { status: res.status, cookie: res.headers.get('set-cookie') };
+};
+ok((await up('list')).status === 401 && (await up('unpublish', { slug: 'x' })).status === 401, 'uploads need a session');
+ok((await up('login', { password: 'shared test pass 42' }, { origin: 'https://evil.example' })).status === 403, 'an upload sign in from another site is refused');
+const upCookie = (await up('login', { password: 'shared test pass 42' })).cookie;
+ok(/^__Host-kc_upload=[0-9a-f]{64}; Path=\/; HttpOnly; Secure; SameSite=Strict/.test(upCookie ?? ''), 'the shared password starts a __Host- HttpOnly Secure session');
+ok((await up('list', undefined, { cookie: session(upCookie) })).status === 200, 'a signed in session can list uploads');
+for (let i = 0; i < 10; i++) await up('login', { password: `guess ${i}` }, { ip: '192.0.2.77' });
+ok((await up('login', { password: 'shared test pass 42' }, { ip: '192.0.2.77' })).status === 429, 'ten wrong upload passwords lock that address for an hour');
+ok((await upload({ request: new Request(`${ORIGIN}/api/upload/me`), env: { ...uploadEnv, UPLOAD_PASSWORD: 'short' }, params: { action: 'me' } })).status === 200 &&
+  (await up('login', { password: 'short' }, {})).status !== 200, 'a password under 12 characters is never accepted');
 
 console.log(`\nSecurity test passed: ${passed} checks.`);

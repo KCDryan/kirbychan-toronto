@@ -13,12 +13,12 @@ function frontmatter(folder, sub = '') {
   const dir = fileURLToPath(new URL(folder + sub, import.meta.url));
   const out = [];
   for (const name of readdirSync(dir)) {
-    if (!name.endsWith('.mdx') || name.startsWith('_')) continue;
+    if (!/\.mdx?$/.test(name) || name.startsWith('_')) continue;
     const text = readFileSync(`${dir}${name}`, 'utf8').replace(/\r\n/g, '\n');
     const block = text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
     /** @param {string} key */
     const get = (key) => block.match(new RegExp(`^${key}:\\s*["']?([^"'\\n]+)["']?\\s*$`, 'm'))?.[1]?.trim();
-    out.push({ slug: name.replace(/\.mdx$/, ''), get });
+    out.push({ slug: name.replace(/\.mdx?$/, ''), get });
   }
   return out;
 }

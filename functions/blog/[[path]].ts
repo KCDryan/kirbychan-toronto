@@ -1,0 +1,44 @@
+/**
+ * Serves posts uploaded at /upload/ the moment they are published. Every other /blog/ page is the
+ * built page, untouched.
+ *
+ * For an uploaded post: taken down means 404. Otherwise the built page is used once a build has
+ * caught up with this version of the post (it carries data-upload="<version>"); until then the post
+ * is poured into the built blog layout shell (src/lib/uploads.ts).
+ */
+import { SHELL, ensureUploadSchema, fillShell, getUpload, type UploadEnv } from '../../src/lib/uploads';
+
+interface Context {
+  request: Request;
+  env: UploadEnv;
+  next(): Promise<Response>;
+}
+
+export async function onRequest({ request, env, next }: Context): Promise<Response> {
+  const slug = new URL(request.url).pathname.match(/^\/blog\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/)?.[1];
+  if (!slug || !env.VOW_DB || !['GET', 'HEAD'].includes(request.method)) return next();
+  let upload;
+  try {
+    await ensureUploadSchema(env.VOW_DB);
+    upload = await getUpload(env.VOW_DB, slug);
+  } catch {
+    return next();
+  }
+  if (!upload) return next();
+
+  if (!upload.live) {
+    const notFound = await env.ASSETS!.fetch(new URL('/404.html', request.url));
+    return new Response(notFound.body, { status: 404, headers: notFound.headers });
+  }
+  const built = await next();
+  if (built.ok) {
+    const html = await built.text();
+    if (html.includes(`data-upload="${upload.post.updated}"`)) return new Response(html, built);
+  }
+  const shell = await env.ASSETS!.fetch(new URL(`${SHELL}${upload.post.category}/`, request.url));
+  if (!shell.ok) return built.ok ? next() : shell;
+  const headers = new Headers(shell.headers);
+  headers.delete('x-robots-tag');
+  headers.set('cache-control', 'public, max-age=0, must-revalidate');
+  return new Response(fillShell(await shell.text(), upload.post), { status: 200, headers });
+}

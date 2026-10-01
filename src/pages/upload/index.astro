@@ -1,0 +1,317 @@
+---
+/**
+ * Blog upload. Paste the HTML of an article (for example from onecutcontent.com), check the
+ * preview, press Publish: the post is live straight away in the site's own style. One shared
+ * password, set as UPLOAD_PASSWORD in Cloudflare. The API is functions/api/upload/[action].ts.
+ */
+import Base from '../../layouts/Base.astro';
+import { BLOG_CATEGORIES } from '../../lib/blog';
+---
+
+<Base title="Upload a blog post" description="Upload a blog post to the Kirby Chan & Co. Toronto website." noindex>
+  <div class="up wrap">
+    <h1>Upload a blog post</h1>
+    <p class="up__status" id="up-status" role="status" aria-live="polite">Loading…</p>
+
+    <section id="up-setup" class="up__box" hidden>
+      <p>Uploads are not switched on yet. The website owner needs to set the upload password in Cloudflare.</p>
+    </section>
+
+    <form id="up-login" class="up__box" hidden>
+      <label for="up-password">Password</label>
+      <input id="up-password" type="password" autocomplete="current-password" required />
+      <button class="btn btn--primary" type="submit">Sign in</button>
+    </form>
+
+    <div id="up-main" hidden>
+      <section class="up__box">
+        <h2><span class="up__num">1</span> Paste the article</h2>
+        <p>On onecutcontent.com, copy the HTML of your finished article. Then click in the box below and paste it.</p>
+        <textarea id="up-html" rows="8" spellcheck="false" placeholder="Paste here"></textarea>
+        <p class="up__or">
+          Or <label class="up__file">choose the saved HTML file<input id="up-file" type="file" accept=".html,.htm,.txt,text/html" /></label>
+        </p>
+      </section>
+
+      <section class="up__box" id="up-check" hidden>
+        <h2><span class="up__num">2</span> Check it</h2>
+        <label for="up-title">Title</label>
+        <input id="up-title" maxlength="90" />
+        <label for="up-category">Topic</label>
+        <select id="up-category">
+          {Object.entries(BLOG_CATEGORIES).map(([k, v]) => <option value={k}>{v}</option>)}
+        </select>
+        <ul class="up__notes" id="up-notes"></ul>
+        <p>This is exactly how the post will look on the website:</p>
+        <iframe id="up-preview" title="Preview of the post" sandbox="allow-same-origin"></iframe>
+      </section>
+
+      <section class="up__box" id="up-go" hidden>
+        <h2><span class="up__num">3</span> Publish</h2>
+        <button class="btn btn--primary up__big" id="up-publish" type="button">Publish now</button>
+        <div id="up-done" class="up__done" hidden>
+          <p><strong>Your post is live.</strong> <a id="up-link" target="_blank" rel="noopener">Open the post</a></p>
+          <button class="btn btn--ghost" id="up-again" type="button">Upload another post</button>
+        </div>
+      </section>
+
+      <section class="up__box">
+        <h2>Your uploaded posts</h2>
+        <ul class="up__list" id="up-list"><li>None yet.</li></ul>
+      </section>
+
+      <p><button class="btn btn--ghost btn--sm" id="up-logout" type="button">Sign out</button></p>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { convertHtml, guessCategory, slugFor, type Imported } from '../../lib/html-import';
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const status = $('up-status');
+  const say = (text: string, bad = false) => {
+    status.textContent = text;
+    status.classList.toggle('up__status--bad', bad);
+  };
+  const api = async (action: string, body?: unknown) => {
+    const res = await fetch(`/api/upload/${action}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    return { status: res.status, data: (await res.json().catch(() => ({}))) as Record<string, any> };
+  };
+  const show = (id: string, on: boolean) => ($(id).hidden = !on);
+
+  let article: Imported | null = null;
+  const post = () => {
+    const headline = $<HTMLInputElement>('up-title').value.trim();
+    return { ...article, headline, slug: slugFor(headline), category: $<HTMLSelectElement>('up-category').value };
+  };
+
+  async function start() {
+    const { data } = await api('me');
+    show('up-setup', !data.ready);
+    show('up-login', data.ready && !data.signedIn);
+    show('up-main', !!data.signedIn);
+    say(!data.ready ? '' : data.signedIn ? 'Signed in.' : 'Please sign in.');
+    if (data.signedIn) list();
+  }
+
+  async function list() {
+    const { data } = await api('list');
+    const ul = $('up-list');
+    ul.replaceChildren();
+    for (const p of data.posts ?? []) {
+      const li = document.createElement('li');
+      const a = Object.assign(document.createElement('a'), { href: p.url, target: '_blank', rel: 'noopener', textContent: p.headline });
+      li.append(a, ` ${p.live ? '' : '(taken down)'}`);
+      if (p.live) {
+        const b = Object.assign(document.createElement('button'), { type: 'button', className: 'btn btn--ghost btn--sm', textContent: 'Take down' });
+        b.onclick = async () => {
+          if (!confirm(`Take "${p.headline}" off the website?`)) return;
+          await api('unpublish', { slug: p.slug });
+          say('The post has been taken down.');
+          list();
+        };
+        li.append(b);
+      }
+      ul.append(li);
+    }
+    if (!ul.children.length) ul.innerHTML = '<li>None yet.</li>';
+  }
+
+  async function preview() {
+    show('up-done', false);
+    say('Making the preview…');
+    const { status: code, data } = await api('preview', { post: post() });
+    if (code === 401) return start();
+    if (data.error) return say(data.error, true);
+    $<HTMLIFrameElement>('up-preview').srcdoc = data.html;
+    show('up-check', true);
+    show('up-go', true);
+    $('up-publish').textContent = data.exists ? 'Replace the post that is up now' : 'Publish now';
+    say('Preview ready. Read it through, then press Publish below.');
+  }
+
+  function load(html: string) {
+    if (!html.trim()) return;
+    try {
+      article = convertHtml(html);
+    } catch {
+      article = null;
+    }
+    if (!article?.headline || !article.markdown) {
+      show('up-check', false);
+      show('up-go', false);
+      return say('That does not look like a whole article. Copy all of the HTML from onecutcontent.com and paste it again.', true);
+    }
+    $<HTMLInputElement>('up-title').value = article.headline.slice(0, 90);
+    $<HTMLSelectElement>('up-category').value = guessCategory(article.headline);
+    const notes = $('up-notes');
+    notes.replaceChildren(...article.warnings.map((w) => Object.assign(document.createElement('li'), { textContent: w.replace(/^the /, 'The ') })));
+    preview();
+  }
+
+  $('up-login').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    say('Signing in…');
+    const { data } = await api('login', { password: $<HTMLInputElement>('up-password').value });
+    if (data.error) return say(data.error, true);
+    $<HTMLInputElement>('up-password').value = '';
+    start();
+  });
+  $('up-html').addEventListener('input', (e) => load((e.target as HTMLTextAreaElement).value));
+  $('up-file').addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) load(await file.text());
+  });
+  $('up-title').addEventListener('change', preview);
+  $('up-category').addEventListener('change', preview);
+  $('up-publish').addEventListener('click', async () => {
+    say('Publishing…');
+    let { status: code, data } = await api('publish', { post: post() });
+    if (code === 409 && data.error === 'exists') {
+      if (!confirm('A post with this title is already on the website. Replace it with this one?')) return say('Nothing was changed.');
+      ({ data } = await api('publish', { post: post(), replace: true }));
+    }
+    if (data.error) return say(data.error, true);
+    $<HTMLAnchorElement>('up-link').href = data.url;
+    show('up-done', true);
+    say('Your post is live on the website.');
+    list();
+  });
+  $('up-again').addEventListener('click', () => {
+    article = null;
+    $<HTMLTextAreaElement>('up-html').value = '';
+    ['up-check', 'up-go', 'up-done'].forEach((id) => show(id, false));
+    say('Ready for the next post.');
+    window.scrollTo(0, 0);
+  });
+  $('up-logout').addEventListener('click', async () => {
+    await api('logout', {});
+    start();
+  });
+  start();
+</script>
+
+<style>
+  .up [hidden] {
+    display: none;
+  }
+  .up {
+    max-width: 920px;
+    padding-block: var(--sp-7) var(--sp-8);
+    font-size: 1.1rem;
+  }
+  .up h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--sp-3);
+  }
+  .up__box {
+    display: grid;
+    gap: var(--sp-3);
+    margin-top: var(--sp-6);
+    padding: var(--sp-6);
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+  }
+  .up__num {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.4rem;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+    font-size: 1rem;
+  }
+  .up label {
+    font-weight: 700;
+  }
+  .up input:not([type='file']),
+  .up select,
+  .up textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font: inherit;
+    border: 2px solid var(--rule);
+    border-radius: var(--radius);
+    background: #fff;
+  }
+  .up textarea {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.85rem;
+  }
+  .up input:focus,
+  .up select:focus,
+  .up textarea:focus {
+    outline: 3px solid var(--brand);
+    outline-offset: 1px;
+  }
+  .up__file {
+    color: var(--brand);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .up__file input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .up__status {
+    margin-top: var(--sp-4);
+    padding: var(--sp-4) var(--sp-5);
+    border-radius: var(--radius);
+    background: var(--mist);
+    font-weight: 700;
+  }
+  .up__status:empty {
+    display: none;
+  }
+  .up__status--bad {
+    background: #fdecea;
+    color: #8a1c12;
+  }
+  .up__notes:empty {
+    display: none;
+  }
+  .up__notes {
+    margin: 0;
+    padding-left: 1.2em;
+    color: var(--text-muted);
+  }
+  #up-preview {
+    width: 100%;
+    height: 75vh;
+    border: 2px solid var(--rule);
+    border-radius: var(--radius);
+  }
+  .up__big {
+    min-height: 64px;
+    font-size: 1.1rem;
+  }
+  .up__done {
+    display: grid;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    background: #e8f4ec;
+    border-radius: var(--radius);
+  }
+  .up__list {
+    display: grid;
+    gap: var(--sp-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .up__list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding-bottom: var(--sp-3);
+    border-bottom: 1px solid var(--rule);
+  }
+</style>

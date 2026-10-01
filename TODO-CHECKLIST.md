@@ -26,6 +26,8 @@ without them.
 | 12 | Turn on two-factor authentication for every account that can publish: GitHub, Cloudflare, Tina Cloud, Resend, the registrar and the email provider | Each service | Yes |
 | 13 | Have a lawyer read `/privacy/`, `/terms/`, `/accessibility/` and `/sold/terms/` for the new domain | `src/pages/` | Yes |
 | 14 | Confirm the brokerage disclosure with eXp compliance: "Kirby Chan & Co. Real Estate Team, eXp Realty Brokerage. Kirby Chan, Broker." | `src/data/site.json` | Yes |
+| 15 | Blog uploads at `/upload/`: add the secret `UPLOAD_PASSWORD` (one shared password, at least 12 characters) for Production, then retry the latest deployment so it takes effect | Cloudflare, **Settings > Variables and secrets** | Yes, for `/upload/` |
+| 16 | Optional: create a deploy hook for branch `main` and save its URL as the secret `DEPLOY_HOOK_URL`, so the blog list, sitemap and RSS feed catch up a few minutes after each upload instead of the next morning | Cloudflare, **Settings > Builds > Deploy hooks** | No. Uploaded posts are live either way |
 
 ---
 
