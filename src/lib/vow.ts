@@ -27,6 +27,8 @@ export interface D1 {
       all<T = Record<string, unknown>>(): Promise<{ results: T[] }>;
     };
   };
+  /** Several statements in one call, which counts once against the Workers limits. */
+  batch?(statements: unknown[]): Promise<unknown>;
 }
 
 export interface VowEnv {

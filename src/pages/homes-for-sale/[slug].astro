@@ -9,7 +9,6 @@ import { getEntry, type CollectionEntry } from 'astro:content';
 import Page from '../../layouts/Page.astro';
 import IdxDisclaimer from '../../components/IdxDisclaimer.astro';
 import HomeIcon from '../../components/HomeIcon.astro';
-import site from '../../data/site.json';
 import counts from '../../data/listing-counts.json';
 import { AREAS, HOMES } from '../../lib/proptx';
 import { TYPE_PAGES, cad, homeTypeOf, snapshot, type TypePage } from '../../lib/landing';
@@ -110,7 +109,7 @@ const faq = [
         <p>{prices.length ? `Asking prices on this page run from ${cad(Math.min(...prices))} to ${cad(Math.max(...prices))}. The search button lets you narrow by price, bedrooms or neighbourhood.` : 'The search button shows every listing and lets you narrow by price, bedrooms or neighbourhood.'}</p>
         <div class="hs__call-actions">
           <a class="btn btn--primary hs__big" href={searchHref}>See all {total.toLocaleString('en-CA')} with filters</a>
-          <a class="btn btn--ghost hs__big" href={site.contact.phoneHref}>Call {site.contact.phone}</a>
+          <a class="btn btn--ghost hs__big" href={`/homes-for-sale/map/?${query}`}>See them on a map</a>
         </div>
       </div>
 

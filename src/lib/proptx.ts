@@ -125,6 +125,21 @@ export function searchQuery(params: URLSearchParams): string {
   });
 }
 
+/** Map pins: every match, lightly, a page of 1,000 at a time in a fixed order (PropTx's nextLink fails). */
+export const MAP_PAGE = 1000;
+export function mapQuery(params: URLSearchParams, page: number): string {
+  const lease = params.get('for') === 'lease';
+  const f = ["ContractStatus eq 'Available'", "startswith(PropertyType,'Residential')", `TransactionType eq ${q(lease ? 'For Lease' : 'For Sale')}`, ...shared(params, 'ListPrice')];
+  return odata({
+    $filter: f.join(' and '),
+    $select: 'ListingKey,ListPrice,BedroomsTotal,BathroomsTotalInteger,PropertySubType,ArchitecturalStyle,UnparsedAddress,StreetNumber,StreetName,StreetSuffix,StreetDirSuffix,City,StateOrProvince,PostalCode,InternetEntireListingDisplayYN,InternetAddressDisplayYN',
+    $orderby: 'ListingKey',
+    $top: String(MAP_PAGE),
+    $skip: String(page * MAP_PAGE),
+    ...(page === 0 ? { $count: 'true' } : {}),
+  });
+}
+
 /** Sold search windows, in days. */
 export const SOLD_WINDOWS: Record<string, { label: string; days: number }> = {
   '30': { label: 'Last 30 days', days: 30 },

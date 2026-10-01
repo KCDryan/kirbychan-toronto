@@ -234,7 +234,7 @@ export function fillShell(shell: string, post: Post): string {
     }
     return v;
   };
-  html = html.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, (m, open, json, close) => {
+  html = html.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, (_m, open, json, close) => {
     const data = JSON.parse(json);
     if (data['@type'] === 'FAQPage' && !post.faq.length) return '';
     ld.push(open + JSON.stringify(walk(data)).replace(/</g, '\\u003c') + close);

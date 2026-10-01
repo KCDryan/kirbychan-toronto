@@ -21,6 +21,15 @@ jobs:
         # The Pages project address works with or without the custom domain.
         run: curl -sSf --connect-timeout 20 --max-time 120 --retry 3 --retry-delay 20 https://kirbychan-toronto.pages.dev/api/listing-counts -o /tmp/counts.json
 
+      - name: Place new listings on the map
+        # Each call starts up to 1,000 address lookups in the background (the site caps a day at the
+        # free quota), so new listings are on the map before visitors arrive. Never stops the counts.
+        run: |
+          for q in '' '' 'for=lease'; do
+            curl -sS --max-time 120 -o /dev/null -w "map $q: %{http_code}\n" "https://kirbychan-toronto.pages.dev/api/map?$q" || true
+            sleep 90
+          done
+
       - name: Check the numbers look sane
         # A PropTx outage must not publish zeros across the site. Keep yesterday's file instead.
         run: |
