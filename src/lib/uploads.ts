@@ -53,9 +53,9 @@ export const ensureUploadSchema = (db: D1) =>
     throw e;
   }));
 
-export async function getUpload(db: D1, slug: string): Promise<{ live: boolean; post: Post } | null> {
+export async function getUpload(db: D1, slug: string): Promise<{ live: boolean; removed: boolean; post: Post } | null> {
   const row = await db.prepare('SELECT live, post FROM uploads WHERE slug = ?').bind(slug).first<{ live: number; post: string }>();
-  return row ? { live: row.live === 1, post: { author: '', authorTitle: '', related: [], relatedServices: [], draft: false, ...JSON.parse(row.post) } } : null;
+  return row ? { live: row.live === 1, removed: row.live === -1, post: { author: '', authorTitle: '', related: [], relatedServices: [], draft: false, ...JSON.parse(row.post) } } : null;
 }
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');

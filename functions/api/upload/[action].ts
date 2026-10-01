@@ -6,7 +6,8 @@
  * /api/upload/publish    POST  post   live at once (or saved only, when post.draft); replace: true to update a post already up
  * /api/upload/get        POST  slug   a saved post, to edit it
  * /api/upload/list       GET   uploaded posts, newest first
- * /api/upload/unpublish  POST  slug
+ * /api/upload/unpublish  POST  slug   removes the post from the website and from the list (live = -1;
+ *                              the row stays so the built copy answers 404 until the next build)
  * /api/upload/export     GET   public: live uploaded posts, read by scripts/pull-uploads.mjs at build
  *
  * One shared password, set by the owner as the UPLOAD_PASSWORD secret in Cloudflare. Ten wrong
@@ -89,7 +90,7 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
   }
 
   if (action === 'list' && request.method === 'GET') {
-    const { results } = await db.prepare('SELECT live, post FROM uploads ORDER BY updated DESC LIMIT 200').bind().all<{ live: number; post: string }>();
+    const { results } = await db.prepare('SELECT live, post FROM uploads WHERE live >= 0 ORDER BY updated DESC LIMIT 200').bind().all<{ live: number; post: string }>();
     return json({
       posts: results.map((r) => {
         const p = JSON.parse(r.post) as Post;
@@ -108,13 +109,14 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
 
     if (action === 'preview') {
       const html = await page(env, request, post);
-      return html ? json({ html, exists: !!existing?.live }) : problem('The preview could not be made. Please try again.', 500);
+      return html ? json({ html, exists: !!existing && !existing.removed }) : problem('The preview could not be made. Please try again.', 500);
     }
     // A post built into the site (not uploaded here) keeps its address.
     if (!existing && (await env.ASSETS!.fetch(new URL(`/blog/${post.slug}/`, request.url))).ok) {
       return problem('The site already has a post with this title. Change the title a little and try again.', 409);
     }
-    if (existing?.live && body.replace !== true) return json({ error: 'exists', url: postUrl(post.slug) }, 409);
+    // Same title as a post in the list (live or draft): ask before replacing it.
+    if (existing && !existing.removed && body.replace !== true) return json({ error: 'exists', live: existing.live, url: postUrl(post.slug) }, 409);
     await db
       .prepare('INSERT INTO uploads (slug, live, post, updated) VALUES (?, ?, ?, ?) ON CONFLICT(slug) DO UPDATE SET live = excluded.live, post = excluded.post, updated = excluded.updated')
       .bind(post.slug, post.draft ? 0 : 1, JSON.stringify(post), now)
@@ -130,7 +132,7 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
 
   if (action === 'unpublish' && request.method === 'POST') {
     const slug = typeof body.slug === 'string' ? body.slug : '';
-    await db.prepare('UPDATE uploads SET live = 0, updated = ? WHERE slug = ?').bind(Date.now(), slug).run();
+    await db.prepare('UPDATE uploads SET live = -1, updated = ? WHERE slug = ?').bind(Date.now(), slug).run();
     waitUntil(rebuild(env));
     return json({ ok: true });
   }
