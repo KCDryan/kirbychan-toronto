@@ -376,7 +376,7 @@ const faq = [
         const to = from + listings.length - 1;
         const shown = Math.min(total, SOLD_MAX_RESULTS);
         $('status').textContent =
-          `${total.toLocaleString('en-CA')} ${what}.` +
+          `${total.toLocaleString('en-CA')} ${total === 1 ? `${describe(p, 'sold', true)} in the ${span}` : what}.` +
           (total > SOLD_PAGE_SIZE ? ` Showing ${from} to ${to}.` : '') +
           (total > SOLD_MAX_RESULTS ? ` Board rules allow ${SOLD_MAX_RESULTS} results per search, so choose a neighbourhood or price to see the rest.` : '');
         $('jump').textContent = `See the ${shown.toLocaleString('en-CA')} sold home${shown === 1 ? '' : 's'} ↓`;

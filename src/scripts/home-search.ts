@@ -116,12 +116,13 @@ export function bindChoices(load: () => void) {
 }
 
 /** A plain sentence for the search, e.g. "bungalows for sale in Leaside, Toronto under $800,000". */
-export function describe(p: URLSearchParams, verb: string): string {
+export function describe(p: URLSearchParams, verb: string, one = false): string {
   const home = HOMES[p.get('home') ?? ''];
+  const kind = home ? home.label.toLowerCase() : 'homes';
   const price = PRICES[p.get('price') ?? ''];
   const area = AREAS[p.get('area') ?? ''];
   return [
-    home ? home.label.toLowerCase() : 'homes',
+    one ? kind.replace(/s$/, '') : kind,
     verb,
     'in ' + (p.get('city') || (area ? `${area.label}, Toronto` : 'Toronto')),
     price && (price.min && price.max ? `from ${money(price.min)} to ${money(price.max)}` : price.max ? `under ${money(price.max)}` : `over ${money(price.min)}`),

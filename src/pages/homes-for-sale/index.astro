@@ -136,7 +136,7 @@ const crumbs = [
         }
         const from = (page - 1) * 24 + 1;
         const to = from + listings.length - 1;
-        $('status').textContent = `${total.toLocaleString('en-CA')} ${describe(p, verb)}.` + (total > 24 ? ` Showing ${from} to ${to}.` : '');
+        $('status').textContent = `${total.toLocaleString('en-CA')} ${describe(p, verb, total === 1)}.` + (total > 24 ? ` Showing ${from} to ${to}.` : '');
         $('jump').textContent = `See the ${total.toLocaleString('en-CA')} home${total === 1 ? '' : 's'} ↓`;
         $('results').replaceChildren(...listings.map(card));
         if (page > 1) { ($('prev') as HTMLAnchorElement).href = withValue(p, 'page', String(page - 1)); $('prev').hidden = false; }
