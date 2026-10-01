@@ -15,37 +15,115 @@
   }
   .hs__call p { margin: 0; font-weight: 600; }
   .hs__big { min-height: 60px; font-size: 1.05rem; padding-inline: var(--sp-6); }
-  .hs__step { margin-bottom: var(--sp-6); }
+  /* The filters sit in one panel, like the filter bars on the big listing sites, but every choice stays a
+     large single press with its label written out. */
+  .hs__panel {
+    padding: clamp(1rem, 0.6rem + 2vw, 2rem);
+    margin-bottom: var(--sp-5);
+    background: #fff; border: 1px solid var(--rule); border-radius: var(--radius-lg); box-shadow: var(--shadow);
+  }
+  .hs__step { margin-bottom: var(--sp-5); }
+  .hs__step:last-child { margin-bottom: 0; }
+  .hs__panel h2 { font-size: var(--step-1); margin-bottom: var(--sp-3); }
+  .hs__panel .hs__num { width: 1.9rem; height: 1.9rem; font-size: 1rem; }
+  .hs__pair { display: grid; gap: 0 var(--sp-6); }
+  @media (min-width: 980px) { .hs__pair { grid-template-columns: 1.15fr 1fr; } }
+
   .hs__choices { display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }
-  .hs__choices--tiles { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
   .hs__choice {
-    display: grid; align-content: center; gap: 0.2rem; min-height: 64px; padding: var(--sp-3) var(--sp-4);
+    position: relative; display: grid; align-content: center; gap: 0.2rem; min-height: 56px; padding: var(--sp-3) var(--sp-4);
     background: #fff; color: var(--text); text-decoration: none; text-align: center;
     border: 2px solid var(--rule); border-radius: var(--radius-lg);
-    transition: border-color 0.15s var(--ease), background-color 0.15s var(--ease);
+    transition: border-color 0.15s var(--ease), background-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
   }
-  .hs__choices--tiles .hs__choice { min-height: 96px; }
-  .hs__choice strong { font-size: 1.2rem; }
+  .hs__choice strong { font-size: 1.15rem; font-weight: 600; }
   .hs__choice span { font-size: 1rem; color: var(--text-muted); }
-  .hs__choice:hover { border-color: var(--brand); color: var(--text); }
+  .hs__choice:hover { border-color: var(--brand); color: var(--text); box-shadow: var(--shadow); }
   .hs__choice:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
   .hs__choice[aria-current] { background: var(--brand); border-color: var(--brand); color: var(--paper); }
-  .hs__choice[aria-current] span { color: var(--paper); }
+  .hs__choice[aria-current] span { color: var(--text-on-dark-muted); }
   .hs__choice[aria-current] strong::before { content: '✓ '; }
+
+  /* Home type: picture tiles. */
+  .hs__choices--tiles { grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
+  @media (max-width: 640px) {
+    .hs__choices--tiles { grid-template-columns: 1fr 1fr; }
+    .hs__choices--tiles .hs__tile:first-child { grid-column: 1 / -1; min-height: 96px; }
+  }
+  .hs__tile { min-height: 132px; padding: var(--sp-4) var(--sp-3) var(--sp-3); justify-items: center; gap: 0.25rem; }
+  .hs__tile svg {
+    width: 40px; height: 40px; margin-bottom: 0.2rem;
+    fill: none; stroke: var(--brand); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .hs__tile[aria-current] svg { stroke: var(--brass-soft); }
+  .hs__tile[aria-current] strong::before { content: none; }
+  .hs__tile[aria-current]::after {
+    content: '✓'; position: absolute; top: 8px; right: 10px;
+    width: 1.6rem; height: 1.6rem; display: grid; place-items: center;
+    border-radius: 50%; background: var(--brass); color: var(--ground); font-weight: 700; font-size: 0.95rem;
+  }
+
+  /* Neighbourhood, price and bedrooms: rounded pills that wrap, so the whole step fits on a screen. */
+  .hs__choices--pills { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
+  .hs__pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+    min-height: 52px; padding: 0.4rem 1.15rem; border-radius: 999px;
+  }
+  .hs__pill strong { font-size: 1.08rem; }
+
+  /* Today's count on a button. */
+  .hs__count {
+    font-style: normal; font-size: 0.9rem; font-weight: 700; line-height: 1;
+    padding: 0.3rem 0.55rem; border-radius: 999px; background: var(--mist); color: var(--brand);
+  }
+  .hs__tile .hs__count { margin-top: 0.3rem; }
+  .hs__choice[aria-current] .hs__count { background: rgba(255, 255, 255, 0.16); color: var(--paper); }
+  .hs__panel--nocounts .hs__count, .hs__panel--nocounts #count-note { display: none; }
+  .hs__note { margin: var(--sp-4) 0 0; font-size: 0.95rem; color: var(--text-muted); }
+
   .hs__jump { width: 100%; margin-bottom: var(--sp-5); font-size: 1.15rem; }
   .hs__more { margin-bottom: var(--sp-6); }
   .hs__more summary {
-    cursor: pointer; font-weight: 600; padding: var(--sp-3) 0; color: var(--brand);
-    text-decoration: underline; text-underline-offset: 4px; min-height: 48px;
+    display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600; color: var(--brand);
+    min-height: 52px; padding: 0.4rem 1.15rem; border: 2px solid var(--rule); border-radius: 999px; background: #fff;
   }
+  .hs__more summary:hover { border-color: var(--brand); }
+  .hs__more[open] summary { margin-bottom: var(--sp-4); }
+  .hs__more .hs__step { padding: var(--sp-5); background: #fff; border: 1px solid var(--rule); border-radius: var(--radius-lg); }
+  /* Results bar: what was found, the chosen filters as removable chips and a way to start over. */
   .hs__summary {
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3);
-    border-top: 2px solid var(--rule); padding-top: var(--sp-5); margin-bottom: var(--sp-5); scroll-margin-top: 90px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3) var(--sp-4);
+    padding: var(--sp-4) var(--sp-5); margin-bottom: var(--sp-5); scroll-margin-top: 90px;
+    background: var(--mist); border-radius: var(--radius-lg);
   }
-  .hs__summary p { margin: 0; font-size: 1.3rem; font-weight: 600; max-width: 60ch; }
+  .hs__summary p { margin: 0; flex: 1 1 26rem; font-size: 1.25rem; font-weight: 600; max-width: 60ch; }
+  .hs__chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); flex-basis: 100%; order: 3; }
+  .hs__chip {
+    display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.3rem 0.6rem 0.3rem 1rem;
+    background: #fff; color: var(--brand); text-decoration: none; font-weight: 600;
+    border: 2px solid var(--brand); border-radius: 999px;
+  }
+  .hs__chip:hover { background: var(--brand); color: var(--paper); }
+  .hs__chip:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+  .hs__chip-x {
+    display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: var(--mist); color: var(--brand); font-size: 1.2rem; line-height: 1;
+  }
+  .hs__chip:hover .hs__chip-x { background: rgba(255, 255, 255, 0.2); color: var(--paper); }
+  .hs__reset { order: 2; }
   .hs__results { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--sp-5); grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
-  .hs__card { background: #fff; border: 1px solid var(--rule); border-radius: var(--radius-lg); overflow: hidden; }
-  .hs__card:hover { border-color: var(--brass); box-shadow: var(--shadow); }
+  .hs__card {
+    background: #fff; border: 1px solid var(--rule); border-radius: var(--radius-lg); overflow: hidden;
+    transition: box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .hs__card:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+  .hs__media { position: relative; }
+  .hs__badge {
+    position: absolute; left: var(--sp-3); top: var(--sp-3);
+    padding: 0.35rem 0.75rem; border-radius: 999px; background: var(--ground); color: var(--text-on-dark);
+    font-size: 0.95rem; font-weight: 600; box-shadow: var(--shadow);
+  }
+  .hs__where { color: var(--text-muted); }
   .hs__link, .hs__link:hover { display: block; color: inherit; text-decoration: none; }
   .hs__img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--mist); }
   .hs__body { padding: var(--sp-4) var(--sp-5) var(--sp-5); display: grid; gap: 0.3rem; }

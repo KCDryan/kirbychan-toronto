@@ -28,7 +28,7 @@ const crumbs = [
         <a class="btn btn--ghost hs__big" href="/sold/">See what homes sold for</a>
       </div>
 
-      <HomeChoices />
+      <HomeChoices counts />
 
       <a class="btn btn--primary hs__big hs__jump" id="jump" href="#results-top">See the homes ↓</a>
 
@@ -55,7 +55,8 @@ const crumbs = [
 
       <div class="hs__summary" id="results-top">
         <p id="status" aria-live="polite">Loading homes…</p>
-        <a class="btn btn--ghost" id="reset" href="/homes-for-sale/" hidden>Start over</a>
+        <div class="hs__chips" id="chips" hidden></div>
+        <a class="btn btn--ghost hs__reset" id="reset" href="/homes-for-sale/" hidden>Start over</a>
       </div>
       <ul class="hs__results" id="results"></ul>
       <nav class="hs__pager" aria-label="More homes">
@@ -82,7 +83,7 @@ const crumbs = [
 
 <script>
   import site from '../../data/site.json';
-  import { $, bindChoices, current, describe, el, factsLine, money, photo, syncChoices, withValue } from '../../scripts/home-search';
+  import { $, bindChoices, current, describe, el, factsLine, money, photo, renderChips, syncChoices, withValue } from '../../scripts/home-search';
 
   const KEYS = ['home', 'area', 'price', 'beds', 'city', 'for', 'sort', 'page'];
   const FALLBACK = '/contact/';
@@ -101,7 +102,10 @@ const crumbs = [
       el('span', 'btn btn--primary hs__see', 'See photos and details'),
       el('p', 'hs__brokerage', `Listed by ${l.brokerage || 'the listing brokerage'}. MLS® ${l.key}`),
     );
-    a.append(photo(l.photo, l.address ? `${l.address}, ${l.city}` : `Home in ${l.city}`), body);
+    const media = el('div', 'hs__media');
+    media.append(photo(l.photo, l.address ? `${l.address}, ${l.city}` : `Home in ${l.city}`));
+    if (l.type) media.append(el('span', 'hs__badge', l.lease ? `${l.type} to rent` : l.type));
+    a.append(media, body);
     li.append(a);
     return li;
   };
@@ -112,6 +116,7 @@ const crumbs = [
     const verb = p.get('for') === 'lease' ? 'for rent' : 'for sale';
     const page = Math.max(1, Number(p.get('page')) || 1);
     syncChoices(p);
+    renderChips(p);
     if (p.get('city') || p.get('for') || p.get('sort')) (document.querySelector('.hs__more') as HTMLDetailsElement).open = true;
     $('reset').hidden = ![...p.keys()].length;
     $('status').textContent = 'Finding ' + describe(p, verb) + '…';

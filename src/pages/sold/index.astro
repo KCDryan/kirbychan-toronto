@@ -159,7 +159,8 @@ const faq = [
         <a class="btn btn--primary hs__big hs__jump" id="jump" href="#results-top">See the sold homes ↓</a>
         <div class="hs__summary" id="results-top">
           <p id="status" aria-live="polite"></p>
-          <a class="btn btn--ghost" id="reset" href="/sold/" hidden>Start over</a>
+          <div class="hs__chips" id="chips" hidden></div>
+          <a class="btn btn--ghost hs__reset" id="reset" href="/sold/" hidden>Start over</a>
         </div>
         <ul class="hs__results" id="results"></ul>
         <nav class="hs__pager" aria-label="More sold homes">
@@ -195,7 +196,7 @@ const faq = [
 <script>
   import site from '../../data/site.json';
   import { SOLD_MAX_RESULTS, SOLD_PAGE_SIZE, SOLD_WINDOWS } from '../../lib/proptx';
-  import { $, bindChoices, current, describe, el, factsLine, money, photo, syncChoices, withValue } from '../../scripts/home-search';
+  import { $, bindChoices, current, describe, el, factsLine, money, photo, renderChips, syncChoices, withValue } from '../../scripts/home-search';
 
   const KEYS = ['home', 'area', 'price', 'beds', 'sold', 'sort', 'page'];
   const CALL = `call us at ${site.contact.phone}`;
@@ -332,7 +333,10 @@ const faq = [
       ask,
       el('p', 'hs__brokerage', `Listed by ${l.brokerage || 'the listing brokerage'}. MLS® ${l.key}`),
     );
-    li.append(photo(l.photo, l.address ? `${l.address}, ${l.city}` : `Home in ${l.city}`), body);
+    const media = el('div', 'hs__media');
+    media.append(photo(l.photo, l.address ? `${l.address}, ${l.city}` : `Home in ${l.city}`));
+    if (l.type) media.append(el('span', 'hs__badge', `Sold · ${l.type}`));
+    li.append(media, body);
     return li;
   };
 
@@ -343,6 +347,7 @@ const faq = [
     const what = `${describe(p, 'sold')} in the ${span}`;
     const page = Math.max(1, Number(p.get('page')) || 1);
     syncChoices(p);
+    renderChips(p);
     $('reset').hidden = ![...p.keys()].length;
     $('status').textContent = 'Finding ' + what + '…';
     $('jump').textContent = 'See the sold homes ↓';

@@ -3,7 +3,7 @@
  * Choices are links, so the address bar always holds the search and Back works. A click updates
  * the list in place instead of reloading, so the page never jumps back to the top.
  */
-import { AREAS, HOMES, PRICES } from '../lib/proptx';
+import { AREAS, HOMES, PRICES, SOLD_WINDOWS } from '../lib/proptx';
 
 export const $ = (id: string) => document.getElementById(id)!;
 export const money = (n: unknown) => (typeof n === 'number' ? '$' + n.toLocaleString('en-CA') : '');
@@ -43,11 +43,68 @@ export function syncChoices(p: URLSearchParams) {
   // Neighbourhoods are Toronto's, so the row only shows while searching Toronto.
   const area = document.getElementById('area-step');
   if (area) area.hidden = !!p.get('city');
+  syncCounts(p);
+}
+
+type Counts = Record<string, number>;
+const fmt = (v: number | undefined) => (v ?? 0).toLocaleString('en-CA');
+
+/**
+ * Today's for-sale counts on the buttons follow the other choice: pick condos and each neighbourhood
+ * shows its condos, pick a neighbourhood and each home type shows that neighbourhood's. Hidden for
+ * other cities and rentals, which the daily counts do not cover.
+ */
+function syncCounts(p: URLSearchParams) {
+  const panel = document.querySelector<HTMLElement>('.hs__panel[data-counts]');
+  if (!panel) return;
+  const data = JSON.parse(panel.dataset.counts!) as { toronto: Counts; areas: Record<string, Counts> };
+  const off = !!(p.get('city') || p.get('for'));
+  panel.classList.toggle('hs__panel--nocounts', off);
+  const chosen = p.get('home') ?? '';
+  const home = chosen in HOMES ? chosen : 'total';
+  const area = data.areas[p.get('area') ?? ''];
+  for (const e of panel.querySelectorAll<HTMLElement>('[data-count-home]')) e.textContent = fmt((area ?? data.toronto)[e.dataset.countHome!]);
+  for (const e of panel.querySelectorAll<HTMLElement>('[data-count-area]')) e.textContent = fmt(data.areas[e.dataset.countArea!]?.[home]);
+}
+
+/** Plain words for one chosen filter, for the chips above the results. */
+function chipLabel(key: string, value: string): string | null {
+  switch (key) {
+    case 'home': return HOMES[value]?.label ?? null;
+    case 'area': return AREAS[value]?.label ?? null;
+    case 'price': return PRICES[value]?.label ?? null;
+    case 'beds': return `${value} or more bedrooms`;
+    case 'city': return value;
+    case 'for': return value === 'lease' ? 'Homes to rent' : null;
+    case 'sort': return { low: 'Lowest price first', high: 'Highest price first' }[value] ?? null;
+    case 'sold': return SOLD_WINDOWS[value]?.label ?? null;
+    default: return null;
+  }
+}
+
+/** One chip per chosen filter. Pressing a chip removes that filter, like every other choice a link. */
+export function renderChips(p: URLSearchParams) {
+  const box = document.getElementById('chips');
+  if (!box) return;
+  const chips = [...p.entries()]
+    .filter(([k]) => k !== 'page')
+    .map(([k, v]) => {
+      const label = chipLabel(k, v);
+      if (!label) return null;
+      const a = el('a', 'hs__chip') as HTMLAnchorElement;
+      a.href = withValue(p, k, '');
+      a.append(el('span', null, label), el('span', 'hs__chip-x', '×'));
+      a.setAttribute('aria-label', `Remove ${label}`);
+      return a;
+    })
+    .filter((a): a is HTMLAnchorElement => !!a);
+  box.replaceChildren(...chips);
+  box.hidden = !chips.length;
 }
 
 export function bindChoices(load: () => void) {
   document.addEventListener('click', (e) => {
-    const a = (e.target as Element).closest<HTMLAnchorElement>('.hs__choice, #prev, #next');
+    const a = (e.target as Element).closest<HTMLAnchorElement>('.hs__choice, .hs__chip, #prev, #next');
     if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
     e.preventDefault();
     history.pushState(null, '', a.getAttribute('href'));
