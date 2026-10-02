@@ -43,6 +43,9 @@ const MAX_PAGES = 40;
 const AT_ONCE = 8;
 /** Anything outside southern Ontario is a wrong match (for example a same-named US street). */
 const ONTARIO = { s: 41.6, n: 46.5, w: -83.2, e: -74.3 };
+/** A Toronto listing placed outside the city is a wrong match too. */
+const TORONTO = { s: 43.57, n: 43.87, w: -79.65, e: -79.1 };
+const inside = (b: typeof ONTARIO, lat: number, lng: number) => lat > b.s && lat < b.n && lng > b.w && lng < b.e;
 type Geo = { key: string; lat: number | null; lng: number | null };
 
 let tableReady: Promise<unknown> | null = null;
@@ -65,7 +68,11 @@ export function geocodeAddress(r: Record<string, unknown>): string | null {
   const street = [r.StreetNumber, r.StreetName, r.StreetSuffix, r.StreetDirSuffix].map(s).filter(Boolean).join(' ');
   const city = s(r.City).replace(/\s+[CEW]\d{2}$/i, '');
   if (!street || !city) return null;
-  return [street, city, `${s(r.StateOrProvince) || 'ON'} ${s(r.PostalCode)}`.trim(), 'Canada'].join(', ');
+  // A mistyped postal code wins over the street in Geocodio (an L6L code put a Toronto condo in
+  // Oakville), so the code is only sent when it fits the area: M for Toronto, L for the rest of the GTA.
+  const postal = s(r.PostalCode).toUpperCase();
+  const fits = postal.startsWith(city === 'Toronto' ? 'M' : 'L');
+  return [street, city, `${s(r.StateOrProvince) || 'ON'}${fits ? ` ${postal}` : ''}`, 'Canada'].join(', ');
 }
 
 /** accuracy -1 marks an address being looked up right now, so a second request does not look it up again. */
@@ -103,8 +110,8 @@ export async function geocode(apiKey: string, todo: { key: string; address: stri
   };
   return todo.map((t) => {
     const best = data.results?.[t.key]?.response?.results?.[0];
-    const inside = best && best.location.lat > ONTARIO.s && best.location.lat < ONTARIO.n && best.location.lng > ONTARIO.w && best.location.lng < ONTARIO.e;
-    const good = !!best && best.accuracy >= MIN_ACCURACY && !!inside;
+    const box = /, Toronto, ON/.test(t.address) ? TORONTO : ONTARIO;
+    const good = !!best && best.accuracy >= MIN_ACCURACY && inside(box, best.location.lat, best.location.lng);
     return { ...t, lat: good ? best.location.lat : null, lng: good ? best.location.lng : null, accuracy: best?.accuracy ?? null, type: best?.accuracy_type, found: best?.formatted_address };
   });
 }
@@ -218,6 +225,8 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
   for (const r of shown) {
     const g = known.get(String(r.ListingKey));
     if (!g || g.lat == null || g.lng == null) continue;
+    // Points stored before the Toronto check was added.
+    if (String(r.City ?? '').startsWith('Toronto') && !inside(TORONTO, g.lat, g.lng)) continue;
     pins.push({
       k: r.ListingKey,
       la: Math.round(g.lat * 1e5) / 1e5,
