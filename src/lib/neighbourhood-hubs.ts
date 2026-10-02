@@ -29,8 +29,8 @@ export const HUBS: Hub[] = [
     slug: 'downsizing',
     title: 'Best Toronto Neighbourhoods to Downsize (2026)',
     description: 'Where to downsize in Toronto: neighbourhoods with condo apartments, condo townhouses and semis, TRREB prices for smaller homes and subway stations.',
-    h1: 'Where to downsize in Toronto',
-    lede: 'The Toronto neighbourhoods in our guides with the most smaller homes: condo apartments, condo townhouses and semi-detached houses, with April to June 2026 TRREB prices and the nearest subway or LRT station.',
+    h1: 'Best Toronto neighbourhoods to downsize',
+    lede: 'The best Toronto neighbourhoods to downsize among our guides are the ones with the most smaller homes: condo apartments, condo townhouses and semi-detached houses, with April to June 2026 TRREB prices and the nearest subway or LRT station.',
     bands: /condo|townhouse|semi/i,
     bandLabel: 'Smaller-home prices, TRREB',
     intro: [

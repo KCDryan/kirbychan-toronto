@@ -102,7 +102,7 @@ const faq = [
 ---
 
 <Page {title} {description} eyebrow="Toronto, Ontario" {h1} crumbs={crumbs} faq={faq} compact
-  lede={`${total.toLocaleString('en-CA')} ${kind === 'type' ? noun + ' for sale in Toronto' : 'homes for sale in ' + label} on ${today}, from TRREB's MLS® System. Updated every morning.`}>
+  lede={`${total.toLocaleString('en-CA')} ${kind === 'type' ? noun + ' for sale in Toronto' : label + ' homes for sale'} on ${today}, from TRREB's MLS® System. Updated every morning.`}>
   <section class="section hs-section">
     <div class="wrap hs">
       <div class="hs__call">
@@ -155,7 +155,7 @@ const faq = [
         )}
       </div>
 
-      <h2 class="hs-landing__h2">{kind === 'type' ? `Latest ${noun} listed in Toronto` : `Latest listings in ${label}`}</h2>
+      <h2 class="hs-landing__h2">{kind === 'type' ? `Latest ${noun} for sale in Toronto` : `Latest ${label} homes for sale`}</h2>
       {
         shown.length > 0 ? (
           <ul class="hs__results">
