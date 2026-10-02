@@ -19,7 +19,7 @@ const crumbs = [
   description="Toronto homes for sale on a map, live from TRREB's MLS® System. Pick condos, townhouses, bungalows or houses and a neighbourhood, then tap a price to open it."
   eyebrow="Toronto, Ontario"
   h1="Toronto homes for sale on a map"
-  lede="The map opens on Toronto and covers the whole GTA. Pick the kind of home you want and each one appears where it stands, labelled with its asking price. Tap a price to open that home."
+  lede="A map of Toronto homes for sale. Pick the kind of home you want and each one appears where it stands, labelled with its asking price. Tap a price to open that home."
   crumbs={crumbs}
   compact
 >
@@ -160,10 +160,6 @@ const crumbs = [
       .catch(() => {});
   };
 
-  /** With no neighbourhood or city chosen the map covers the GTA, so say so. */
-  const where = (p: URLSearchParams, verb: string, one = false) =>
-    p.get('area') || p.get('city') ? describe(p, verb, one) : describe(p, verb, one).replace(' in Toronto', ' in the GTA');
-
   let seq = 0;
   const load = () => {
     const p = current(KEYS);
@@ -175,7 +171,7 @@ const crumbs = [
     ($('as-list') as HTMLAnchorElement).href = '/homes-for-sale/' + (p.toString() ? '?' + p : '');
     $('reset').hidden = ![...p.keys()].length;
     if (p.get('for')) (document.querySelector('.hs__more') as HTMLDetailsElement).open = true;
-    $('status').textContent = 'Finding ' + where(p, verb) + '…';
+    $('status').textContent = 'Finding ' + describe(p, verb) + '…';
     $('picked').hidden = true;
     picked = null;
     const mine = ++seq;
@@ -200,13 +196,12 @@ const crumbs = [
         group.addLayers(markers);
         // A chosen neighbourhood fills the map; otherwise the view stays where it is (Toronto at first).
         if (markers.length && (p.get('area') || p.get('city'))) map.fitBounds(L.latLngBounds(pins.map((x) => [x.la, x.ln] as [number, number])), { padding: [40, 40], maxZoom: 15 });
-        const off = body.hidden as number;
+        // Plain words only: no counts, so the map reads as a map of Toronto homes, not a progress report.
+        const what = describe(p, verb);
         $('status').textContent = pins.length
-          ? `${pins.length.toLocaleString('en-CA')} ${where(p, verb, pins.length === 1)} on the map.` + (off ? ` ${off.toLocaleString('en-CA')} more ${off === 1 ? 'is' : 'are'} not on the map yet.` : '')
-          : body.total
-            ? `The ${(body.total as number).toLocaleString('en-CA')} ${where(p, verb, body.total === 1)} ${body.total === 1 ? 'is' : 'are'} still being placed on the map. They appear here a few thousand a day, Toronto first.`
-            : `There are no ${where(p, verb)} on the map right now. Try "Any price" or "All of Toronto".`;
-        $('jump').textContent = pins.length ? `See the ${pins.length.toLocaleString('en-CA')} homes on the map ↓` : 'See the map ↓';
+          ? `${what[0].toUpperCase()}${what.slice(1)} on the map. Tap a price to see that home.`
+          : `There are no ${what} on the map right now. Try "Any price" or "All of Toronto".`;
+        $('jump').textContent = 'See the map ↓';
       })
       .catch((err: { error?: string }) => {
         if (mine !== seq) return;
