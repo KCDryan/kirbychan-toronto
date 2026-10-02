@@ -29,6 +29,8 @@ export type TypePage = {
   h1: string;
   intro: string[];
   links: { href: string; label: string }[];
+  /** Questions about this kind of home, added to the page's FAQ. */
+  faq: { q: string; a: string }[];
 };
 
 export const TYPE_PAGES: Record<string, TypePage> = {
@@ -47,6 +49,16 @@ export const TYPE_PAGES: Record<string, TypePage> = {
       { href: '/blog/bungalow-condo-or-townhouse-downsizing-toronto/', label: 'Bungalow, condo or townhouse: comparing the options in Toronto' },
       { href: '/downsizing-toronto/', label: 'The Toronto downsizing guide' },
     ],
+    faq: [
+      {
+        q: 'Which listings count as bungalows on this page?',
+        a: "Listings whose brokerage gives the style as Bungalow or Bungaloft on TRREB's MLS® System. A bungaloft adds a loft above a main floor bedroom. Raised bungalows are left out because the front entrance has a flight of stairs. Floor plans and basement entrances differ from house to house, so check the layout at a showing.",
+      },
+      {
+        q: 'How does a bungalow compare with a condo apartment as a smaller home?',
+        a: 'A bungalow has no condo fee and usually has its own yard and parking. The owner also looks after the roof, the yard and the snow. A condo apartment passes the outside work to the condo corporation in return for a monthly fee. Our post comparing a bungalow, condo or townhouse in Toronto sets out the costs of each.',
+      },
+    ],
   },
   condos: {
     home: 'condo',
@@ -62,6 +74,16 @@ export const TYPE_PAGES: Record<string, TypePage> = {
       { href: '/blog/condo-status-certificate-toronto/', label: 'Reading a condo status certificate in Toronto' },
       { href: '/yonge-eglinton-toronto/', label: 'Yonge and Eglinton neighbourhood guide' },
       { href: '/downtown-waterfront-toronto/', label: 'Downtown Waterfront neighbourhood guide' },
+    ],
+    faq: [
+      {
+        q: 'Does every condo apartment building have an elevator?',
+        a: 'Not necessarily. If stairs matter to you, check the listing details or ask the listing brokerage before you book a showing.',
+      },
+      {
+        q: 'What does the monthly condo fee pay for?',
+        a: "It pays the unit's share of the condo corporation's common expenses, including its contributions to the reserve fund. Whether heat, hydro or water are included depends on the building. The status certificate shows the current fee and the budget behind it.",
+      },
     ],
   },
   townhouses: {
@@ -79,6 +101,12 @@ export const TYPE_PAGES: Record<string, TypePage> = {
       { href: '/upsizing-toronto/', label: 'Moving up to a bigger home in Toronto' },
       { href: '/mortgage-calculator-toronto/', label: 'Toronto mortgage calculator' },
     ],
+    faq: [
+      {
+        q: 'What is the difference between a freehold townhouse and a condo townhouse?',
+        a: 'With a freehold townhouse you own the house and its lot and you maintain both. A condo townhouse is a unit in a condo corporation, which maintains the shared areas and charges a monthly fee. This page shows both kinds and each listing says which one it is.',
+      },
+    ],
   },
   houses: {
     home: 'house',
@@ -94,6 +122,12 @@ export const TYPE_PAGES: Record<string, TypePage> = {
       { href: '/toronto-house-prices/', label: 'Toronto house prices by property type' },
       { href: '/land-transfer-tax-calculator-toronto/', label: 'Toronto land transfer tax calculator' },
       { href: '/sold/', label: 'Toronto sold prices' },
+    ],
+    faq: [
+      {
+        q: 'Which homes appear on the houses page?',
+        a: 'Detached houses and semi-detached houses, which share one wall with the house next door. A detached or semi-detached bungalow can appear on this page and on the bungalow page.',
+      },
     ],
   },
 };

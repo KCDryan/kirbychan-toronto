@@ -95,8 +95,9 @@ const int = (v: string | null, max: number) => {
 /** The filters the active and sold searches share: city, neighbourhood, home type, price band and bedrooms. */
 function shared(params: URLSearchParams, priceField: string): string[] {
   const f: string[] = [];
-  const city = CITIES.find((c) => c === (params.get('city') ?? HOME_CITY));
-  if (city) f.push(cityFilter(city));
+  // An unknown city falls back to Toronto. It must never drop the city filter and search every city.
+  const city = CITIES.find((c) => c === params.get('city')) ?? HOME_CITY;
+  f.push(cityFilter(city));
   const area = city === HOME_CITY ? AREAS[params.get('area') ?? ''] : undefined;
   if (area) f.push(`CityRegion in (${area.communities.map(q).join(',')})`);
   const home = HOMES[params.get('home') ?? ''];
@@ -229,7 +230,8 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   if (filter !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto') and ArchitecturalStyle/any(a:a eq 'Bungalow' or a eq 'Bungaloft') and ListPrice ge 800000 and ListPrice le 1200000 and BedroomsTotal ge 2") throw new Error(filter);
   if (s.get('$skip') !== '24' || s.get('$orderby') !== 'ListPrice asc,ListingKey') throw new Error('paging');
   const evil = new URLSearchParams(searchQuery(new URLSearchParams("city=Toronto' or 1 eq 1&home=x' or 1&price=5 or true")));
-  if (evil.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and " + homesOnly) throw new Error('injection ' + evil.get('$filter'));
+  if (evil.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto') and " + homesOnly) throw new Error('injection ' + evil.get('$filter'));
+  if (!new URLSearchParams(searchQuery(new URLSearchParams('city=Oshawa'))).get('$filter')!.includes("startswith(City,'Toronto')")) throw new Error('unknown city must fall back to Toronto');
   const a = new URLSearchParams(searchQuery(new URLSearchParams('area=willowdale&home=condo'))).get('$filter')!;
   if (!a.includes("startswith(City,'Toronto') and CityRegion in ('Willowdale East','Willowdale West')")) throw new Error(a);
   const m = new URLSearchParams(searchQuery(new URLSearchParams('city=Markham&area=leaside'))).get('$filter')!;

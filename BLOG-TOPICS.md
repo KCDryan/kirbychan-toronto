@@ -47,6 +47,12 @@ guide or service page is worse than a missed day.
 - [x] Can you sell a house before probate in Ontario | selling | can you sell a house before probate in ontario | selling-a-house-before-probate-ontario
 - [x] Toronto subway commute by neighbourhood | moving-to-toronto | toronto subway commute | toronto-subway-commute-by-neighbourhood
 - [x] Leaside vs Lawrence Park | neighbourhoods | leaside real estate | leaside-vs-lawrence-park
+- [x] Can a power of attorney sell property in Ontario while the owner is alive | selling | can power of attorney sell property in ontario | selling-a-parents-house-with-power-of-attorney-ontario
+- [x] Condo vs retirement residence costs in Toronto | downsizing | condo vs retirement residence cost toronto | condo-vs-retirement-residence-cost-toronto
+- [x] Life lease housing in Toronto | downsizing | life lease housing toronto | life-lease-housing-toronto
+- [x] What to do with a parent's house when they move into care | downsizing | parent moving into long term care house | parent-moving-into-care-house-toronto
+- [x] Retiring in Toronto: homes, costs and services | downsizing | retiring in toronto | retiring-in-toronto
+- [x] Stay or sell a long-held Toronto house | downsizing | stay or sell house | stay-or-sell-toronto-house
 
 ## Sunday: downsizing in Toronto
 
@@ -81,7 +87,6 @@ page opened during the run. Posts may set `guide: selling-an-estate-home-toronto
 
 - [ ] Selling a parent's house after death: the taxes in Ontario | costs-and-taxes | selling parents house after death canada taxes ontario
 - [ ] Is it better to sell a house before or after death | selling | is it better to sell a house before or after death
-- [ ] Can a power of attorney sell property in Ontario while the owner is alive | selling | can power of attorney sell property in ontario
 - [ ] Selling a house in Ontario when there is no will | selling | probate ontario no will
 - [ ] How long probate takes in Ontario and what it means for a sale | selling | probate ontario how long
 

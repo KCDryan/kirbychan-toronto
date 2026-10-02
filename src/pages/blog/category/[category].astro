@@ -17,6 +17,80 @@ const posts = all.filter((p) => p.data.category === category);
 // A category page with only one or two posts is thin, so it stays out of the
 // index until it has three. Readers can still use it.
 const thin = posts.length < 3;
+
+/** What each category covers and where the deeper guide or tool is, shown above the posts. */
+const INTRO: Partial<Record<BlogCategory, { text: string; links: { href: string; label: string }[] }>> = {
+  buying: {
+    text: 'Guides to buying a home in Toronto: the order of the steps, the documents you sign and the costs at closing, each checked against government and board sources.',
+    links: [
+      { href: '/first-time-home-buyers-toronto/', label: 'First-time buyer guide' },
+      { href: '/land-transfer-tax-calculator-toronto/', label: 'Land transfer tax calculator' },
+      { href: '/mortgage-calculator-toronto/', label: 'Mortgage calculator' },
+    ],
+  },
+  selling: {
+    text: 'Posts on selling a Toronto home, including a sale for a parent or for an estate, with the rules on who signs and when.',
+    links: [
+      { href: '/sellers/', label: 'How we sell homes' },
+      { href: '/blog/selling-a-parents-house-with-power-of-attorney-ontario/', label: "Selling a parent's house" },
+      { href: '/home-valuation/', label: 'Free home valuation' },
+    ],
+  },
+  downsizing: {
+    text: 'Posts on moving from a long-held Toronto house to something smaller: the costs, the timeline, the neighbourhoods with smaller homes and the options in between.',
+    links: [
+      { href: '/downsizing-toronto/', label: 'Downsizing guide' },
+      { href: '/best-toronto-neighbourhoods-for-downsizing/', label: 'Neighbourhoods to downsize' },
+      { href: '/homes-for-sale/bungalows/', label: 'Bungalows for sale' },
+    ],
+  },
+  'costs-and-taxes': {
+    text: 'Posts on what a Toronto move costs: both land transfer taxes, property tax, closing costs and the relief programs that reduce them.',
+    links: [
+      { href: '/land-transfer-tax-calculator-toronto/', label: 'Land transfer tax calculator' },
+      { href: '/blog/toronto-property-tax/', label: 'Toronto property tax' },
+      { href: '/blog/closing-costs-buying-home-toronto/', label: 'Closing costs' },
+    ],
+  },
+  neighbourhoods: {
+    text: 'Posts that look closely at Toronto neighbourhoods: the housing stock, the prices by home type and the stations nearby.',
+    links: [
+      { href: '/neighbourhoods/', label: 'Neighbourhood guides' },
+      { href: '/map-of-toronto/', label: 'Map of Toronto' },
+      { href: '/homes-for-sale/map/', label: 'Homes for sale on a map' },
+    ],
+  },
+  'moving-to-toronto': {
+    text: 'Posts for people relocating to Toronto: settling in, getting around on the TTC and choosing an area.',
+    links: [
+      { href: '/relocating-to-toronto/', label: 'Relocation guide' },
+      { href: '/best-toronto-neighbourhoods-for-commuters/', label: 'Neighbourhoods by subway commute' },
+    ],
+  },
+  condos: {
+    text: 'Posts about buying and owning a Toronto condo, from the status certificate to the monthly fee.',
+    links: [
+      { href: '/homes-for-sale/condos/', label: 'Condos for sale' },
+      { href: '/blog/condo-status-certificate-toronto/', label: 'Status certificates' },
+    ],
+  },
+  'new-construction': {
+    text: 'Posts about new and pre-construction homes in Toronto: the agreement, the deposit protections and the warranty.',
+    links: [{ href: '/new-construction-toronto/', label: 'New construction guide' }],
+  },
+  investing: {
+    text: 'Posts about owning rental property in Toronto: the landlord rules, the licences and the costs.',
+    links: [{ href: '/investment-property-toronto/', label: 'Investment property guide' }],
+  },
+  market: {
+    text: 'Posts on the Toronto market, with each figure taken from the Toronto Regional Real Estate Board and dated.',
+    links: [
+      { href: '/toronto-house-prices/', label: 'Toronto house prices' },
+      { href: '/market-reports/', label: 'Market reports' },
+    ],
+  },
+};
+const intro = INTRO[category];
 ---
 
 <BlogListing
@@ -34,4 +108,26 @@ const thin = posts.length < 3;
   categories={usedCategories(all)}
   activeCategory={category}
   noindex={thin}
-/>
+>
+  {
+    intro && (
+      <div class="cat-intro">
+        <p>{intro.text}</p>
+        <p class="cat-intro__links">Start here: {intro.links.map((l, i) => <>{i > 0 && ' · '}<a href={l.href}>{l.label}</a></>)}</p>
+      </div>
+    )
+  }
+</BlogListing>
+
+<style>
+  .cat-intro {
+    max-width: 70ch;
+    margin-bottom: var(--sp-6);
+  }
+  .cat-intro p {
+    margin: 0 0 var(--sp-2);
+  }
+  .cat-intro__links {
+    font-weight: 600;
+  }
+</style>

@@ -94,6 +94,7 @@ const faq = [
           ? `On ${today} the listings included ${list(byType.map((x) => `${x.n} ${x.label.toLowerCase()}`))}. Our guide describes the housing stock this way: ${hood?.data.quickStats.propertyTypes ?? ''}.`
           : `The mix changes from day to day. The live search shows what is listed now.`,
       },
+  ...(kind === 'type' && t ? t.faq : []),
   {
     q: 'Can I see what Toronto homes actually sold for?',
     a: 'Yes, with a free account. Board rules only allow sold prices to be shown to registered visitors, so sign up on our sold prices page to look up sales by home type, neighbourhood and price over the last two years.',
