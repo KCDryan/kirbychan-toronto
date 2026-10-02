@@ -16,11 +16,12 @@
  * The owner wants the free lookups only: never raise it past the free quota.
  *
  * With no city or neighbourhood chosen the map covers the whole GTA (GTA in src/lib/proptx.ts).
- * Toronto addresses are looked up first, then Markham's, then the rest of the GTA.
+ * Toronto addresses are looked up first, then the rest of the GTA, and Markham's last: the Markham
+ * site places its own (400 a day) and uses ours only for the rest of the GTA.
  *
- * Shared map: kirbychanmarkham.com shows these same pins (fetched server side from this endpoint)
- * and opens on Markham, so only this site spends Geocodio lookups. Each pin carries its city (c)
- * and TRREB community (r), so Markham's neighbourhood buttons can filter it.
+ * Shared map: kirbychanmarkham.com's /api/map-gta reads this endpoint server side (sale and lease)
+ * and drops pins whose c is "Markham". Keep the response shape stable, or tell the Markham site
+ * first: pins[] with k, la, ln, p, b, ba, t, s, a and c, where c is exactly "Markham" for Markham.
  */
 import { MAP_PAGE, PROPTX_BASE, mapQuery } from '../../src/lib/proptx';
 import type { D1 } from '../../src/lib/vow';
@@ -197,8 +198,8 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
   // Seller choices first: a hidden listing or a hidden address never gets a pin or a lookup.
   const shown = rows.filter((r) => r.InternetEntireListingDisplayYN !== false && r.InternetAddressDisplayYN !== false && geocodeAddress(r));
   const known = await stored(env.VOW_DB, shown.map((r) => String(r.ListingKey)));
-  // Toronto first, then Markham for the shared map on kirbychanmarkham.com, then the rest of the GTA.
-  const rank = (r: Record<string, unknown>) => (String(r.City ?? '').startsWith('Toronto') ? 0 : r.City === 'Markham' ? 1 : 2);
+  // Toronto first, the rest of the GTA next, Markham last (the Markham site places its own).
+  const rank = (r: Record<string, unknown>) => (String(r.City ?? '').startsWith('Toronto') ? 0 : r.City === 'Markham' ? 2 : 1);
   const todo = shown
     .filter((r) => !known.has(String(r.ListingKey)))
     .sort((a, b) => rank(a) - rank(b))
