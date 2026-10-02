@@ -83,7 +83,7 @@ export const CITIES = [
     slug: 'mississauga',
     name: 'Mississauga',
     title: 'Toronto vs Mississauga: Home Prices Compared (2026)',
-    description: `Toronto or Mississauga? ${P} TRREB prices for houses and condos, the land transfer tax gap on the same price and the new Hazel McCallion Line in Mississauga.`,
+    description: `Toronto or Mississauga? ${P} TRREB prices for houses and condos, the land transfer tax gap on the same price and the new Hazel McCallion Line.`,
     stats: MI,
     intro: `Mississauga is Toronto's western neighbour and the largest city in Peel Region. In ${P} TRREB recorded ${n(MI.sales)} sales there against ${n(T.sales)} in the City of Toronto, with medians of ${$(MI.median)} and ${$(T.median)}.`,
     sections: [

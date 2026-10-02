@@ -28,7 +28,7 @@ export const HUBS: Hub[] = [
   {
     slug: 'downsizing',
     title: 'Best Toronto Neighbourhoods to Downsize (2026)',
-    description: 'Where to downsize in Toronto: the neighbourhoods with condo apartments, condo townhouses and semis, their TRREB prices for smaller homes and their subway stations.',
+    description: 'Where to downsize in Toronto: neighbourhoods with condo apartments, condo townhouses and semis, TRREB prices for smaller homes and subway stations.',
     h1: 'Where to downsize in Toronto',
     lede: 'The Toronto neighbourhoods in our guides with the most smaller homes: condo apartments, condo townhouses and semi-detached houses, with April to June 2026 TRREB prices and the nearest subway or LRT station.',
     bands: /condo|townhouse|semi/i,
@@ -67,7 +67,7 @@ export const HUBS: Hub[] = [
   {
     slug: 'families',
     title: 'Toronto Neighbourhoods With the Most Houses (2026)',
-    description: 'Toronto neighbourhoods with the most detached, semi-detached and freehold townhouse sales, their TRREB house prices and what to check about schools before you buy.',
+    description: 'Toronto neighbourhoods with the most detached, semi-detached and freehold townhouse sales, their TRREB house prices and school checks before you buy.',
     h1: 'Toronto neighbourhoods with the most room',
     lede: 'Where our twelve Toronto guides show the most detached houses, semis and freehold townhouses selling, with April to June 2026 TRREB prices and what to confirm before you make an offer.',
     bands: /detached|freehold townhouse|semi/i,
