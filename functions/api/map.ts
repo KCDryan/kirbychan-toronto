@@ -16,7 +16,11 @@
  * The owner wants the free lookups only: never raise it past the free quota.
  *
  * With no city or neighbourhood chosen the map covers the whole GTA (GTA in src/lib/proptx.ts).
- * Toronto addresses are looked up first, so the view the map opens on fills in first.
+ * Toronto addresses are looked up first, then Markham's, then the rest of the GTA.
+ *
+ * Shared map: kirbychanmarkham.com shows these same pins (fetched server side from this endpoint)
+ * and opens on Markham, so only this site spends Geocodio lookups. Each pin carries its city (c)
+ * and TRREB community (r), so Markham's neighbourhood buttons can filter it.
  */
 import { MAP_PAGE, PROPTX_BASE, mapQuery } from '../../src/lib/proptx';
 import type { D1 } from '../../src/lib/vow';
@@ -186,10 +190,11 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
   // Seller choices first: a hidden listing or a hidden address never gets a pin or a lookup.
   const shown = rows.filter((r) => r.InternetEntireListingDisplayYN !== false && r.InternetAddressDisplayYN !== false && geocodeAddress(r));
   const known = await stored(env.VOW_DB, shown.map((r) => String(r.ListingKey)));
-  const isToronto = (r: Record<string, unknown>) => String(r.City ?? '').startsWith('Toronto');
+  // Toronto first, then Markham for the shared map on kirbychanmarkham.com, then the rest of the GTA.
+  const rank = (r: Record<string, unknown>) => (String(r.City ?? '').startsWith('Toronto') ? 0 : r.City === 'Markham' ? 1 : 2);
   const todo = shown
     .filter((r) => !known.has(String(r.ListingKey)))
-    .sort((a, b) => Number(isToronto(b)) - Number(isToronto(a)))
+    .sort((a, b) => rank(a) - rank(b))
     .map((r) => ({ key: String(r.ListingKey), address: geocodeAddress(r)! }));
 
   let pending = false;
@@ -223,6 +228,8 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
       t: typeof r.PropertySubType === 'string' ? r.PropertySubType.trim() : null,
       s: Array.isArray(r.ArchitecturalStyle) ? r.ArchitecturalStyle.join(', ') : null,
       a: r.UnparsedAddress,
+      c: typeof r.City === 'string' ? r.City.replace(/\s+[CEW]\d{2}$/i, '') : null,
+      r: typeof r.CityRegion === 'string' ? r.CityRegion : null,
     });
   }
   // While addresses are still being placed, the answer is kept a minute instead of five.
