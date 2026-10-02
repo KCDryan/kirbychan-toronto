@@ -1,5 +1,5 @@
 {
-  "_readme": "TRREB Market Watch figures for one month. Updated by the biweekly routine (UPDATE-PLAYBOOK.md, task D). Every page that quotes monthly prices reads from here. The comparison pages write their sentences from these numbers.",
+  "_readme": "TRREB Market Watch figures for one month. Updated by the biweekly routine (UPDATE-PLAYBOOK.md, task D). Every page that quotes monthly prices reads from here. The comparison pages write their sentences from these numbers. torontoByType and citiesByType come from the Market Watch tables by home type (Detached, Semi-Detached, Att/Row/Townhouse, Condo Townhouse and Condo Apartment): refresh them in the same pass.",
   "period": "August 2026",
   "sourceUrl": "https://trreb.ca/wp-content/files/market-stats/market-watch/mw2608.pdf",
   "report": "/market-reports/august-2026/",
@@ -15,5 +15,28 @@
     "markham": { "sales": 282, "average": 1208692, "median": 1095000, "detSales": 137, "detAvg": 1611773, "condoSales": 57, "condoAvg": 638332 },
     "mississauga": { "sales": 435, "average": 898510, "median": 842000, "detSales": 164, "detAvg": 1275221, "condoSales": 109, "condoAvg": 495052 },
     "vaughan": { "sales": 242, "average": 1234758, "median": 1148750, "detSales": 122, "detAvg": 1671824, "condoSales": 63, "condoAvg": 607650 }
+  },
+  "citiesByType": {
+    "markham": [
+      { "type": "Detached", "sales": 137, "average": 1611773, "median": 1488000 },
+      { "type": "Semi-detached", "sales": 15, "average": 958133, "median": 945000 },
+      { "type": "Freehold townhouse", "sales": 39, "average": 1031119, "median": 995000 },
+      { "type": "Condo townhouse", "sales": 28, "average": 812567, "median": 750000 },
+      { "type": "Condo apartment", "sales": 57, "average": 638332, "median": 563800 }
+    ],
+    "mississauga": [
+      { "type": "Detached", "sales": 164, "average": 1275221, "median": 1189000 },
+      { "type": "Semi-detached", "sales": 66, "average": 879494, "median": 881000 },
+      { "type": "Freehold townhouse", "sales": 11, "average": 874772, "median": 855000 },
+      { "type": "Condo townhouse", "sales": 85, "average": 706892, "median": 690000 },
+      { "type": "Condo apartment", "sales": 109, "average": 495052, "median": 500000 }
+    ],
+    "vaughan": [
+      { "type": "Detached", "sales": 122, "average": 1671824, "median": 1425000 },
+      { "type": "Semi-detached", "sales": 14, "average": 1010714, "median": 1022500 },
+      { "type": "Freehold townhouse", "sales": 31, "average": 1055000, "median": 1005000 },
+      { "type": "Condo townhouse", "sales": 9, "average": 774669, "median": 715000 },
+      { "type": "Condo apartment", "sales": 63, "average": 607650, "median": 525000 }
+    ]
   }
 }

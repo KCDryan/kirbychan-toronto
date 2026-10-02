@@ -4,7 +4,8 @@ import type { GetStaticPaths } from 'astro';
 import Page from '../layouts/Page.astro';
 import { cad } from '../lib/format';
 import { ontarioLtt, torontoMltt } from '../lib/ltt';
-import { CITIES, TORONTO, PERIOD, type Stats } from '../lib/comparisons';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import { CITIES, TORONTO, TORONTO_BY_TYPE, TORONTO_CENSUS, TORONTO_TAX_RATE, TAX_YEAR, ASSESSMENT, annualTax, share, PERIOD, type Stats } from '../lib/comparisons';
 
 export const getStaticPaths = (() => CITIES.map((c) => ({ params: { city: c.slug }, props: { c } }))) satisfies GetStaticPaths;
 
@@ -70,7 +71,39 @@ const sister = 'sister' in c ? c.sister : undefined;
         c.sections.map((s) => (
           <>
             <h2>{s.h}</h2>
-            {s.p.map((para) => <p>{para}</p>)}
+            {s.p.map((para) => <p set:html={para} />)}
+            {s.table === 'types' && (
+              <>
+                <table>
+                  <thead><tr><th>Median price, {PERIOD}</th><th>City of Toronto</th><th>{c.name}</th></tr></thead>
+                  <tbody>
+                    {TORONTO_BY_TYPE.map((t, i) => (
+                      <tr><td>{t.type}</td><td>{cad(t.median)} ({t.sales.toLocaleString('en-CA')} sales)</td><td>{cad(c.byType[i].median)} ({c.byType[i].sales.toLocaleString('en-CA')} sales)</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p>Source: TRREB Market Watch, {PERIOD}, tables by home type. A category with only a few dozen sales in a month is a thin sample, so read its median as a rough guide.</p>
+              </>
+            )}
+            {s.table === 'census' && (
+              <table>
+                <thead><tr><th>2021 Census, occupied private dwellings</th><th>City of Toronto</th><th>{c.name}</th></tr></thead>
+                <tbody>
+                  <tr><td>Total dwellings</td><td>{TORONTO_CENSUS.total.toLocaleString('en-CA')}</td><td>{c.census.total.toLocaleString('en-CA')}</td></tr>
+                  <tr><td>Single-detached houses</td><td>{share(TORONTO_CENSUS, 'single')}%</td><td>{share(c.census, 'single')}%</td></tr>
+                  <tr><td>Apartments, five or more storeys</td><td>{share(TORONTO_CENSUS, 'apt5')}%</td><td>{share(c.census, 'apt5')}%</td></tr>
+                </tbody>
+              </table>
+            )}
+            {s.table === 'tax' && (
+              <table>
+                <thead><tr><th>Residential property tax, {TAX_YEAR}</th><th>City of Toronto</th><th>{c.name}</th></tr></thead>
+                <tbody>
+                  <tr><td>Total tax rate</td><td>{TORONTO_TAX_RATE}%</td><td>{c.taxRate}%</td></tr>
+                  <tr><td>Annual tax on an {cad(ASSESSMENT)} assessment</td><td>{cad(annualTax(TORONTO_TAX_RATE))}</td><td>{cad(annualTax(c.taxRate))}</td></tr>
+                </tbody>
+              </table>
+            )}
           </>
         ))
       }
@@ -104,6 +137,8 @@ const sister = 'sister' in c ? c.sister : undefined;
       <ul>
         {others.map((o) => <li><a href={`/toronto-vs-${o.slug}/`}>Toronto vs {o.name}</a></li>)}
       </ul>
+
+      <FaqAccordion faq={faq} heading={`Toronto vs ${c.name} questions`} accent="questions" />
 
       <h2>Sources</h2>
       <ul>
