@@ -53,7 +53,14 @@ if (kind === 'type') {
   searchHref = `/homes-for-sale/?area=${slug}`;
 }
 
-const snap = await snapshot(query);
+const fetched = await snapshot(query);
+// A new neighbourhood is built before the live API knows it, and the API then answers for all of
+// Toronto. Listings from outside the area mean the snapshot is wrong, so the page shows its
+// fallback until the next build.
+const snap =
+  kind === 'area' && fetched?.listings.some((c) => !AREAS[slug].communities.includes(c.community ?? ''))
+    ? undefined
+    : fetched;
 const total = snap?.total ?? (kind === 'type' ? toronto[t!.home] : areaCounts[slug]?.total) ?? 0;
 const shown = snap?.listings ?? [];
 const prices = shown.map((c) => c.price).filter((p) => typeof p === 'number' && p > 0);
@@ -85,7 +92,7 @@ const faq = [
     ? {
         q: `Which of your Toronto neighbourhoods have the most ${noun} listed?`,
         a: byArea.length
-          ? `Of the twelve neighbourhoods we cover, on ${today}: ${list(byArea.slice(0, 3).map((x) => `${x.label} (${x.n})`))}. The neighbourhood buttons on this page open those listings alone.`
+          ? `Of the eighteen neighbourhoods we cover, on ${today}: ${list(byArea.slice(0, 3).map((x) => `${x.label} (${x.n})`))}. The neighbourhood buttons on this page open those listings alone.`
           : `The mix changes from day to day. The neighbourhood buttons in the live search show each one.`,
       }
     : {

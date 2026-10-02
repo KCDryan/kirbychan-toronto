@@ -16,6 +16,12 @@ export const HOODS: Record<string, { label: string; words: RegExp }> = {
   'the-beaches': { label: 'The Beaches', words: /\bthe beach(es)?\b/i },
   riverdale: { label: 'Riverdale', words: /\briverdale\b|\bleslieville\b/i },
   'islington-village': { label: 'Islington Village', words: /\bislington\b|\betobicoke city centre\b/i },
+  rosedale: { label: 'Rosedale', words: /\b(rosedale|moore park)\b/i },
+  danforth: { label: 'Danforth', words: /\b(the danforth|danforth village|danforth east york)\b/i },
+  'mount-pleasant-east': { label: 'Mount Pleasant East', words: /\bmount pleasant east\b/i },
+  agincourt: { label: 'Agincourt', words: /\bagincourt\b/i },
+  guildwood: { label: 'Guildwood', words: /\bguildwood\b/i },
+  mimico: { label: 'Mimico', words: /\bmimico\b/i },
 };
 
 /** In order of preference: the first matches win when only two are shown. */

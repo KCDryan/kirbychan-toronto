@@ -22,6 +22,12 @@ creates the small fast versions automatically.
 | `neighbourhoods/the-beaches.jpg` | The Beaches |
 | `neighbourhoods/riverdale.jpg` | Riverdale |
 | `neighbourhoods/islington-village.jpg` | Islington Village and Etobicoke City Centre |
+| `neighbourhoods/rosedale.jpg` | Rosedale |
+| `neighbourhoods/danforth.jpg` | Danforth |
+| `neighbourhoods/mount-pleasant-east.jpg` | Mount Pleasant East |
+| `neighbourhoods/agincourt.jpg` | Agincourt |
+| `neighbourhoods/guildwood.jpg` | Guildwood |
+| `neighbourhoods/mimico.jpg` | Mimico |
 | `places/markham.jpg` | Markham (credit slug `markham`) |
 | `places/mississauga.jpg` | Mississauga (credit slug `mississauga`) |
 | `places/vaughan.jpg` | Vaughan (credit slug `vaughan`) |

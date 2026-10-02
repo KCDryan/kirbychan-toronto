@@ -2,7 +2,7 @@
   "meta": {
     "home": {
       "title": "トロントの不動産エージェント | Kirby Chan & Co.",
-      "description": "Kirby Chan & Co.がトロントでの住宅の購入と売却をお手伝いします。出典付きの12エリアガイドと、最初のお電話からクロージングまで分かりやすいアドバイスをお届けします。"
+      "description": "Kirby Chan & Co.がトロントでの住宅の購入と売却をお手伝いします。出典付きの18エリアガイドと、最初のお電話からクロージングまで分かりやすいアドバイスをお届けします。"
     },
     "about": {
       "title": "ブローカー Kirby Chan のご紹介 | Kirby Chan & Co.",
@@ -14,7 +14,7 @@
     },
     "neighbourhoods": {
       "title": "トロントの住宅エリアガイド | Kirby Chan & Co.",
-      "description": "LeasideやLawrence ParkからRiverdale、ダウンタウンのウォーターフロントまで、トロントの12のエリアを紹介。それぞれの住宅、交通、価格を分かりやすくまとめました。"
+      "description": "LeasideやLawrence ParkからRiverdale、ダウンタウンのウォーターフロントまで、トロントの18のエリアを紹介。それぞれの住宅、交通、価格を分かりやすくまとめました。"
     },
     "contact": {
       "title": "お問い合わせ | Kirby Chan & Co. トロントの不動産",
@@ -90,7 +90,7 @@
         "label": "チームが対応できる言語"
       },
       {
-        "value": "12",
+        "value": "18",
         "label": "トロントのエリアガイド"
       }
     ],
@@ -110,7 +110,7 @@
     },
     "hoods": {
       "eyebrow": "エリア紹介",
-      "h2": "12のエリア、それぞれに異なる市場",
+      "h2": "18のエリア、それぞれに異なる市場",
       "lede": "エリアごとに住宅、学校、交通、価格帯が異なります。まずは検討中のエリアからご覧ください。",
       "viewAll": "すべてのエリア"
     },
@@ -245,7 +245,7 @@
   },
   "neighbourhoods": {
     "eyebrow": "オンタリオ州トロント",
-    "h1": "トロントの12のエリア",
+    "h1": "トロントの18のエリア",
     "lede": "トロントではエリアごとに住宅、交通、価格帯が異なります。それぞれのエリアを簡単にご紹介します。",
     "items": {
       "leaside": {
@@ -295,6 +295,30 @@
       "islington-village": {
         "tagline": "Islington駅近くの住宅と、Kiplingのコンドミニアム。",
         "body": "このTRREBのコミュニティは、Islington周辺の戸建ての街並みと、Kipling駅近くのEtobicoke City Centreのコンドミニアムを含みます。Kipling駅ではLine 2とKipling GOが接続しています。"
+      },
+      "rosedale": {
+        "tagline": "渓谷沿いの通りに並ぶ歴史的住宅、Line 1のRosedale駅とSummerhill駅。",
+        "body": "Rosedaleの大部分はSouth RosedaleとNorth Rosedaleの歴史保存地区に含まれます。Line 1のRosedale駅とSummerhill駅はYonge Street側にあり、住宅の半数は5階建て以上の集合住宅です（2021年国勢調査）。"
+      },
+      "danforth": {
+        "tagline": "Danforth Avenueの北に広がる一戸建ての街、Line 2沿線。",
+        "body": "2026年4月から6月、DanforthとDanforth Village-East Yorkでは81件の取引のうち73件が一戸建てと二戸一住宅でした。南側にはLine 2が走り、Pape、Donlands、Greenwood、Coxwellの各駅があり、東端にはWoodbine駅があります。"
+      },
+      "mount-pleasant-east": {
+        "tagline": "Line 5の2つの駅の間に広がる二戸一住宅と戸建ての街並み。",
+        "body": "2026年4月から6月にMount Pleasant Eastで成約した68件のうち、56件が二戸一住宅と戸建てでした（TRREB）。Line 5 EglintonはMount Pleasant駅と、Bayview AvenueのLeaside駅に停車します。"
+      },
+      "agincourt": {
+        "tagline": "戸建ての住宅街、コンドミニアムのタワー、SheppardのAgincourt GO。",
+        "body": "Agincourt Northは戸建て住宅が中心で、Agincourt South-Malvern Westはコンドミニアムが中心です。Stouffville線のAgincourt GO駅は4100 Sheppard Avenue Eastにあります。"
+      },
+      "guildwood": {
+        "tagline": "Bluffsの上に広がる20世紀半ばの住宅街、Guildwood GOの近く。",
+        "body": "2026年4月から6月にGuildwoodで成立した29件の取引のうち20件が戸建てでした（TRREB）。Lakeshore East線のGuildwood GO駅からUnion Stationまでは4駅です。"
+      },
+      "mimico": {
+        "tagline": "湖畔のコンドミニアムと戸建ての街並み、GO駅あり。",
+        "body": "2026年4月から6月にTRREBがMimicoで記録した169件の取引のうち124件がコンドミニアムで、周辺には戸建てとタウンハウスの街並みもあります。Lakeshore West線のMimico GO駅からUnion stationまでは2駅で、501 Queenの路面電車がLake Shore Boulevard Westを走っています。"
       }
     }
   },

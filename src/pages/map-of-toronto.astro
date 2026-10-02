@@ -23,6 +23,9 @@ const NUDGE: Record<string, [number, number]> = {
   riverdale: [90, 40],
   'bayview-village': [110, -40],
   willowdale: [-130, -40],
+  'mount-pleasant-east': [190, -70],
+  rosedale: [10, 75],
+  danforth: [170, 0],
 };
 const pins = map.guides
   .filter((g) => byId.has(g.slug))
@@ -45,8 +48,8 @@ const faq = [
     a: 'From the City of Toronto\'s own neighbourhood boundaries, published on its Open Data portal. Each guide is drawn as the City neighbourhood or neighbourhoods it covers. TRREB, which publishes the price figures in our guides, uses its own community boundaries, which are close to these but not identical.',
   },
   {
-    q: 'Which of the twelve are furthest north and furthest west?',
-    a: `On the City's boundaries, ${north[0].label} and ${north[1].label} are the two furthest north of the twelve and ${west[0].label} is the furthest west. ${west[west.length - 1].label} is the furthest east.`,
+    q: 'Which of the eighteen are furthest north and furthest west?',
+    a: `On the City's boundaries, ${north[0].label} and ${north[1].label} are the two furthest north of the eighteen and ${west[0].label} is the furthest west. ${west[west.length - 1].label} is the furthest east.`,
   },
   {
     q: 'Can I use this map to check an address?',
@@ -57,11 +60,11 @@ const faq = [
 
 <Page
   title="Map of Toronto Neighbourhoods We Cover"
-  description="A to scale map of the twelve Toronto neighbourhoods in our guides, drawn from the City of Toronto's official neighbourhood boundaries, linked to each guide."
+  description="A to scale map of the eighteen Toronto neighbourhoods in our guides, drawn from the City of Toronto's official neighbourhood boundaries, linked to each guide."
   eyebrow="Orientation"
-  h1="Where the twelve neighbourhoods are"
-  accent="twelve"
-  lede="Our twelve Toronto neighbourhood guides on one map, drawn to scale from the City's official neighbourhood boundaries. Select any name to open its guide."
+  h1="Where the eighteen neighbourhoods are"
+  accent="eighteen"
+  lede="Our eighteen Toronto neighbourhood guides on one map, drawn to scale from the City's official neighbourhood boundaries. Select any name to open its guide."
   crumbs={crumbs}
   faq={faq}
 >
@@ -75,10 +78,10 @@ const faq = [
           aria-labelledby="map-title map-desc"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <title id="map-title">Map of the City of Toronto with twelve neighbourhoods highlighted</title>
+          <title id="map-title">Map of the City of Toronto with eighteen neighbourhoods highlighted</title>
           <desc id="map-desc">
             The City of Toronto divided into its 158 official neighbourhoods, with the areas covered by
-            our twelve guides shaded and labelled. North is at the top. A text list of the same
+            our eighteen guides shaded and labelled. North is at the top. A text list of the same
             neighbourhoods follows below the map.
           </desc>
 
@@ -109,7 +112,7 @@ const faq = [
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">In words</p>
-        <h2>The same twelve, listed</h2>
+        <h2>The same eighteen, listed</h2>
       </div>
       <ul class="text-map" role="list">
         {

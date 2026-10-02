@@ -113,7 +113,7 @@ const outroLinks: Record<string, [string, string][]> = {
       {hub.outro.paragraphs.map((p) => <p>{p}</p>)}
       <ul>
         {outroLinks[hub.slug]?.map(([href, label]) => <li><a href={href}>{label.charAt(0).toUpperCase() + label.slice(1)}</a></li>)}
-        <li><a href="/neighbourhoods/">All twelve Toronto neighbourhood guides</a></li>
+        <li><a href="/neighbourhoods/">All eighteen Toronto neighbourhood guides</a></li>
         {others.map((o) => <li><a href={`/best-toronto-neighbourhoods-for-${o.slug}/`}>{o.h1}</a></li>)}
       </ul>
 

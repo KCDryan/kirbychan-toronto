@@ -99,6 +99,46 @@
       "slug": "downtown-waterfront",
       "name": "Waterfront Communities C8",
       "price": 597500
+    },
+    {
+      "slug": "rosedale",
+      "name": "Rosedale-Moore Park",
+      "price": 2425000
+    },
+    {
+      "slug": "danforth",
+      "name": "Danforth",
+      "price": 1301000
+    },
+    {
+      "slug": "danforth",
+      "name": "Danforth Village-East York",
+      "price": 1209000
+    },
+    {
+      "slug": "mount-pleasant-east",
+      "name": "Mount Pleasant East",
+      "price": 1382500
+    },
+    {
+      "slug": "agincourt",
+      "name": "Agincourt North",
+      "price": 847500
+    },
+    {
+      "slug": "agincourt",
+      "name": "Agincourt South-Malvern West",
+      "price": 528000
+    },
+    {
+      "slug": "guildwood",
+      "name": "Guildwood",
+      "price": 1000000
+    },
+    {
+      "slug": "mimico",
+      "name": "Mimico",
+      "price": 671000
     }
   ]
 }

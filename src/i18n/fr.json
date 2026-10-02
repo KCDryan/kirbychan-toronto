@@ -2,7 +2,7 @@
   "meta": {
     "home": {
       "title": "Courtier immobilier à Toronto | Kirby Chan & Co.",
-      "description": "Kirby Chan & Co. Real Estate Team aide les gens à acheter et à vendre une maison à Toronto, avec un guide documenté de douze quartiers et des conseils clairs du premier appel à la conclusion de la vente."
+      "description": "Kirby Chan & Co. Real Estate Team aide les gens à acheter et à vendre une maison à Toronto, avec un guide documenté de dix-huit quartiers et des conseils clairs du premier appel à la conclusion de la vente."
     },
     "about": {
       "title": "Kirby Chan, courtier immobilier | Kirby Chan & Co.",
@@ -14,7 +14,7 @@
     },
     "neighbourhoods": {
       "title": "Quartiers de Toronto | Kirby Chan & Co.",
-      "description": "Douze quartiers de Toronto, de Leaside et Lawrence Park à Riverdale et au secteur riverain du centre-ville. Logement, transports et prix pour chacun, en termes simples."
+      "description": "Dix-huit quartiers de Toronto, de Leaside et Lawrence Park à Riverdale et au secteur riverain du centre-ville. Logement, transports et prix pour chacun, en termes simples."
     },
     "contact": {
       "title": "Contactez Kirby Chan & Co. | Immobilier à Toronto",
@@ -90,7 +90,7 @@
         "label": "Langues parlées par l'équipe"
       },
       {
-        "value": "12",
+        "value": "18",
         "label": "Guides des quartiers de Toronto"
       }
     ],
@@ -110,7 +110,7 @@
     },
     "hoods": {
       "eyebrow": "Les quartiers",
-      "h2": "Douze quartiers, chacun avec son propre marché",
+      "h2": "Dix-huit quartiers, chacun avec son propre marché",
       "lede": "Chaque quartier a ses propres logements, écoles, transports et niveaux de prix. Commencez par celui qui vous intéresse.",
       "viewAll": "Tous les quartiers"
     },
@@ -245,7 +245,7 @@
   },
   "neighbourhoods": {
     "eyebrow": "Toronto, Ontario",
-    "h1": "Douze quartiers de Toronto",
+    "h1": "Dix-huit quartiers de Toronto",
     "lede": "Chaque quartier de Toronto a ses propres logements, ses transports et son niveau de prix. Voici une courte présentation de chacun.",
     "items": {
       "leaside": {
@@ -295,6 +295,30 @@
       "islington-village": {
         "tagline": "Des maisons près de la station Islington et des condos à Kipling.",
         "body": "Cette communauté du TRREB couvre les rues de maisons individuelles autour d'Islington et les immeubles en copropriété d'Etobicoke City Centre près de la station Kipling, où la Line 2 rejoint Kipling GO."
+      },
+      "rosedale": {
+        "tagline": "Maisons patrimoniales dans des rues bordées de ravins, avec la Line 1 à Rosedale et Summerhill.",
+        "body": "Une grande partie de Rosedale se trouve dans les districts de conservation du patrimoine South Rosedale et North Rosedale. Les stations Rosedale et Summerhill de la Line 1 sont du côté de Yonge Street. La moitié des logements sont dans des immeubles d'appartements de cinq étages ou plus (Recensement de 2021)."
+      },
+      "danforth": {
+        "tagline": "Des maisons au nord de Danforth Avenue, sur la Line 2.",
+        "body": "Les maisons individuelles et jumelées représentaient 73 des 81 ventes à Danforth et Danforth Village-East York d'avril à juin 2026. La Line 2 longe la limite sud avec les stations Pape, Donlands, Greenwood et Coxwell, et la station Woodbine à la limite est."
+      },
+      "mount-pleasant-east": {
+        "tagline": "Des rues de maisons jumelées et individuelles entre deux stations de la Line 5.",
+        "body": "Les maisons jumelées et individuelles ont représenté 56 des 68 ventes à Mount Pleasant East d'avril à juin 2026 (TRREB). La Line 5 Eglinton s'arrête à la station Mount Pleasant et à la station Leaside, sur Bayview Avenue."
+      },
+      "agincourt": {
+        "tagline": "Rues de maisons individuelles, tours en copropriété et Agincourt GO sur Sheppard.",
+        "body": "Agincourt North est dominé par les maisons individuelles et Agincourt South-Malvern West par les appartements en copropriété. La gare Agincourt GO, sur la ligne Stouffville, se trouve au 4100 Sheppard Avenue East."
+      },
+      "guildwood": {
+        "tagline": "Des maisons du milieu du siècle au-dessus des Bluffs, près de Guildwood GO.",
+        "body": "Les maisons individuelles représentaient 20 des 29 ventes à Guildwood d'avril à juin 2026 (TRREB). La gare Guildwood GO, sur la ligne Lakeshore East, se trouve à quatre arrêts de Union Station."
+      },
+      "mimico": {
+        "tagline": "Des condos au bord du lac et des rues de maisons individuelles, avec une gare GO.",
+        "body": "Les appartements en copropriété ont représenté 124 des 169 ventes enregistrées par le TRREB à Mimico d'avril à juin 2026, à côté de rues de maisons individuelles et de maisons en rangée. Mimico GO, sur la ligne Lakeshore West, est à deux arrêts de Union station et le tramway 501 Queen circule sur Lake Shore Boulevard West."
       }
     }
   },

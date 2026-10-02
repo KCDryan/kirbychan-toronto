@@ -22,6 +22,12 @@ const HOODS = {
   'yonge-eglinton': ['Yonge-Eglinton', 'South Eglinton-Davisville'],
   'islington-village': ['Islington', 'Etobicoke City Centre'],
   'downtown-waterfront': ['Harbourfront-CityPlace', 'St Lawrence-East Bayfront-The Islands'],
+  rosedale: ['Rosedale-Moore Park'],
+  danforth: ['Danforth', 'Danforth East York'],
+  'mount-pleasant-east': ['Mount Pleasant East'],
+  agincourt: ['Agincourt North', 'Agincourt South-Malvern West'],
+  guildwood: ['Guildwood'],
+  mimico: ['Mimico-Queensway'],
 };
 
 const W = 1000;

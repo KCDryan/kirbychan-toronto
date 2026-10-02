@@ -1,5 +1,5 @@
 /**
- * "Best neighbourhoods for..." hub pages. Each groups the twelve neighbourhood guides by the housing
+ * "Best neighbourhoods for..." hub pages. Each groups the neighbourhood guides by the housing
  * and transit people in one situation ask about. Every fact on these pages comes from the
  * neighbourhood files (TRREB community figures, TTC stations and stop counts, 2021 Census housing stock), so a hub can never
  * disagree with the guide it links to. The reasons below only restate those facts.
@@ -35,7 +35,7 @@ export const HUBS: Hub[] = [
     bandLabel: 'Smaller-home prices, TRREB',
     intro: [
       'Downsizing is the centre of our work, and the question that decides most moves is not the price of the house you are leaving. It is whether the smaller home you want exists nearby. Some Toronto neighbourhoods are almost all houses and sell only a handful of condos a quarter. Others sell dozens.',
-      'The neighbourhoods below had the most condo apartment, condo townhouse or semi-detached sales among our twelve guides from April to June 2026. The prices come from each guide and are split by property type, so a condo is never compared with a detached average.',
+      'The neighbourhoods below had the most condo apartment, condo townhouse or semi-detached sales among our eighteen guides from April to June 2026. The prices come from each guide and are split by property type, so a condo is never compared with a detached average.',
     ],
     picks: [
       { slug: 'yonge-eglinton', why: 'Mount Pleasant West alone recorded 114 condo apartment sales from April to June 2026, around Eglinton station where Line 1 meets Line 5.' },
@@ -45,6 +45,11 @@ export const HUBS: Hub[] = [
       { slug: 'islington-village', why: 'Condo apartments near Kipling station, plus freehold and condo townhouses, with Line 2 and Kipling GO connected at Kipling.' },
       { slug: 'riverdale', why: 'South Riverdale had condo apartments, condo townhouses and freehold townhouses as well as semis from April to June 2026, with four Line 2 stations.' },
       { slug: 'downtown-waterfront', why: 'Nearly every sale is a condo apartment, with Union station and its GO trains at the northern edge.' },
+      { slug: 'mimico', why: 'Mimico recorded 124 condo apartment sales at a median of about $609,000 and 5 condo townhouse sales from April to June 2026, with Mimico GO on the Lakeshore West line.' },
+      { slug: 'agincourt', why: 'Condo apartments were 52 of 107 sales across Agincourt North and Agincourt South-Malvern West from April to June 2026, at medians of about $415,000 and $445,000, with 6 condo townhouse sales in Agincourt North.' },
+      { slug: 'mount-pleasant-east', why: 'Semi-detached houses were 32 of 68 sales from April to June 2026 at a median of about $1,332,000, alongside 8 condo apartment and 4 condo townhouse sales near Mount Pleasant station on Line 5.' },
+      { slug: 'rosedale', why: 'Rosedale-Moore Park recorded 23 condo apartment sales at a median of about $850,000 and 4 condo townhouse sales from April to June 2026, with Rosedale and Summerhill stations on Line 1.' },
+      { slug: 'danforth', why: 'Semi-detached houses were 31 of 81 sales across Danforth and Danforth Village-East York from April to June 2026, at medians of about $1,150,000 to $1,255,000, with four freehold townhouses at about $903,000 and very few condo apartments, on Line 2.' },
     ],
     harder: {
       heading: 'Where there is less to downsize into',
@@ -58,7 +63,7 @@ export const HUBS: Hub[] = [
       ],
     },
     faq: [
-      { q: 'Where in Toronto can I downsize to a condo near the subway?', a: 'Of our twelve guides, Yonge and Eglinton, Willowdale and Bayview Village had the most condo apartment sales from April to June 2026, all within reach of Line 1, Line 4 or Line 5 stations. Islington Village and the downtown waterfront also sell mainly condo apartments.' },
+      { q: 'Where in Toronto can I downsize to a condo near the subway?', a: 'Near the subway, Willowdale and Yonge and Eglinton had the most condo apartment sales among our eighteen guides from April to June 2026, followed by Bayview Village, all within reach of Line 1, Line 4 or Line 5 stations. Mimico recorded 124 condo apartment sales near Mimico GO rather than the subway. Islington Village and the downtown waterfront also sell mainly condo apartments.' },
       { q: 'Where can I find a condo townhouse in Toronto?', a: 'Willowdale East recorded 22 condo townhouse sales from April to June 2026 and Bayview Village 15, the most among our guides. South Riverdale recorded 11.' },
       { q: 'Can I downsize without leaving Leaside or Lawrence Park?', a: 'It is possible but the choice is narrow. Leaside recorded 11 condo apartment sales and Lawrence Park South 9 from April to June 2026, so many owners also look at Yonge and Eglinton nearby.' },
       { q: 'Is downsizing your specialty?', a: 'Yes. Later-life moves, downsizing and estate homes are the core of our team\'s work, from pricing the long-time family home to buying the smaller one.' },
@@ -69,7 +74,7 @@ export const HUBS: Hub[] = [
     title: 'Toronto Neighbourhoods With the Most Houses (2026)',
     description: 'Toronto neighbourhoods with the most detached, semi-detached and freehold townhouse sales, their TRREB house prices and school checks before you buy.',
     h1: 'Toronto neighbourhoods with the most room',
-    lede: 'Where our twelve Toronto guides show the most detached houses, semis and freehold townhouses selling, with April to June 2026 TRREB prices and what to confirm before you make an offer.',
+    lede: 'Where our eighteen Toronto guides show the most detached houses, semis and freehold townhouses selling, with April to June 2026 TRREB prices and what to confirm before you make an offer.',
     bands: /detached|freehold townhouse|semi/i,
     bandLabel: 'House prices, TRREB',
     intro: [
@@ -83,6 +88,9 @@ export const HUBS: Hub[] = [
       { slug: 'riverdale', why: 'Semi-detached houses led sales in North and South Riverdale, with detached and freehold townhouses in South Riverdale and four Line 2 stations.' },
       { slug: 'high-park', why: 'High Park-Swansea recorded 36 detached sales and High Park North 13 detached and 11 semi-detached sales from April to June 2026, on Line 2.' },
       { slug: 'islington-village', why: 'Detached houses were 43 of 170 sales and freehold townhouses 10, with some of the lower detached prices among our guides.' },
+      { slug: 'guildwood', why: 'Detached houses were 20 of 29 sales from April to June 2026, at a median of about $1,088,000, with Guildwood GO on the Lakeshore East line.' },
+      { slug: 'danforth', why: 'Detached and semi-detached houses were 73 of 81 sales across Danforth and Danforth Village-East York from April to June 2026, with detached medians of about $1,359,000 and $1,593,000 and four Line 2 stations.' },
+      { slug: 'mount-pleasant-east', why: 'Semi-detached and detached houses were 56 of 68 sales from April to June 2026, with Mount Pleasant and Leaside stations on Line 5.' },
     ],
     outro: {
       heading: 'Moving up from a condo or a smaller house',
@@ -91,9 +99,9 @@ export const HUBS: Hub[] = [
       ],
     },
     faq: [
-      { q: 'Which Toronto neighbourhoods in your guides have the most detached houses?', a: 'Lawrence Park, Leaside and The Beaches, where detached houses were most of the sales from April to June 2026 (TRREB). Each guide has the detached median.' },
+      { q: 'Which Toronto neighbourhoods in your guides have the most detached houses?', a: 'Lawrence Park, Leaside, The Beaches and Guildwood, where detached houses were most of the sales from April to June 2026 (TRREB). Each guide has the detached median.' },
       { q: 'How do I find out which school serves a Toronto address?', a: 'Use the school locator of the Toronto District School Board or the Toronto Catholic District School Board for the exact address. Boundaries can change, so confirm before you make an offer.' },
-      { q: 'Where is a detached house least expensive among your guides?', a: 'From April to June 2026 the lowest detached medians among our guides were in Islington-City Centre West, about $1,301,000, and Willowdale West, about $1,386,000 (TRREB). Prices vary widely by street and lot.' },
+      { q: 'Where is a detached house least expensive among your guides?', a: 'From April to June 2026 the lowest detached medians among our guides were in Agincourt South-Malvern West, about $990,000, Agincourt North, about $1,085,000 and Guildwood, about $1,088,000 (TRREB). Prices vary widely by street and lot.' },
     ],
   },
   {
@@ -102,7 +110,7 @@ export const HUBS: Hub[] = [
     title: 'Toronto Neighbourhoods by Subway Commute (2026)',
     description: 'Toronto neighbourhoods by subway and LRT commute: the nearest TTC stations, the number of stops to Union station and the TRREB median price for each.',
     h1: 'Toronto neighbourhoods by commute',
-    lede: 'Which of our twelve Toronto neighbourhoods sit on Line 1, Line 2, Line 4 or the new Line 5 Eglinton, and how many stops each is from Union station.',
+    lede: 'Which of our eighteen Toronto neighbourhoods sit on Line 1, Line 2, Line 4 or the new Line 5 Eglinton, and how many stops each is from Union station.',
     bands: /all property types/i,
     bandLabel: 'Median, all property types, TRREB',
     intro: [
@@ -118,11 +126,14 @@ export const HUBS: Hub[] = [
       { slug: 'leaside', why: 'Leaside station on Line 5 is 2 stops from Eglinton, then 11 stops on Line 1 to Union.' },
       { slug: 'willowdale', why: 'North York Centre is 15 stops and Finch 16 stops from Union on Line 1, with Line 4 at Sheppard-Yonge.' },
       { slug: 'high-park', why: 'High Park station on Line 2 is 15 stops from Union with a change at St George, and Bloor GO is near Dundas West station.' },
+      { slug: 'rosedale', why: 'Rosedale station on Line 1 is 7 stops from Union. Castle Frank station on Line 2 serves the south side.' },
+      { slug: 'danforth', why: 'Pape station on Line 2 is 11 stops from Union with a change at Bloor-Yonge. Greenwood, Coxwell and Woodbine are 13, 14 and 15 stops.' },
+      { slug: 'mount-pleasant-east', why: 'Mount Pleasant station on Line 5 is 1 stop from Eglinton, then 11 stops on Line 1 to Union.' },
     ],
     outro: {
       heading: 'Test the trip you will actually make',
       paragraphs: [
-        'Service levels differ by line and time of day, and Line 5 opened with introductory service conditions. Before you buy, ride from the nearest station to your workplace at the hour you would travel. Our Toronto subway commute guide lists the stations and stop counts for all twelve neighbourhoods.',
+        'Service levels differ by line and time of day, and Line 5 opened with introductory service conditions. Before you buy, ride from the nearest station to your workplace at the hour you would travel. Our Toronto subway commute guide lists the stations and stop counts for twelve of our neighbourhoods.',
       ],
     },
     faq: [

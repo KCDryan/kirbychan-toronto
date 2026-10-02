@@ -146,5 +146,59 @@
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "source": "https://commons.wikimedia.org/wiki/File:Vaughan_Metropolitan_Centre_station_exterior,_July_2018.jpg",
     "title": "Vaughan Metropolitan Centre station exterior, July 2018.jpg"
+  },
+  {
+    "slug": "rosedale",
+    "shows": "An aerial view south over the tree-covered ravines and houses of Rosedale, Toronto, with the downtown skyline behind.",
+    "author": "Canmenwalker",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Rosedale-Moore_Park_2025.jpg",
+    "title": "Rosedale-Moore Park 2025.jpg"
+  },
+  {
+    "slug": "danforth",
+    "shows": "Shops along Danforth Avenue near Greenwood Avenue, looking east.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Danforth_Avenue_near_Greenwood_Avenue,_April_3_2026_(01).jpg",
+    "title": "Danforth Avenue near Greenwood Avenue, April 3 2026 (01).jpg"
+  },
+  {
+    "slug": "mount-pleasant-east",
+    "shows": "Shops, apartment buildings and traffic on Eglinton Avenue East at Mount Pleasant Road, with the Mount Pleasant station building on the corner.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Eglinton_Avenue_E_at_Mount_Pleasant_Rd,_August_30_2025.jpg",
+    "title": "Eglinton Avenue E at Mount Pleasant Rd, August 30 2025.jpg"
+  },
+  {
+    "slug": "agincourt",
+    "shows": "An aerial view of Agincourt in summer, with houses, apartment towers, a main road and a rail line.",
+    "author": "Canmenwalker",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Agincourt_Aerial_View_2023.jpg",
+    "title": "Agincourt Aerial View 2023"
+  },
+  {
+    "slug": "guildwood",
+    "shows": "The Greek Theatre, a row of salvaged stone columns on a lawn at Guild Park and Gardens.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Greek_Theatre_at_Guild_Park,_May_4_2026_(01).jpg",
+    "title": "Greek Theatre at Guild Park, May 4 2026 (01).jpg"
+  },
+  {
+    "slug": "mimico",
+    "shows": "The rocky shoreline of Mimico Waterfront Park on Lake Ontario, with condo towers along the shore behind it.",
+    "author": "Chicken4War",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:View_of_Mimico_Waterfront_Park_and_buildings,_Toronto_2026.jpg",
+    "title": "View of Mimico Waterfront Park and buildings, Toronto 2026"
   }
 ]

@@ -2,7 +2,7 @@
   "meta": {
     "home": {
       "title": "多伦多房地产经纪 | Kirby Chan & Co.",
-      "description": "Kirby Chan & Co. Real Estate Team 帮助客户在多伦多买房卖房，提供有资料来源的十二个社区指南，从第一次通话到成交都给您实在的建议。"
+      "description": "Kirby Chan & Co. Real Estate Team 帮助客户在多伦多买房卖房，提供有资料来源的十八个社区指南，从第一次通话到成交都给您实在的建议。"
     },
     "about": {
       "title": "认识经纪人 Kirby Chan | Kirby Chan & Co.",
@@ -14,7 +14,7 @@
     },
     "neighbourhoods": {
       "title": "多伦多社区房产指南 | Kirby Chan & Co.",
-      "description": "多伦多十二个社区，从 Leaside、Lawrence Park 到 Riverdale 和市中心湖滨。用浅白的话介绍每个社区的住房、交通和房价。"
+      "description": "多伦多十八个社区，从 Leaside、Lawrence Park 到 Riverdale 和市中心湖滨。用浅白的话介绍每个社区的住房、交通和房价。"
     },
     "contact": {
       "title": "联系 Kirby Chan & Co. | 多伦多房地产",
@@ -90,7 +90,7 @@
         "label": "团队服务语言"
       },
       {
-        "value": "12",
+        "value": "18",
         "label": "多伦多社区指南"
       }
     ],
@@ -110,7 +110,7 @@
     },
     "hoods": {
       "eyebrow": "社区介绍",
-      "h2": "十二个社区，各有各的市场",
+      "h2": "十八个社区，各有各的市场",
       "lede": "每个社区的房屋类型、学校、交通和价位都各不相同。先从您正在考虑的社区看起吧。",
       "viewAll": "全部社区"
     },
@@ -245,7 +245,7 @@
   },
   "neighbourhoods": {
     "eyebrow": "安大略省多伦多",
-    "h1": "多伦多十二个社区",
+    "h1": "多伦多十八个社区",
     "lede": "多伦多每个社区都有自己的住房类型、交通和价位。以下是每个社区的简要介绍。",
     "items": {
       "leaside": {
@@ -295,6 +295,30 @@
       "islington-village": {
         "tagline": "Islington 站附近的独立屋和 Kipling 的公寓。",
         "body": "这个 TRREB 社区涵盖 Islington 周边的独立屋街区，以及 Kipling 站附近 Etobicoke City Centre 的公寓楼，Line 2 在那里与 Kipling GO 站相连。"
+      },
+      "rosedale": {
+        "tagline": "峡谷街道上的历史建筑住宅，Line 1 设有 Rosedale 站和 Summerhill 站。",
+        "body": "Rosedale 大部分区域位于 South Rosedale 和 North Rosedale 两个历史保护区内。Line 1 的 Rosedale 站和 Summerhill 站位于 Yonge Street 一侧，一半住宅位于五层或以上的公寓楼内（2021 年人口普查）。"
+      },
+      "danforth": {
+        "tagline": "Danforth Avenue 以北的独立屋和半独立屋，位于 Line 2 沿线。",
+        "body": "2026 年 4 月至 6 月，Danforth 和 Danforth Village-East York 的 81 宗成交中有 73 宗是独立屋和半独立屋。Line 2 沿南侧经过，设有 Pape、Donlands、Greenwood 和 Coxwell 站，东侧边缘还有 Woodbine 站。"
+      },
+      "mount-pleasant-east": {
+        "tagline": "两个 Line 5 车站之间的半独立屋和独立屋街区。",
+        "body": "2026 年 4 月至 6 月，Mount Pleasant East 的 68 宗成交中有 56 宗是半独立屋和独立屋（TRREB）。Line 5 Eglinton 在 Mount Pleasant 站和 Bayview Avenue 的 Leaside 站停靠。"
+      },
+      "agincourt": {
+        "tagline": "独立屋街区、公寓楼和 Sheppard 上的 Agincourt GO。",
+        "body": "Agincourt North 以独立屋为主，Agincourt South-Malvern West 以公寓为主。Stouffville 线的 Agincourt GO 站位于 4100 Sheppard Avenue East。"
+      },
+      "guildwood": {
+        "tagline": "Bluffs 上方的中世纪住宅，靠近 Guildwood GO。",
+        "body": "2026年4月至6月，Guildwood 的29宗成交中有20宗是独立屋（TRREB）。Lakeshore East 线上的 Guildwood GO 站距离 Union Station 四站。"
+      },
+      "mimico": {
+        "tagline": "湖边公寓和独立屋街区，设有 GO 车站。",
+        "body": "2026 年 4 月至 6 月，TRREB 在 Mimico 记录的 169 宗成交中有 124 宗是公寓，周边还有独立屋和联排屋街区。Lakeshore West 线上的 Mimico GO 站距 Union station 两站，501 Queen 有轨电车沿 Lake Shore Boulevard West 行驶。"
       }
     }
   },

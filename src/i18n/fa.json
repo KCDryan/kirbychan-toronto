@@ -2,7 +2,7 @@
   "meta": {
     "home": {
       "title": "مشاور املاک در تورنتو | Kirby Chan & Co.",
-      "description": "Kirby Chan & Co. Real Estate Team به مردم در خرید و فروش خانه در تورنتو کمک می‌کند، با راهنمایی مستند درباره دوازده محله و مشاوره روشن از اولین تماس تا روز انتقال سند."
+      "description": "Kirby Chan & Co. Real Estate Team به مردم در خرید و فروش خانه در تورنتو کمک می‌کند، با راهنمایی مستند درباره هجده محله و مشاوره روشن از اولین تماس تا روز انتقال سند."
     },
     "about": {
       "title": "آشنایی با Kirby Chan، بروکر | Kirby Chan & Co.",
@@ -14,7 +14,7 @@
     },
     "neighbourhoods": {
       "title": "محله‌های تورنتو | Kirby Chan & Co.",
-      "description": "دوازده محله تورنتو، از Leaside و Lawrence Park تا Riverdale و ساحل مرکز شهر. مسکن، حمل‌ونقل و قیمت‌ها در هر محله، به زبان ساده."
+      "description": "هجده محله تورنتو، از Leaside و Lawrence Park تا Riverdale و ساحل مرکز شهر. مسکن، حمل‌ونقل و قیمت‌ها در هر محله، به زبان ساده."
     },
     "contact": {
       "title": "تماس با Kirby Chan & Co. | املاک تورنتو",
@@ -90,7 +90,7 @@
         "label": "زبانی که تیم به آن صحبت می‌کند"
       },
       {
-        "value": "12",
+        "value": "18",
         "label": "راهنمای محله‌های تورنتو"
       }
     ],
@@ -110,7 +110,7 @@
     },
     "hoods": {
       "eyebrow": "محله‌ها",
-      "h2": "دوازده محله، هر کدام با بازار خودش",
+      "h2": "هجده محله، هر کدام با بازار خودش",
       "lede": "هر محله نوع مسکن، مدارس، حمل‌ونقل و سطح قیمت خودش را دارد. از محله‌ای شروع کنید که در نظر دارید.",
       "viewAll": "همه محله‌ها"
     },
@@ -245,7 +245,7 @@
   },
   "neighbourhoods": {
     "eyebrow": "تورنتو، انتاریو",
-    "h1": "دوازده محله تورنتو",
+    "h1": "هجده محله تورنتو",
     "lede": "هر محله تورنتو نوع مسکن، حمل‌ونقل و سطح قیمت خودش را دارد. در اینجا معرفی کوتاهی از هر کدام آمده است.",
     "items": {
       "leaside": {
@@ -295,6 +295,30 @@
       "islington-village": {
         "tagline": "خانه‌های نزدیک ایستگاه Islington و کاندوها در Kipling.",
         "body": "این محله TRREB خیابان‌های خانه‌های مستقل اطراف Islington و ساختمان‌های کاندوی Etobicoke City Centre نزدیک ایستگاه Kipling را در بر می‌گیرد، جایی که Line 2 به Kipling GO وصل می‌شود."
+      },
+      "rosedale": {
+        "tagline": "خانه‌های تاریخی در خیابان‌های کنار دره، با Line 1 در Rosedale و Summerhill.",
+        "body": "بخش بزرگی از Rosedale در محدوده‌های حفاظت میراث South Rosedale و North Rosedale قرار دارد. ایستگاه‌های Rosedale و Summerhill در Line 1 در سمت Yonge Street هستند و نیمی از خانه‌ها در ساختمان‌های آپارتمانی پنج طبقه یا بیشتر قرار دارند (سرشماری 2021)."
+      },
+      "danforth": {
+        "tagline": "خانه‌هایی در شمال Danforth Avenue، در مسیر Line 2.",
+        "body": "از آوریل تا ژوئن ۲۰۲۶، خانه‌های مستقل و نیمه‌مستقل ۷۳ مورد از ۸۱ معامله در Danforth و Danforth Village-East York بودند. Line 2 در امتداد مرز جنوبی با ایستگاه‌های Pape، Donlands، Greenwood و Coxwell می‌گذرد و ایستگاه Woodbine در مرز شرقی است."
+      },
+      "mount-pleasant-east": {
+        "tagline": "خیابان‌هایی با خانه‌های نیمه‌مستقل و مستقل میان دو ایستگاه Line 5.",
+        "body": "از آوریل تا ژوئن 2026، خانه‌های نیمه‌مستقل و مستقل 56 فقره از 68 معامله در Mount Pleasant East بودند (TRREB). Line 5 Eglinton در ایستگاه Mount Pleasant و ایستگاه Leaside در Bayview Avenue توقف می‌کند."
+      },
+      "agincourt": {
+        "tagline": "خیابان‌های خانه‌های مستقل، برج‌های کاندو و Agincourt GO در Sheppard.",
+        "body": "در Agincourt North خانه‌های مستقل و در Agincourt South-Malvern West آپارتمان‌های کاندو غالب هستند. ایستگاه Agincourt GO در خط Stouffville در 4100 Sheppard Avenue East قرار دارد."
+      },
+      "guildwood": {
+        "tagline": "خانه‌های میانه قرن بیستم بالای Bluffs، نزدیک Guildwood GO.",
+        "body": "از آوریل تا ژوئن ۲۰۲۶، ۲۰ مورد از ۲۹ معامله در Guildwood خانه‌های مستقل بودند (TRREB). ایستگاه Guildwood GO در خط Lakeshore East چهار ایستگاه با Union Station فاصله دارد."
+      },
+      "mimico": {
+        "tagline": "کاندوهای کنار دریاچه و خیابان‌های خانه‌های مستقل، با یک ایستگاه GO.",
+        "body": "از آوریل تا ژوئن 2026، ۱۲۴ مورد از ۱۶۹ معامله‌ای که TRREB در Mimico ثبت کرد آپارتمان کاندو بود، در کنار خیابان‌هایی از خانه‌های مستقل و تاون‌هاوس‌ها. ایستگاه Mimico GO روی خط Lakeshore West دو ایستگاه با Union station فاصله دارد و تراموای 501 Queen در امتداد Lake Shore Boulevard West حرکت می‌کند."
       }
     }
   },

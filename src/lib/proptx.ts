@@ -68,6 +68,12 @@ export const AREAS: Record<string, { label: string; communities: string[] }> = {
   'the-beaches': { label: 'The Beaches', communities: ['The Beaches'] },
   riverdale: { label: 'Riverdale', communities: ['North Riverdale', 'South Riverdale'] },
   'islington-village': { label: 'Islington Village', communities: ['Islington-City Centre West'] },
+  rosedale: { label: 'Rosedale', communities: ['Rosedale-Moore Park'] },
+  danforth: { label: 'Danforth', communities: ['Danforth', 'Danforth Village-East York'] },
+  'mount-pleasant-east': { label: 'Mount Pleasant East', communities: ['Mount Pleasant East'] },
+  agincourt: { label: 'Agincourt', communities: ['Agincourt North', 'Agincourt South-Malvern West'] },
+  guildwood: { label: 'Guildwood', communities: ['Guildwood'] },
+  mimico: { label: 'Mimico', communities: ['Mimico'] },
 };
 
 export const areaOf = (region: unknown) => Object.keys(AREAS).find((k) => AREAS[k].communities.includes(String(region))) ?? null;

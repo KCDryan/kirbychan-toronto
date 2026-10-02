@@ -2,7 +2,7 @@
   "meta": {
     "home": {
       "title": "Toronto Real Estate Agent | Kirby Chan & Co.",
-      "description": "Kirby Chan & Co. Real Estate Team helps people buy and sell homes in Toronto, with sourced guides to twelve neighbourhoods and plain advice to closing."
+      "description": "Kirby Chan & Co. Real Estate Team helps people buy and sell homes in Toronto, with sourced guides to eighteen neighbourhoods and plain advice to closing."
     },
     "about": {
       "title": "Meet Kirby Chan, Broker | Kirby Chan & Co.",
@@ -14,7 +14,7 @@
     },
     "neighbourhoods": {
       "title": "Toronto Neighbourhoods | Kirby Chan & Co.",
-      "description": "Twelve Toronto neighbourhoods, from Leaside and Lawrence Park to Riverdale and the downtown waterfront. Housing, transit and prices for each, in plain language."
+      "description": "Eighteen Toronto neighbourhoods, from Leaside and Lawrence Park to Riverdale and the downtown waterfront. Housing, transit and prices for each, in plain language."
     },
     "contact": {
       "title": "Contact Kirby Chan & Co. | Toronto Real Estate",
@@ -90,7 +90,7 @@
         "label": "Languages spoken by the team"
       },
       {
-        "value": "12",
+        "value": "18",
         "label": "Toronto neighbourhood guides"
       }
     ],
@@ -110,7 +110,7 @@
     },
     "hoods": {
       "eyebrow": "The neighbourhoods",
-      "h2": "Twelve neighbourhoods, each with its own market",
+      "h2": "Eighteen neighbourhoods, each with its own market",
       "lede": "Each neighbourhood has its own housing, schools, transit and price level. Start with the one you are considering.",
       "viewAll": "All neighbourhoods"
     },
@@ -245,7 +245,7 @@
   },
   "neighbourhoods": {
     "eyebrow": "Toronto, Ontario",
-    "h1": "Twelve Toronto neighbourhoods",
+    "h1": "Eighteen Toronto neighbourhoods",
     "lede": "Each Toronto neighbourhood has its own housing, transit and price level. Here is a short introduction to each one.",
     "items": {
       "leaside": {
@@ -295,6 +295,30 @@
       "islington-village": {
         "tagline": "Houses near Islington station and condos at Kipling.",
         "body": "The TRREB community covers detached streets around Islington and the Etobicoke City Centre condo buildings near Kipling station, where Line 2 connects with Kipling GO."
+      },
+      "rosedale": {
+        "tagline": "Heritage houses on ravine streets, with Line 1 at Rosedale and Summerhill.",
+        "body": "Much of Rosedale lies within the South Rosedale and North Rosedale heritage conservation districts. Rosedale and Summerhill stations on Line 1 are on the Yonge Street side. Half of all homes are in apartment buildings of five or more storeys (2021 Census)."
+      },
+      "danforth": {
+        "tagline": "Houses north of Danforth Avenue, on Line 2.",
+        "body": "Detached and semi-detached houses made up 73 of 81 sales in Danforth and Danforth Village-East York from April to June 2026. Line 2 runs along the south edge with Pape, Donlands, Greenwood and Coxwell stations inside the area and Woodbine station at the east edge."
+      },
+      "mount-pleasant-east": {
+        "tagline": "Semi-detached and detached streets between two Line 5 stations.",
+        "body": "Semi-detached and detached houses made up 56 of 68 sales in Mount Pleasant East from April to June 2026 (TRREB). Line 5 Eglinton stops at Mount Pleasant station and at Leaside station on Bayview Avenue."
+      },
+      "agincourt": {
+        "tagline": "Detached streets, condo towers and Agincourt GO on Sheppard.",
+        "body": "Agincourt North is led by detached houses and Agincourt South-Malvern West by condo apartments. Agincourt GO on the Stouffville line is at 4100 Sheppard Avenue East."
+      },
+      "guildwood": {
+        "tagline": "Mid-century houses above the Bluffs, near Guildwood GO.",
+        "body": "Detached houses made up 20 of 29 sales in Guildwood from April to June 2026 (TRREB). Guildwood GO station on the Lakeshore East line is four stops from Union Station."
+      },
+      "mimico": {
+        "tagline": "Lakeside condos and detached streets with a GO station.",
+        "body": "Condo apartments made up 124 of the 169 sales TRREB recorded in Mimico from April to June 2026, beside streets of detached houses and townhouses. Mimico GO on the Lakeshore West line is two stops from Union station and the 501 Queen streetcar runs along Lake Shore Boulevard West."
       }
     }
   },
