@@ -38,7 +38,7 @@ const cards = [
           <li>
             <a class="gfeat__card" href={c.href}>
               {c.image && (
-                <Image class="gfeat__img" src={c.image} alt={c.imageAlt ?? ''} widths={[480, 800]} sizes="(min-width: 900px) 560px, 100vw" loading="lazy" />
+                <Image class="gfeat__img" src={c.image} alt={c.imageAlt ?? ''} widths={[480, 800]} width={800} sizes="(min-width: 900px) 560px, 100vw" loading="lazy" />
               )}
               <span class="gfeat__body">
                 <span class="eyebrow">{c.eyebrow}</span>
