@@ -38,6 +38,6 @@
   "marketSource": "TRREB",
   "ga4": "",
   "leadsEmail": "info@kirbychanmarkham.com",
-  "requireOneCutPro": false,
+  "requireOneCutPro": true,
   "markhamSite": "https://kirbychanmarkham.com/"
 }
