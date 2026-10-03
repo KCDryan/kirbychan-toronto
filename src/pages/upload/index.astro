@@ -66,7 +66,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
         <button class="btn btn--primary up__big" id="up-write-go" type="submit">Write my post</button>
         <p>Each post uses 2 tokens from your OneCut Content account. Please keep this page open while it writes.</p>
       </form>
-      <ul class="up__steps" id="up-write-steps" aria-live="polite"></ul>
+      <div class="up__box up-prog" id="up-write-steps" role="status" aria-live="polite" hidden></div>
     </section>
 
     <section id="v-edit" hidden>
@@ -368,7 +368,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
       written = false;
       show('v-edit');
     } else if (h === 'write' && canWrite) {
-      $('up-write-steps').replaceChildren();
+      $('up-write-steps').hidden = true;
       show('v-write');
     } else if (h.startsWith('edit=')) edit(decodeURIComponent(h.slice(5)));
     else if (h === 'done' && $('done-view').getAttribute('href') !== null) show('v-done');
@@ -417,12 +417,61 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
   $('up-write').addEventListener('submit', async (e) => {
     e.preventDefault();
     const go = $<HTMLButtonElement>('up-write-go');
-    const steps = $('up-write-steps');
-    const step = (text: string) => steps.append(Object.assign(document.createElement('li'), { textContent: text }));
+    // The same steps, search terms and keyword line OneCut Content shows in its own dashboard.
+    const STEPS = ['Researching keywords', 'Searching the web', 'Reading sources', 'Writing the article', 'Checking the links', 'Optimizing for search', 'Saving'];
+    const ORIGIN: Record<string, string> = {
+      searches: 'chosen from what people actually search on Google',
+      'your keywords': 'the keyword you gave',
+      estimate: "our best estimate, as search data wasn't available just now",
+    };
+    const events: Record<string, any>[] = [];
+    const startedAt = Date.now();
+    const panel = $('up-write-steps');
+    const el = (tag: string, cls: string, text = '') => Object.assign(document.createElement(tag), { className: cls, textContent: text });
+    const draw = () => {
+      const reported = events.filter((x) => STEPS.includes(x.stage));
+      const current = reported.length ? STEPS.indexOf(reported[reported.length - 1].stage) : 0;
+      const chosen = [...events].reverse().find((x) => x.stage === 'Keywords chosen' && x.focus);
+      const searched = [...events].reverse().find((x) => x.stage === 'Searched');
+      const read = events.filter((x) => x.stage === 'Read' && x.host).map((x) => String(x.host));
+      const seconds = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+      const list = el('ol', 'up-prog__list');
+      STEPS.forEach((name, i) => {
+        const li = el('li', i < current ? 'is-done' : i === current ? 'is-now' : '');
+        li.append(el('span', 'up-prog__mark', i < current ? '✓' : ''));
+        const reading = name === 'Reading sources' && read.length;
+        const body = el('span', 'up-prog__text', name + (i === current && !reading ? '…' : '') + (reading ? `: ${read.join(', ')}${i === current ? '…' : ''}` : ''));
+        if (name === 'Searching the web' && searched?.queries?.length) {
+          body.append(el('small', '', searched.queries.map((q: string) => `“${q}”`).join(', ') + (searched.results ? ` · ${searched.results} results` : '')));
+        }
+        li.append(body);
+        if (i === current) li.append(el('span', 'up-prog__time', `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`));
+        list.append(li);
+      });
+      const parts: HTMLElement[] = [list];
+      if (chosen) {
+        const aim = el('p', 'up-prog__aim', 'Aimed at ');
+        aim.append(el('strong', '', `“${chosen.focus}”`), `, ${ORIGIN[chosen.from ?? 'estimate'] ?? ORIGIN.estimate}.`);
+        parts.push(aim);
+        if (chosen.related?.length) {
+          const tags = el('p', 'up-prog__tags');
+          tags.append(...chosen.related.slice(0, 6).map((k: string) => el('span', '', k)));
+          parts.push(tags);
+        }
+      }
+      parts.push(el('p', 'up-prog__note', "Usually about a minute. Keep this page open until it's done."));
+      panel.replaceChildren(...parts);
+    };
     go.disabled = true;
-    steps.replaceChildren();
-    say('Writing your post…');
+    panel.hidden = false;
+    draw();
+    // The panel sits under the form: bring it into view so the steps are not missed.
+    panel.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const clock = setInterval(draw, 1000);
+    say('');
     const fail = (message: string) => {
+      clearInterval(clock);
+      panel.hidden = true;
       go.disabled = false;
       say(message, true);
     };
@@ -448,15 +497,19 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
         try {
           event = JSON.parse(line);
         } catch {}
-        if (typeof event.stage === 'string') step(event.stage);
+        if (typeof event.stage === 'string') {
+          events.push(event);
+          draw();
+        }
         if (event.error) error = String(event.error);
         if (event.done) blog = event.blog;
       }
       if (done) break;
     }
-    go.disabled = false;
     if (error || !blog?.embed_html) return fail(error || 'The post did not finish. Please try again.');
-    say('');
+    clearInterval(clock);
+    panel.hidden = true;
+    go.disabled = false;
     clear();
     load(blog.embed_html);
     if (!article) return;
@@ -703,6 +756,105 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
     color: #1f7a3f;
   }
   .up__empty {
+    color: var(--text-muted);
+  }
+  .up-prog {
+    margin-top: var(--sp-4);
+    background: var(--mist);
+  }
+  .up-prog__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-3);
+  }
+  .up-prog__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+  .up-prog__list li.is-done {
+    opacity: 1;
+  }
+  .up-prog__list li.is-now {
+    opacity: 1;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .up-prog__mark {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.15rem;
+    display: grid;
+    place-items: center;
+    color: #15803d;
+    font-weight: 700;
+  }
+  .up-prog__list li:not(.is-done):not(.is-now) .up-prog__mark::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--rule);
+  }
+  .up-prog__list li.is-now .up-prog__mark::before {
+    content: '';
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    border: 3px solid var(--rule);
+    border-top-color: var(--brand);
+    animation: up-spin 0.9s linear infinite;
+  }
+  @keyframes up-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .up-prog__list li.is-now .up-prog__mark::before {
+      animation: none;
+    }
+  }
+  .up-prog__text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .up-prog__text small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+  .up-prog__time {
+    margin-left: auto;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+  }
+  .up-prog__aim {
+    margin-top: var(--sp-4);
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--rule);
+  }
+  .up-prog__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+  .up-prog__tags span {
+    padding: 0.1rem 0.6rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 0.9rem;
+  }
+  .up-prog__note {
+    margin-bottom: 0;
+    font-size: 0.9rem;
     color: var(--text-muted);
   }
   .btn--danger {
