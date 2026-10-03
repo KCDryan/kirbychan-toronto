@@ -50,9 +50,23 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
 
     <section id="v-posts" hidden>
       <h1>My blog posts</h1>
-      <a class="btn btn--primary up__big up__new" href="#new">+ Upload a new post</a>
+      <a class="btn btn--primary up__big up__new" id="up-write-link" href="#write" hidden>+ Write a new post</a>
+      <a class="btn btn--primary up__big up__new" id="up-new-link" href="#new">+ Upload a new post</a>
       <ul class="up__list" id="up-list"></ul>
       <p class="up__signout"><button class="btn btn--ghost btn--sm" id="up-logout" type="button">Sign out</button></p>
+    </section>
+
+    <section id="v-write" hidden>
+      <p><a class="up__back" href="#">← Back to my posts</a></p>
+      <h1>Write a new post</h1>
+      <p class="up__lead">Tell us the topic. OneCut Content researches it and writes the post. It takes about a minute. You check it before anything goes on your website.</p>
+      <form id="up-write" class="up__box">
+        <label for="up-topic">What should the post be about?</label>
+        <input id="up-topic" type="text" maxlength="200" required placeholder="For example: What it costs to sell a house in my area" />
+        <button class="btn btn--primary up__big" id="up-write-go" type="submit">Write my post</button>
+        <p>Each post uses 2 tokens from your OneCut Content account. Please keep this page open while it writes.</p>
+      </form>
+      <ul class="up__steps" id="up-write-steps" aria-live="polite"></ul>
     </section>
 
     <section id="v-edit" hidden>
@@ -154,7 +168,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
     if (res.status === 403 && action !== 'login' && action !== 'connect' && /OneCut/.test((await res.clone().json().catch(() => ({}))).error ?? '')) show('v-pro');
     return { status: res.status, data: (await res.json().catch(() => ({}))) as Record<string, any> };
   };
-  const VIEWS = ['v-loading', 'v-setup', 'v-pro', 'v-login', 'v-posts', 'v-edit', 'v-done'];
+  const VIEWS = ['v-loading', 'v-setup', 'v-pro', 'v-login', 'v-posts', 'v-write', 'v-edit', 'v-done'];
   const show = (view: string) => {
     for (const v of VIEWS) $(v).hidden = v !== view;
     window.scrollTo(0, 0);
@@ -245,7 +259,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
       li.append(text, actions);
       ul.append(li);
     }
-    if (!ul.children.length) ul.innerHTML = '<li class="up__empty">No posts yet. Press "Upload a new post" to add the first one.</li>';
+    if (!ul.children.length) ul.innerHTML = `<li class="up__empty">No posts yet. Press "${canWrite ? 'Write a new post' : 'Upload a new post'}" to add the first one.</li>`;
   }
 
   // ---- Upload or edit ----
@@ -340,14 +354,22 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
 
   // ---- Screens follow the address, so Back works ----
   let signedIn = false;
+  let canWrite = false;
+  // True while a post OneCut has just written waits in the edit screen.
+  let written = false;
   function route() {
     if (!signedIn) return;
     say('');
     const h = location.hash.slice(1);
     if (h === 'new') {
-      clear();
-      $('edit-title').textContent = 'Upload a new post';
+      // A post OneCut has just written is already loaded; anything else starts empty.
+      $('edit-title').textContent = written ? 'Check your new post' : 'Upload a new post';
+      if (!written) clear();
+      written = false;
       show('v-edit');
+    } else if (h === 'write' && canWrite) {
+      $('up-write-steps').replaceChildren();
+      show('v-write');
     } else if (h.startsWith('edit=')) edit(decodeURIComponent(h.slice(5)));
     else if (h === 'done' && $('done-view').getAttribute('href') !== null) show('v-done');
     else {
@@ -362,6 +384,12 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
     if (!data.ready) return show('v-setup');
     if (!signedIn) return show('v-login');
     if (data.needsPro) return show('v-pro');
+    canWrite = !!data.canWrite;
+    $('up-write-link').hidden = !canWrite;
+    // With OneCut connected, writing comes first and pasting is the quieter second choice.
+    $('up-new-link').classList.toggle('btn--primary', !canWrite);
+    $('up-new-link').classList.toggle('btn--ghost', canWrite);
+    $('up-new-link').textContent = canWrite ? 'Upload a post I already have' : '+ Upload a new post';
     route();
   }
 
@@ -383,6 +411,58 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
     input('up-key').value = '';
     say('');
     start();
+  });
+  // OneCut answers one JSON line per step, then the finished article, which goes into the same
+  // check, preview and publish screen as a pasted one.
+  $('up-write').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const go = $<HTMLButtonElement>('up-write-go');
+    const steps = $('up-write-steps');
+    const step = (text: string) => steps.append(Object.assign(document.createElement('li'), { textContent: text }));
+    go.disabled = true;
+    steps.replaceChildren();
+    say('Writing your post…');
+    const fail = (message: string) => {
+      go.disabled = false;
+      say(message, true);
+    };
+    let res: Response;
+    try {
+      res = await fetch('/api/upload/write', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ topic: input('up-topic').value }) });
+    } catch {
+      return fail('The connection dropped. Please try again.');
+    }
+    if (!res.ok || !res.body) return fail(((await res.json().catch(() => ({}))) as { error?: string }).error || 'The post could not be written. Please try again.');
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buffer = '';
+    let blog: { embed_html?: string } | null = null;
+    let error = '';
+    for (;;) {
+      const { value, done } = await reader.read().catch(() => ({ value: undefined, done: true }));
+      buffer += value ?? '';
+      const lines = buffer.split('\n');
+      buffer = done ? '' : lines.pop()!;
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        let event: Record<string, any> = {};
+        try {
+          event = JSON.parse(line);
+        } catch {}
+        if (typeof event.stage === 'string') step(event.stage);
+        if (event.error) error = String(event.error);
+        if (event.done) blog = event.blog;
+      }
+      if (done) break;
+    }
+    go.disabled = false;
+    if (error || !blog?.embed_html) return fail(error || 'The post did not finish. Please try again.');
+    say('');
+    clear();
+    load(blog.embed_html);
+    if (!article) return;
+    input('up-topic').value = '';
+    written = true;
+    location.hash = 'new';
   });
   $('up-html').addEventListener('input', (e) => load((e.target as HTMLTextAreaElement).value));
   $('up-file').addEventListener('change', async (e) => {

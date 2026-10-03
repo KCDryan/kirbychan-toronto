@@ -14,6 +14,8 @@
  * passwords from one address in an hour, or fifty from anywhere, pause sign in for the hour.
  *
  * /api/upload/connect    POST  key    the agent's OneCut Content website key (client websites only)
+ * /api/upload/write      POST  topic  OneCut Content writes the article; answers one JSON line per step, the
+ *                              last one {done, blog}. Uses the connected OneCut account and its tokens
  *
  * Client websites (requireOneCutPro in src/data/site.json) also need a OneCut Content account on Pro
  * or above. After signing in, the agent pastes their website key from onecutcontent.com once; it is
@@ -140,15 +142,17 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
   }
 
   // Client websites: signed in is not enough, the OneCut account has to be on Pro.
-  const needsPro = async () => {
-    if ((site as { requireOneCutPro?: boolean }).requireOneCutPro !== true) return false;
+  const oneCutKey = async () => {
     const row = await db.prepare("SELECT value FROM upload_settings WHERE name = 'onecut_key'").bind().first<{ value: string }>();
-    return !(await oneCutPro((row && (await unsealKey(password, row.value))) || env.ONECUT_API_KEY));
+    return ((row && (await unsealKey(password, row.value))) || env.ONECUT_API_KEY || '').trim();
   };
+  const needsPro = async () => (site as { requireOneCutPro?: boolean }).requireOneCutPro === true && !(await oneCutPro(await oneCutKey()));
 
   if (action === 'me') {
     const inside = await signedIn(env, request);
-    return json({ ready: true, signedIn: inside, ...(inside && (await needsPro()) ? { needsPro: true } : {}) });
+    if (!inside) return json({ ready: true, signedIn: false });
+    // canWrite: a OneCut account is connected, so the page offers "Write a new post".
+    return (await needsPro()) ? json({ ready: true, signedIn: true, needsPro: true }) : json({ ready: true, signedIn: true, ...((await oneCutKey()) ? { canWrite: true } : {}) });
   }
   if (!(await signedIn(env, request))) return problem('Please sign in again.', 401);
 
@@ -170,6 +174,29 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
   }
 
   if (action !== 'logout' && (await needsPro())) return problem('Publishing blog posts needs a OneCut Content Pro account.', 403);
+
+  if (action === 'write' && request.method === 'POST') {
+    const key = await oneCutKey();
+    if (!key) return problem('Connect a OneCut Content account first.', 403);
+    const topic = typeof body.topic === 'string' ? body.topic.replace(/\s+/g, ' ').trim().slice(0, 200) : '';
+    if (topic.length < 3) return problem('Tell us what the post should be about.');
+    let res: Response;
+    try {
+      res = await fetch('https://onecutcontent.com/api/v1/blogs', {
+        method: 'POST',
+        headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json', accept: 'application/x-ndjson' },
+        body: JSON.stringify({ topic, words: 1500 }),
+      });
+    } catch {
+      return problem('OneCut could not be reached. Please try again in a minute.', 503);
+    }
+    if (!res.ok || !res.body) {
+      const said = ((await res.json().catch(() => ({}))) as { error?: string }).error;
+      return problem(said || 'OneCut could not write the post. Please try again.', res.status === 402 || res.status === 429 ? res.status : 502);
+    }
+    // Passed straight through: a line per step as OneCut works, then the finished article.
+    return new Response(res.body, { headers: { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' } });
+  }
 
   if (action === 'list' && request.method === 'GET') {
     const { results } = await db.prepare('SELECT live, post FROM uploads WHERE live >= 0 ORDER BY updated DESC LIMIT 200').bind().all<{ live: number; post: string }>();

@@ -67,3 +67,7 @@
 /neighbourhoods/guildwood/ /guildwood-toronto/ 301
 /mimico/ /mimico-toronto/ 301
 /neighbourhoods/mimico/ /mimico-toronto/ 301
+
+# The blog writer lives on the upload page.
+/createblog /upload/#write 302
+/createblog/ /upload/#write 302
