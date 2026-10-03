@@ -16,7 +16,7 @@ import { HOODS, SERVICES, autoLinks } from './post-links.ts';
 export interface UploadEnv {
   VOW_DB?: D1;
   UPLOAD_PASSWORD?: string;
-  /** The agent's OneCut Content API key, on client sites that need a Pro account to upload. */
+  /** Optional: the agent's OneCut Content key as a secret. Normally they paste it on the upload page instead. */
   ONECUT_API_KEY?: string;
   DEPLOY_HOOK_URL?: string;
   ASSETS?: { fetch(input: Request | URL | string): Promise<Response> };
@@ -45,7 +45,8 @@ export const SHELL = '/blog/upload-shell/';
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS uploads (slug TEXT PRIMARY KEY, live INTEGER NOT NULL, post TEXT NOT NULL, updated INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS upload_sessions (hash TEXT PRIMARY KEY, expires INTEGER NOT NULL);
-CREATE TABLE IF NOT EXISTS upload_fails (ip TEXT NOT NULL, at INTEGER NOT NULL)`;
+CREATE TABLE IF NOT EXISTS upload_fails (ip TEXT NOT NULL, at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS upload_settings (name TEXT PRIMARY KEY, value TEXT NOT NULL)`;
 let ready: Promise<unknown> | null = null;
 export const ensureUploadSchema = (db: D1) =>
   (ready ??= (async () => {

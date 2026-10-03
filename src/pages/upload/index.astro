@@ -24,10 +24,19 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
     </section>
 
     <section id="v-pro" hidden>
-      <h1>Blog posts</h1>
-      <p class="up__lead">Publishing your own blog posts needs a OneCut Content Pro account.</p>
-      <p><a class="btn btn--primary up__big" href="https://onecutcontent.com/" rel="noopener" target="_blank">See OneCut Content Pro</a></p>
-      <p>Already on Pro? Ask the person who looks after this website to connect your account.</p>
+      <h1>Connect your OneCut account</h1>
+      <p class="up__lead">Publishing your own blog posts needs a OneCut Content Pro account. You only do this once.</p>
+      <ol class="up__steps">
+        <li>Sign in at <a href="https://onecutcontent.com/dashboard/settings" rel="noopener" target="_blank">onecutcontent.com</a> and open Account.</li>
+        <li>Under "Connect your website", press "Create website key" and copy it.</li>
+        <li>Paste it below and press Connect.</li>
+      </ol>
+      <form id="up-connect" class="up__box">
+        <label for="up-key">Website key</label>
+        <input id="up-key" type="password" autocomplete="off" placeholder="oc_live_..." required />
+        <button class="btn btn--primary up__big" type="submit">Connect</button>
+      </form>
+      <p>Not on Pro yet? <a href="https://onecutcontent.com/pricing" rel="noopener" target="_blank">See OneCut Content Pro</a>.</p>
     </section>
 
     <section id="v-login" hidden>
@@ -142,7 +151,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
   const api = async (action: string, body?: unknown) => {
     const res = await fetch(`/api/upload/${action}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
     if (res.status === 401 && action !== 'login') show('v-login');
-    if (res.status === 403 && action !== 'login' && /OneCut/.test((await res.clone().json().catch(() => ({}))).error ?? '')) show('v-pro');
+    if (res.status === 403 && action !== 'login' && action !== 'connect' && /OneCut/.test((await res.clone().json().catch(() => ({}))).error ?? '')) show('v-pro');
     return { status: res.status, data: (await res.json().catch(() => ({}))) as Record<string, any> };
   };
   const VIEWS = ['v-loading', 'v-setup', 'v-pro', 'v-login', 'v-posts', 'v-edit', 'v-done'];
@@ -350,9 +359,9 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
   async function start() {
     const { data } = await api('me');
     signedIn = !!data.signedIn;
-    if (data.needsPro) return show('v-pro');
     if (!data.ready) return show('v-setup');
     if (!signedIn) return show('v-login');
+    if (data.needsPro) return show('v-pro');
     route();
   }
 
@@ -363,6 +372,15 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
     const { data } = await api('login', { password: input('up-password').value });
     if (data.error) return say(data.error, true);
     input('up-password').value = '';
+    say('');
+    start();
+  });
+  $('up-connect').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    say('Checking with OneCut…');
+    const { data } = await api('connect', { key: input('up-key').value });
+    if (data.error) return say(data.error, true);
+    input('up-key').value = '';
     say('');
     start();
   });

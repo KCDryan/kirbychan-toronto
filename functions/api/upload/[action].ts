@@ -13,9 +13,12 @@
  * One shared password, set by the owner as the UPLOAD_PASSWORD secret in Cloudflare. Ten wrong
  * passwords from one address in an hour, or fifty from anywhere, pause sign in for the hour.
  *
+ * /api/upload/connect    POST  key    the agent's OneCut Content website key (client websites only)
+ *
  * Client websites (requireOneCutPro in src/data/site.json) also need a OneCut Content account on Pro
- * or above: the agent's OneCut API key is the ONECUT_API_KEY secret, and onecutcontent.com is asked
- * what plan it is on. No key, a revoked key or a lower plan closes everything except export, so
+ * or above. After signing in, the agent pastes their website key from onecutcontent.com once; it is
+ * checked there, then kept encrypted in the database. An ONECUT_API_KEY secret works too. No key,
+ * a revoked key or a lower plan closes everything except signing in, connecting and export, so
  * posts already published stay on the site.
  */
 import { randomHex, same, sameOrigin, sha256 } from '../../../src/lib/vow';
@@ -40,28 +43,54 @@ const json = (body: unknown, status = 200, cookie?: string) => {
 };
 const problem = (message: string, status = 400) => json({ error: message }, status);
 
+type Verdict = 'pro' | 'not-pro' | 'bad-key' | 'unknown';
+
+/** What onecutcontent.com says about this key's account. 'unknown' when it cannot be reached. */
+export async function oneCutVerdict(key: string, fetcher: typeof fetch = fetch): Promise<Verdict> {
+  try {
+    const res = await fetcher('https://onecutcontent.com/api/v1/account', { headers: { authorization: `Bearer ${key}` }, signal: AbortSignal.timeout(8000) });
+    if (res.ok) return ((await res.json()) as { pro?: boolean }).pro === true ? 'pro' : 'not-pro';
+    return res.status === 401 ? 'bad-key' : res.status === 402 ? 'not-pro' : 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
 /**
  * Whether the site's OneCut account is on Pro or above. The answer is kept for ten minutes.
  * ponytail: if onecutcontent.com cannot be reached (not a yes or a no), uploads stay open, since the
  * password still guards them. Close on outage instead if plans are ever dodged this way.
  */
 export async function oneCutPro(key: string | undefined, fetcher: typeof fetch = fetch): Promise<boolean> {
-  if (!key?.trim()) return false;
+  key = key?.trim();
+  if (!key) return false;
   const cache = typeof caches === 'undefined' ? undefined : (caches as unknown as { default: Cache }).default;
-  const cacheKey = new Request(`https://onecut.invalid/pro/${await sha256(key.trim())}`);
+  const cacheKey = new Request(`https://onecut.invalid/pro/${await sha256(key)}`);
   const hit = await cache?.match(cacheKey);
   if (hit) return (await hit.text()) === '1';
-  let pro = true;
+  const verdict = await oneCutVerdict(key, fetcher);
+  if (verdict === 'unknown') return true;
+  await cache?.put(cacheKey, new Response(verdict === 'pro' ? '1' : '0', { headers: { 'cache-control': 'max-age=600' } }));
+  return verdict === 'pro';
+}
+
+// The website key at rest: AES-256-GCM under a key made from the upload password, stored as "iv.ciphertext".
+// Changing the password makes it unreadable, and the agent pastes the key again.
+const b64 = (b: ArrayBuffer | Uint8Array) => btoa(String.fromCharCode(...new Uint8Array(b as ArrayBuffer)));
+const unb64 = (t: string) => Uint8Array.from(atob(t), (c) => c.charCodeAt(0));
+const aesKey = async (password: string) =>
+  crypto.subtle.importKey('raw', await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`onecut-key|${password}`)), 'AES-GCM', false, ['encrypt', 'decrypt']);
+export async function sealKey(password: string, key: string): Promise<string> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  return `${b64(iv)}.${b64(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await aesKey(password), new TextEncoder().encode(key)))}`;
+}
+export async function unsealKey(password: string, sealed: string): Promise<string> {
   try {
-    const res = await fetcher('https://onecutcontent.com/api/v1/account', { headers: { authorization: `Bearer ${key.trim()}` }, signal: AbortSignal.timeout(8000) });
-    if (res.ok) pro = ((await res.json()) as { pro?: boolean }).pro === true;
-    else if (res.status === 401 || res.status === 402) pro = false;
-    else return true;
+    const [iv, ct] = sealed.split('.');
+    return new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(iv) }, await aesKey(password), unb64(ct)));
   } catch {
-    return true;
+    return '';
   }
-  await cache?.put(cacheKey, new Response(pro ? '1' : '0', { headers: { 'cache-control': 'max-age=600' } }));
-  return pro;
 }
 
 async function signedIn(env: UploadEnv, request: Request): Promise<boolean> {
@@ -81,10 +110,6 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
   const postUrl = (slug: string) => `${new URL(request.url).origin}/blog/${slug}/`;
   const db = env.VOW_DB;
   const password = env.UPLOAD_PASSWORD?.trim() ?? '';
-  // Export stays open so posts already published are still built into the site.
-  if ((site as { requireOneCutPro?: boolean }).requireOneCutPro === true && action !== 'export' && !(await oneCutPro(env.ONECUT_API_KEY))) {
-    return action === 'me' ? json({ ready: false, signedIn: false, needsPro: true }) : problem('Publishing blog posts needs a OneCut Content Pro account.', 403);
-  }
   if (!db || password.length < 12) return action === 'me' ? json({ ready: false, signedIn: false }) : problem('Uploads are not set up yet.', 503);
   await ensureUploadSchema(db);
 
@@ -114,14 +139,37 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
     return json({ ok: true }, 200, `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_HOURS * 3600}`);
   }
 
-  if (action === 'me') return json({ ready: true, signedIn: await signedIn(env, request) });
+  // Client websites: signed in is not enough, the OneCut account has to be on Pro.
+  const needsPro = async () => {
+    if ((site as { requireOneCutPro?: boolean }).requireOneCutPro !== true) return false;
+    const row = await db.prepare("SELECT value FROM upload_settings WHERE name = 'onecut_key'").bind().first<{ value: string }>();
+    return !(await oneCutPro((row && (await unsealKey(password, row.value))) || env.ONECUT_API_KEY));
+  };
+
+  if (action === 'me') {
+    const inside = await signedIn(env, request);
+    return json({ ready: true, signedIn: inside, ...(inside && (await needsPro()) ? { needsPro: true } : {}) });
+  }
   if (!(await signedIn(env, request))) return problem('Please sign in again.', 401);
+
+  if (action === 'connect' && request.method === 'POST') {
+    const key = typeof body.key === 'string' ? body.key.trim() : '';
+    if (!/^oc_live_[\w-]{16,200}$/.test(key)) return problem('That does not look like a OneCut website key. It starts with oc_live_.');
+    const verdict = await oneCutVerdict(key);
+    if (verdict === 'bad-key') return problem('OneCut does not know this key. Create a new website key in your OneCut account and paste it here.');
+    if (verdict === 'not-pro') return problem('This OneCut account is not on Pro. Publishing blog posts needs OneCut Content Pro.', 403);
+    if (verdict === 'unknown') return problem('OneCut could not be reached. Please try again in a minute.', 503);
+    await db.prepare("INSERT OR REPLACE INTO upload_settings (name, value) VALUES ('onecut_key', ?)").bind(await sealKey(password, key)).run();
+    return json({ ok: true });
+  }
 
   if (action === 'logout' && request.method === 'POST') {
     const token = request.headers.get('cookie')?.match(/__Host-kc_upload=([0-9a-f]{64})/)?.[1] ?? '';
     await db.prepare('DELETE FROM upload_sessions WHERE hash = ?').bind(await sha256(token)).run();
     return json({ ok: true }, 200, `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
   }
+
+  if (action !== 'logout' && (await needsPro())) return problem('Publishing blog posts needs a OneCut Content Pro account.', 403);
 
   if (action === 'list' && request.method === 'GET') {
     const { results } = await db.prepare('SELECT live, post FROM uploads WHERE live >= 0 ORDER BY updated DESC LIMIT 200').bind().all<{ live: number; post: string }>();
