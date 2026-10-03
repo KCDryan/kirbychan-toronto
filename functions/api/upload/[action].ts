@@ -12,8 +12,14 @@
  *
  * One shared password, set by the owner as the UPLOAD_PASSWORD secret in Cloudflare. Ten wrong
  * passwords from one address in an hour, or fifty from anywhere, pause sign in for the hour.
+ *
+ * Client websites (requireOneCutPro in src/data/site.json) also need a OneCut Content account on Pro
+ * or above: the agent's OneCut API key is the ONECUT_API_KEY secret, and onecutcontent.com is asked
+ * what plan it is on. No key, a revoked key or a lower plan closes everything except export, so
+ * posts already published stay on the site.
  */
 import { randomHex, same, sameOrigin, sha256 } from '../../../src/lib/vow';
+import site from '../../../src/data/site.json';
 import { SHELL, cleanPost, ensureUploadSchema, fillShell, getUpload, rebuild, type Post, type UploadEnv } from '../../../src/lib/uploads';
 
 interface Context {
@@ -34,6 +40,30 @@ const json = (body: unknown, status = 200, cookie?: string) => {
 };
 const problem = (message: string, status = 400) => json({ error: message }, status);
 
+/**
+ * Whether the site's OneCut account is on Pro or above. The answer is kept for ten minutes.
+ * ponytail: if onecutcontent.com cannot be reached (not a yes or a no), uploads stay open, since the
+ * password still guards them. Close on outage instead if plans are ever dodged this way.
+ */
+export async function oneCutPro(key: string | undefined, fetcher: typeof fetch = fetch): Promise<boolean> {
+  if (!key?.trim()) return false;
+  const cache = typeof caches === 'undefined' ? undefined : (caches as unknown as { default: Cache }).default;
+  const cacheKey = new Request(`https://onecut.invalid/pro/${await sha256(key.trim())}`);
+  const hit = await cache?.match(cacheKey);
+  if (hit) return (await hit.text()) === '1';
+  let pro = true;
+  try {
+    const res = await fetcher('https://onecutcontent.com/api/v1/account', { headers: { authorization: `Bearer ${key.trim()}` }, signal: AbortSignal.timeout(8000) });
+    if (res.ok) pro = ((await res.json()) as { pro?: boolean }).pro === true;
+    else if (res.status === 401 || res.status === 402) pro = false;
+    else return true;
+  } catch {
+    return true;
+  }
+  await cache?.put(cacheKey, new Response(pro ? '1' : '0', { headers: { 'cache-control': 'max-age=600' } }));
+  return pro;
+}
+
 async function signedIn(env: UploadEnv, request: Request): Promise<boolean> {
   const token = request.headers.get('cookie')?.match(/(?:^|;\s*)__Host-kc_upload=([0-9a-f]{64})/)?.[1];
   if (!token) return false;
@@ -51,6 +81,10 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
   const postUrl = (slug: string) => `${new URL(request.url).origin}/blog/${slug}/`;
   const db = env.VOW_DB;
   const password = env.UPLOAD_PASSWORD?.trim() ?? '';
+  // Export stays open so posts already published are still built into the site.
+  if ((site as { requireOneCutPro?: boolean }).requireOneCutPro === true && action !== 'export' && !(await oneCutPro(env.ONECUT_API_KEY))) {
+    return action === 'me' ? json({ ready: false, signedIn: false, needsPro: true }) : problem('Publishing blog posts needs a OneCut Content Pro account.', 403);
+  }
   if (!db || password.length < 12) return action === 'me' ? json({ ready: false, signedIn: false }) : problem('Uploads are not set up yet.', 503);
   await ensureUploadSchema(db);
 

@@ -16,6 +16,8 @@ import { HOODS, SERVICES, autoLinks } from './post-links.ts';
 export interface UploadEnv {
   VOW_DB?: D1;
   UPLOAD_PASSWORD?: string;
+  /** The agent's OneCut Content API key, on client sites that need a Pro account to upload. */
+  ONECUT_API_KEY?: string;
   DEPLOY_HOOK_URL?: string;
   ASSETS?: { fetch(input: Request | URL | string): Promise<Response> };
 }

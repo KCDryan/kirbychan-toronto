@@ -23,6 +23,13 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
       <p class="up__lead">Uploads are not switched on yet. The website owner needs to set the upload password in Cloudflare.</p>
     </section>
 
+    <section id="v-pro" hidden>
+      <h1>Blog posts</h1>
+      <p class="up__lead">Publishing your own blog posts needs a OneCut Content Pro account.</p>
+      <p><a class="btn btn--primary up__big" href="https://onecutcontent.com/" rel="noopener" target="_blank">See OneCut Content Pro</a></p>
+      <p>Already on Pro? Ask the person who looks after this website to connect your account.</p>
+    </section>
+
     <section id="v-login" hidden>
       <h1>Blog posts</h1>
       <form id="up-login" class="up__box">
@@ -135,9 +142,10 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
   const api = async (action: string, body?: unknown) => {
     const res = await fetch(`/api/upload/${action}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
     if (res.status === 401 && action !== 'login') show('v-login');
+    if (res.status === 403 && action !== 'login' && /OneCut/.test((await res.clone().json().catch(() => ({}))).error ?? '')) show('v-pro');
     return { status: res.status, data: (await res.json().catch(() => ({}))) as Record<string, any> };
   };
-  const VIEWS = ['v-loading', 'v-setup', 'v-login', 'v-posts', 'v-edit', 'v-done'];
+  const VIEWS = ['v-loading', 'v-setup', 'v-pro', 'v-login', 'v-posts', 'v-edit', 'v-done'];
   const show = (view: string) => {
     for (const v of VIEWS) $(v).hidden = v !== view;
     window.scrollTo(0, 0);
@@ -342,6 +350,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
   async function start() {
     const { data } = await api('me');
     signedIn = !!data.signedIn;
+    if (data.needsPro) return show('v-pro');
     if (!data.ready) return show('v-setup');
     if (!signedIn) return show('v-login');
     route();
