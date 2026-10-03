@@ -466,7 +466,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
     panel.hidden = false;
     draw();
     // The panel sits under the form: bring it into view so the steps are not missed.
-    panel.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    panel.scrollIntoView({ block: 'nearest' });
     const clock = setInterval(draw, 1000);
     say('');
     const fail = (message: string) => {
