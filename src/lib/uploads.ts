@@ -252,6 +252,30 @@ export function fillShell(shell: string, post: Post): string {
   });
 }
 
+/**
+ * The built blog list with uploaded posts it does not have yet added at the top, newest first, so a
+ * post shows on /blog/ the moment it is published. The first built card is the pattern: its markup
+ * and style hooks are kept and only the address, topic, date, title and summary change. Returns the
+ * page unchanged if there is nothing to add or no card to copy.
+ */
+export function addToList(html: string, posts: Post[], categories: Record<string, string>): string {
+  const card = html.match(/<li[^>]*>\s*<a class="bcard" href="[^"]*"[\s\S]*?<\/a>\s*<\/li>/)?.[0];
+  const fresh = posts.filter((p) => !p.draft && !html.includes(`href="/blog/${p.slug}/"`)).sort((a, b) => b.published - a.published);
+  if (!card || !fresh.length) return html;
+  const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const made = fresh.map((p) => {
+    const when = new Date(p.published);
+    const day = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Toronto' }).format(when);
+    return card
+      .replace(/href="[^"]*"/, () => `href="/blog/${p.slug}/"`)
+      .replace(/(<span class="bcard__cat"[^>]*>)[^<]*/, (_, open) => open + esc(categories[p.category] ?? ''))
+      .replace(/<time datetime="[^"]*"([^>]*)>[^<]*/, (_, rest) => `<time datetime="${when.toISOString()}"${rest}>${day}`)
+      .replace(/(<h[23] class="bcard__title"[^>]*>)[^<]*/, (_, open) => open + esc(p.headline))
+      .replace(/(<span class="bcard__sub"[^>]*>)[^<]*/, (_, open) => open + esc(p.summary));
+  });
+  return html.replace(card, () => made.join('') + card);
+}
+
 /** Asks Cloudflare for a fresh build, so the blog list, sitemap and feed catch up within minutes. */
 export async function rebuild(env: UploadEnv) {
   const hook = env.DEPLOY_HOOK_URL?.trim();
@@ -263,6 +287,15 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   const assert = (c: unknown, m: string) => {
     if (!c) throw new Error(m);
   };
+  {
+    const list = '<ul><li x> <a class="bcard" href="/blog/old/" y> <span class="bcard__cat" y>Buying</span> <time datetime="2026-01-01T00:00:00.000Z" y>January 1, 2026</time> <h2 class="bcard__title" y="true">Old</h2> <span class="bcard__sub" y>Old summary</span> </a>  </li></ul>';
+    const post = (slug: string, published: number, draft = false) => ({ slug, published, draft, category: 'condos', headline: 'A & <B>', summary: 'Sum $1' }) as unknown as Post;
+    const out = addToList(list, [post('one', Date.UTC(2026, 9, 3, 16)), post('two', Date.UTC(2026, 9, 5, 16)), post('old', 1), post('hidden', 2, true)], { condos: 'Condos' });
+    assert(out.indexOf('/blog/two/') < out.indexOf('/blog/one/') && out.indexOf('/blog/one/') < out.indexOf('/blog/old/'), 'newest first, above built');
+    assert(out.split('class="bcard"').length === 4 && !out.includes('hidden'), 'built and draft posts not added');
+    assert(out.includes('>A &amp; &lt;B&gt;<') && out.includes('>Sum $1<') && out.includes('>Condos<') && out.includes('October 5, 2026'), 'card filled and escaped');
+    assert(addToList('<p>none</p>', [post('one', 1)], {}) === '<p>none</p>', 'no card to copy');
+  }
   const words = Array.from({ length: 120 }, () => 'home').join(' ');
   const p = cleanPost({
     headline: 'Living near Line 5 in Toronto',

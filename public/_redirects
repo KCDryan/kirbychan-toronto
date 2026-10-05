@@ -71,3 +71,7 @@
 # The blog writer lives on the upload page.
 /createblog /upload/#write 302
 /createblog/ /upload/#write 302
+
+# People type the plural.
+/blogs /blog/ 301
+/blogs/ /blog/ 301
