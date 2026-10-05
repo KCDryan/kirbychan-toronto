@@ -64,7 +64,7 @@ export const TYPE_PAGES: Record<string, TypePage> = {
     home: 'condo',
     label: 'Condo apartments',
     title: 'Condos for Sale in Toronto | Live MLS® Listings',
-    description: 'Toronto condo apartments for sale today on the MLS®, with photos, asking prices and the neighbourhoods they are in. Refreshed from TRREB each morning.',
+    description: 'Toronto condos and apartments for sale today on the MLS®, with photos, asking prices and the neighbourhoods they are in. Refreshed from TRREB each morning.',
     h1: 'Condo apartments for sale in Toronto',
     intro: [
       'A condo apartment puts everything on one floor behind a single door, with an elevator to the lobby and nothing outside to maintain. The trade is a monthly common expense fee, which the condo corporation sets in its budget to run and repair the building.',
@@ -89,8 +89,8 @@ export const TYPE_PAGES: Record<string, TypePage> = {
   townhouses: {
     home: 'townhouse',
     label: 'Townhouses',
-    title: 'Townhouses for Sale in Toronto | Live MLS® Listings',
-    description: 'Toronto townhouses for sale today on the MLS®, freehold and condo, with photos and asking prices, newest first. Refreshed from TRREB each morning.',
+    title: 'Toronto Townhouses and Townhomes for Sale | MLS® Listings',
+    description: 'Toronto townhouses and townhomes for sale today on the MLS®, freehold and condo, with photos and asking prices, newest first. Refreshed from TRREB daily.',
     h1: 'Townhouses for sale in Toronto',
     intro: [
       'This list holds two kinds of townhouse. A freehold townhouse is yours outright, land included, along with all of its upkeep. In a condo townhouse the corporation maintains the exterior and the grounds, paid for through a monthly fee.',
