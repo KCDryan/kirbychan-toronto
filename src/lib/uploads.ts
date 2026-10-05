@@ -46,7 +46,8 @@ const SCHEMA = `
 CREATE TABLE IF NOT EXISTS uploads (slug TEXT PRIMARY KEY, live INTEGER NOT NULL, post TEXT NOT NULL, updated INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS upload_sessions (hash TEXT PRIMARY KEY, expires INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS upload_fails (ip TEXT NOT NULL, at INTEGER NOT NULL);
-CREATE TABLE IF NOT EXISTS upload_settings (name TEXT PRIMARY KEY, value TEXT NOT NULL)`;
+CREATE TABLE IF NOT EXISTS upload_settings (name TEXT PRIMARY KEY, value TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS upload_tickets (hash TEXT PRIMARY KEY, expires INTEGER NOT NULL)`;
 let ready: Promise<unknown> | null = null;
 export const ensureUploadSchema = (db: D1) =>
   (ready ??= (async () => {

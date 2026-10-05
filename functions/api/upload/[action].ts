@@ -22,6 +22,13 @@
  * checked there, then kept encrypted in the database. An ONECUT_API_KEY secret works too. No key,
  * a revoked key or a lower plan closes everything except signing in, connecting and export, so
  * posts already published stay on the site.
+ *
+ * With oneCutOnly in site.json as well, OneCut Content is the only way to make a post: each article
+ * it finishes writing comes with a one-use ticket, and a new post is not saved without one. Posts
+ * already saved can still be edited, unpublished and removed.
+ * ponytail: the ticket proves an article was written, not that the saved words are that article. A
+ * signed-in owner editing requests by hand could swap the text. Bind the ticket to a hash of the
+ * article if that ever matters.
  */
 import { randomHex, same, sameOrigin, sha256 } from '../../../src/lib/vow';
 import site from '../../../src/data/site.json';
@@ -146,13 +153,14 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
     const row = await db.prepare("SELECT value FROM upload_settings WHERE name = 'onecut_key'").bind().first<{ value: string }>();
     return ((row && (await unsealKey(password, row.value))) || env.ONECUT_API_KEY || '').trim();
   };
+  const oneCutOnly = (site as { oneCutOnly?: boolean }).oneCutOnly === true;
   const needsPro = async () => (site as { requireOneCutPro?: boolean }).requireOneCutPro === true && !(await oneCutPro(await oneCutKey()));
 
   if (action === 'me') {
     const inside = await signedIn(env, request);
     if (!inside) return json({ ready: true, signedIn: false });
     // canWrite: a OneCut account is connected, so the page offers "Write a new post".
-    return (await needsPro()) ? json({ ready: true, signedIn: true, needsPro: true }) : json({ ready: true, signedIn: true, ...((await oneCutKey()) ? { canWrite: true } : {}) });
+    return (await needsPro()) ? json({ ready: true, signedIn: true, needsPro: true }) : json({ ready: true, signedIn: true, ...((await oneCutKey()) ? { canWrite: true } : {}), ...(oneCutOnly ? { oneCutOnly: true } : {}) });
   }
   if (!(await signedIn(env, request))) return problem('Please sign in again.', 401);
 
@@ -194,8 +202,27 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
       const said = ((await res.json().catch(() => ({}))) as { error?: string }).error;
       return problem(said || 'OneCut could not write the post. Please try again.', res.status === 402 || res.status === 429 ? res.status : 502);
     }
-    // Passed straight through: a line per step as OneCut works, then the finished article.
-    return new Response(res.body, { headers: { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' } });
+    // Passed straight through: a line per step as OneCut works, then the finished article. When it
+    // did finish, one more line carries the ticket that lets this article be saved as a new post.
+    let tail = '';
+    const decoder = new TextDecoder();
+    const ticketed = res.body.pipeThrough(
+      new TransformStream<Uint8Array, Uint8Array>({
+        transform(chunk, controller) {
+          tail = (tail + decoder.decode(chunk, { stream: true })).slice(-200_000);
+          controller.enqueue(chunk);
+        },
+        async flush(controller) {
+          if (!/"done":\s*true/.test(tail)) return;
+          const ticket = randomHex();
+          const now = Date.now();
+          await db.prepare('DELETE FROM upload_tickets WHERE expires < ?').bind(now).run();
+          await db.prepare('INSERT INTO upload_tickets (hash, expires) VALUES (?, ?)').bind(await sha256(ticket), now + 24 * HOUR).run();
+          controller.enqueue(new TextEncoder().encode(`\n${JSON.stringify({ ticket })}\n`));
+        },
+      })
+    );
+    return new Response(ticketed, { headers: { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' } });
   }
 
   if (action === 'list' && request.method === 'GET') {
@@ -223,6 +250,13 @@ export async function onRequest({ request, env, params, waitUntil }: Context): P
     // A post built into the site (not uploaded here) keeps its address.
     if (!existing && (await env.ASSETS!.fetch(new URL(`/blog/${post.slug}/`, request.url))).ok) {
       return problem('The site already has a post with this title. Change the title a little and try again.', 409);
+    }
+    // OneCut only: a new post needs the ticket from an article OneCut wrote. It is used up when saved.
+    if (oneCutOnly && (!existing || existing.removed)) {
+      const ticket = typeof body.ticket === 'string' && /^[0-9a-f]{64}$/.test(body.ticket) ? await sha256(body.ticket) : '';
+      const row = ticket ? await db.prepare('SELECT expires FROM upload_tickets WHERE hash = ?').bind(ticket).first<{ expires: number }>() : null;
+      if (!row || row.expires < now) return problem('New posts on this website are written with OneCut Content. Press "Write a new post" to start one.', 403);
+      await db.prepare('DELETE FROM upload_tickets WHERE hash = ?').bind(ticket).run();
     }
     // Same title as a post in the list (live or draft): ask before replacing it.
     if (existing && !existing.removed && body.replace !== true) return json({ error: 'exists', live: existing.live, url: postUrl(post.slug) }, 409);

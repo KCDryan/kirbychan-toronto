@@ -39,5 +39,6 @@
   "ga4": "",
   "leadsEmail": "info@kirbychanmarkham.com",
   "requireOneCutPro": true,
+  "oneCutOnly": false,
   "markhamSite": "https://kirbychanmarkham.com/"
 }

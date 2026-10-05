@@ -327,13 +327,13 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
       say(draft ? 'Saving the draft…' : 'Publishing…');
       remember('up-author', input('up-author').value.trim());
       remember('up-role', input('up-role').value.trim());
-      let { status: code, data } = await api('publish', { post: post(draft), replace: !!editing });
+      let { status: code, data } = await api('publish', { post: post(draft), replace: !!editing, ticket });
       if (code === 409 && data.error === 'exists') {
         const question = data.live
           ? 'A post with this title is already on the website. Replace it with this one?'
           : 'You have a draft with this title. Replace it with this one?';
         if (!confirm(question)) return say('Nothing was changed. You can change the title and try again.');
-        ({ data } = await api('publish', { post: post(draft), replace: true }));
+        ({ data } = await api('publish', { post: post(draft), replace: true, ticket }));
       }
       if (data.error) return say(data.error, true);
       $('done-title').textContent = data.draft ? 'Draft saved' : 'Your post is live';
@@ -355,13 +355,18 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
   // ---- Screens follow the address, so Back works ----
   let signedIn = false;
   let canWrite = false;
+  // OneCut only: no pasting. Each new post carries the ticket OneCut's article came with.
+  let oneCutOnly = false;
+  let ticket = '';
   // True while a post OneCut has just written waits in the edit screen.
   let written = false;
   function route() {
     if (!signedIn) return;
     say('');
     const h = location.hash.slice(1);
-    if (h === 'new') {
+    if (h === 'new' && oneCutOnly && !written) {
+      location.replace(canWrite ? '#write' : '#');
+    } else if (h === 'new') {
       // A post OneCut has just written is already loaded; anything else starts empty.
       $('edit-title').textContent = written ? 'Check your new post' : 'Upload a new post';
       if (!written) clear();
@@ -385,6 +390,9 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
     if (!signedIn) return show('v-login');
     if (data.needsPro) return show('v-pro');
     canWrite = !!data.canWrite;
+    oneCutOnly = !!data.oneCutOnly;
+    $('up-new-link').hidden = oneCutOnly;
+    $('up-repaste').hidden = oneCutOnly;
     $('up-write-link').hidden = !canWrite;
     // With OneCut connected, writing comes first and pasting is the quieter second choice.
     $('up-new-link').classList.toggle('btn--primary', !canWrite);
@@ -503,6 +511,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
         }
         if (event.error) error = String(event.error);
         if (event.done) blog = event.blog;
+        if (typeof event.ticket === 'string') ticket = event.ticket;
       }
       if (done) break;
     }
