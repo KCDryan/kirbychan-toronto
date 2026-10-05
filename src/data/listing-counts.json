@@ -1,31 +1,31 @@
 {
-  "updated": "2026-10-04T17:59:12.008Z",
+  "updated": "2026-10-05T11:26:21.564Z",
   "toronto": {
-    "total": 9897,
-    "bungalow": 707,
-    "condo": 5112,
-    "townhouse": 991,
-    "house": 3383
+    "total": 9906,
+    "bungalow": 705,
+    "condo": 5117,
+    "townhouse": 994,
+    "house": 3384
   },
   "areas": {
     "downtown-waterfront": {
-      "total": 817,
+      "total": 819,
       "bungalow": 0,
-      "condo": 784,
+      "condo": 786,
       "townhouse": 12,
       "house": 1
     },
     "yonge-eglinton": {
-      "total": 232,
+      "total": 233,
       "bungalow": 0,
-      "condo": 197,
+      "condo": 198,
       "townhouse": 9,
       "house": 18
     },
     "willowdale": {
-      "total": 422,
+      "total": 423,
       "bungalow": 15,
-      "condo": 271,
+      "condo": 272,
       "townhouse": 36,
       "house": 109
     },
@@ -44,16 +44,16 @@
       "house": 69
     },
     "don-mills": {
-      "total": 154,
+      "total": 155,
       "bungalow": 13,
       "condo": 79,
       "townhouse": 8,
-      "house": 61
+      "house": 62
     },
     "the-annex": {
-      "total": 192,
+      "total": 191,
       "bungalow": 0,
-      "condo": 143,
+      "condo": 142,
       "townhouse": 16,
       "house": 23
     },
@@ -86,9 +86,9 @@
       "house": 32
     },
     "agincourt": {
-      "total": 133,
+      "total": 132,
       "bungalow": 3,
-      "condo": 71,
+      "condo": 70,
       "townhouse": 15,
       "house": 41
     },
@@ -107,11 +107,11 @@
       "house": 32
     },
     "danforth": {
-      "total": 50,
+      "total": 51,
       "bungalow": 11,
       "condo": 1,
       "townhouse": 1,
-      "house": 47
+      "house": 48
     },
     "mimico": {
       "total": 308,
@@ -121,18 +121,18 @@
       "house": 26
     },
     "high-park": {
-      "total": 128,
+      "total": 127,
       "bungalow": 2,
-      "condo": 68,
+      "condo": 66,
       "townhouse": 1,
-      "house": 43
+      "house": 44
     },
     "islington-village": {
-      "total": 258,
+      "total": 259,
       "bungalow": 18,
       "condo": 160,
       "townhouse": 25,
-      "house": 66
+      "house": 67
     }
   },
   "complete": true
