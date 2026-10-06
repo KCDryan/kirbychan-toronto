@@ -260,7 +260,13 @@ export function fillShell(shell: string, post: Post): string {
  * than the oldest card on the page is left out: it belongs on a later page of the list. Returns the
  * page unchanged if there is nothing to add or no card to copy.
  */
-export function addToList(html: string, posts: Post[], categories: Record<string, string>): string {
+export function addToList(html: string, posts: Post[], categories: Record<string, string>, hoodOf: (p: Post) => string | undefined = (p) => p.related?.[0]): string {
+  // Pictures the page carries for this: one per neighbourhood, and a band (data-hood="none") for the rest.
+  const media = new Map<string, string>();
+  for (const block of (html.match(/<template id="card-media"[^>]*>([\s\S]*?)<\/template>/)?.[1] ?? '').split(/(?=<span class="bcard__media")/)) {
+    const hood = block.match(/^<span class="bcard__media" data-hood="([^"]*)"/)?.[1];
+    if (hood !== undefined) media.set(hood, block.trim());
+  }
   const card = html.match(/<li[^>]*>\s*<a class="bcard" href="[^"]*"[\s\S]*?<\/a>\s*<\/li>/)?.[0];
   const oldest = Math.min(...[...html.matchAll(/<a class="bcard"[^>]*>[\s\S]*?<time datetime="([^"]*)"/g)].map((m) => Date.parse(m[1])));
   const fresh = posts
@@ -271,7 +277,10 @@ export function addToList(html: string, posts: Post[], categories: Record<string
   const made = fresh.map((p) => {
     const when = new Date(p.published);
     const day = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Toronto' }).format(when);
+    const band = (media.get('none') ?? '').replace(/(<span class="bcard__band"[^>]*>)[^<]*/, (_, open) => open + esc(categories[p.category] ?? ''));
+    const picture = media.get(hoodOf(p) ?? '') ?? band;
     return card
+      .replace(/<span class="bcard__media"[\s\S]*?(?=<span class="bcard__meta")/, () => picture + ' ')
       .replace(/href="[^"]*"/, () => `href="/blog/${p.slug}/"`)
       .replace(/(<span class="bcard__cat"[^>]*>)[^<]*/, (_, open) => open + esc(categories[p.category] ?? ''))
       .replace(/<time datetime="[^"]*"([^>]*)>[^<]*/, (_, rest) => `<time datetime="${when.toISOString()}"${rest}>${day}`)
@@ -300,6 +309,13 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
     assert(out.split('class="bcard"').length === 4 && !out.includes('hidden') && !out.includes('page-two'), 'built, draft and older posts not added');
     assert(out.includes('>A &amp; &lt;B&gt;<') && out.includes('>Sum $1<') && out.includes('>Condos<') && out.includes('October 5, 2026'), 'card filled and escaped');
     assert(addToList('<p>none</p>', [post('one', Date.now())], {}) === '<p>none</p>', 'no card to copy');
+    const pics = list.replace('<a class="bcard" href="/blog/old/" y> ', '<a class="bcard" href="/blog/old/" y> <span class="bcard__media" data-hood="leaside" z><img src="leaside.webp"></span> <span class="bcard__meta" y></span> ') +
+      '<template id="card-media"><span class="bcard__media" data-hood="rosedale" z><img src="rosedale.webp"></span> <span class="bcard__media" data-hood="none" z><span class="bcard__band" z>Buying</span></span></template>';
+    const withPics = addToList(pics, [{ ...post('rose', Date.UTC(2026, 9, 7)), related: ['rosedale'] } as Post, { ...post('plain', Date.UTC(2026, 9, 8)), related: [] } as unknown as Post], { condos: 'Condos' });
+    const cardOf = (slug: string) => withPics.slice(withPics.indexOf(`/blog/${slug}/`), withPics.indexOf('</a>', withPics.indexOf(`/blog/${slug}/`)));
+    assert(cardOf('rose').includes('rosedale.webp') && !cardOf('rose').includes('leaside.webp'), 'neighbourhood picture');
+    assert(cardOf('plain').includes('bcard__band" z>Condos<') && !cardOf('plain').includes('.webp'), 'band names the topic');
+    assert(cardOf('old').includes('leaside.webp'), 'built card keeps its own picture');
   }
   const words = Array.from({ length: 120 }, () => 'home').join(' ');
   const p = cleanPost({
