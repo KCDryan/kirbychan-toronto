@@ -179,7 +179,8 @@ ok((await up('list')).status === 401 && (await up('unpublish', { slug: 'x' })).s
 ok((await up('login', { password: 'shared test pass 42' }, { origin: 'https://evil.example' })).status === 403, 'an upload sign in from another site is refused');
 const upCookie = (await up('login', { password: 'shared test pass 42' })).cookie;
 ok(/^__Host-kc_upload=[0-9a-f]{64}; Path=\/; HttpOnly; Secure; SameSite=Strict/.test(upCookie ?? ''), 'the shared password starts a __Host- HttpOnly Secure session');
-ok((await up('list', undefined, { cookie: session(upCookie) })).status === 200, 'a signed in session can list uploads');
+// requireOneCutPro is on: signed in is not enough until a OneCut Content account is connected.
+ok((await up('list', undefined, { cookie: session(upCookie) })).status === 403, 'a signed in session with no OneCut account cannot list uploads');
 for (let i = 0; i < 10; i++) await up('login', { password: `guess ${i}` }, { ip: '192.0.2.77' });
 ok((await up('login', { password: 'shared test pass 42' }, { ip: '192.0.2.77' })).status === 429, 'ten wrong upload passwords lock that address for an hour');
 ok((await upload({ request: new Request(`${ORIGIN}/api/upload/me`), env: { ...uploadEnv, UPLOAD_PASSWORD: 'short' }, params: { action: 'me' } })).status === 200 &&
