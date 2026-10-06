@@ -1,5 +1,6 @@
 /**
- * PropTx (TRREB) RESO Web API query building, shared by functions/api/listings.ts.
+ * PropTx (TRREB) RESO Web API query building, shared by functions/api/listings.ts, functions/listing/[key].ts
+ * and functions/sitemap-listings.xml.ts.
  * Docs: https://developer.ampre.ca/docs/query-options
  *
  * Every value that reaches an OData $filter comes from an allowlist or is parsed as a number,
@@ -203,6 +204,24 @@ export const coverQuery = (keys: string[]) =>
 /** A PropTx ListingKey, e.g. N12345678. Anything else is rejected. */
 export const cleanKey = (v: string | null) => (v && /^[A-Z]{1,3}\d{5,10}$/i.test(v) ? v.toUpperCase() : null);
 
+/**
+ * Every active Toronto home for sale, lightly, a page of 1,000 at a time in a fixed order (PropTx's
+ * nextLink fails). For the listings sitemap and the listing memory.
+ */
+export const LIST_PAGE = 1000;
+export const activeQuery = (page: number) =>
+  odata({
+    $filter: ["ContractStatus eq 'Available'", "startswith(PropertyType,'Residential')", "TransactionType eq 'For Sale'", cityFilter(HOME_CITY), homesOnly].join(' and '),
+    $select: 'ListingKey,ModificationTimestamp,UnparsedAddress,CityRegion,InternetEntireListingDisplayYN,InternetAddressDisplayYN',
+    $orderby: 'ListingKey',
+    $top: String(LIST_PAGE),
+    $skip: String(page * LIST_PAGE),
+  });
+
+/** VOW: what became of one listing that has left the active feed. */
+export const closedQuery = (key: string) =>
+  odata({ $filter: `ListingKey eq ${q(key)}`, $select: 'ListingKey,MlsStatus,ClosePrice,CloseDate,InternetEntireListingDisplayYN', $top: '1' });
+
 export const listingQuery = (key: string) => odata({ $filter: `ListingKey eq ${q(key)} and ContractStatus eq 'Available'`, $top: '1' });
 
 export const mediaQuery = (key: string) =>
@@ -254,5 +273,8 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   if (!gta.includes("(startswith(City,'Toronto') or City eq 'Ajax'") || !gta.includes("City eq 'Markham'")) throw new Error('map gta ' + gta);
   const hood = new URLSearchParams(mapQuery(new URLSearchParams('area=leaside'), 1)).get('$filter')!;
   if (hood.includes("City eq 'Ajax'") || !hood.includes("CityRegion in ('Leaside')")) throw new Error('map area ' + hood);
+  const act = new URLSearchParams(activeQuery(1));
+  if (act.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto') and " + homesOnly || act.get('$skip') !== '1000') throw new Error('active ' + act);
+  if (!closedQuery("C1'x").includes(encodeURIComponent("'C1''x'"))) throw new Error('closed quoting');
   console.log('proptx ok');
 }

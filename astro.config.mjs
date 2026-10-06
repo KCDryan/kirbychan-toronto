@@ -80,7 +80,8 @@ export default defineConfig({
         const built = fileURLToPath(new URL(`./dist${new URL(page).pathname}index.html`, import.meta.url));
         if (existsSync(built) && /<meta name="robots" content="[^"]*noindex/.test(readFileSync(built, 'utf8'))) return false;
         if (page.includes('/contact/thank-you/')) return false;
-        // The single-listing page is filled in the browser and is noindex.
+        // The old single-listing address only forwards to /listing/<key>/ and is noindex. The listing
+        // pages themselves are in /sitemap-listings.xml, served by functions/sitemap-listings.xml.ts.
         if (page.includes('/homes-for-sale/listing/')) return false;
         // The news index is noindex while the collection is empty, so listing it
         // in the sitemap would ask Google to crawl a page we told it to skip.

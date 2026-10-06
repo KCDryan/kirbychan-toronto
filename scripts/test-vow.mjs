@@ -1,12 +1,13 @@
 /**
- * Local security test for the sold-prices accounts and the contact form lead. Bundles the real Pages Functions with esbuild
+ * Local security test for the sold-prices accounts, the listing pages and the contact form lead. Bundles the real Pages Functions with esbuild
  * and runs them against node:sqlite standing in for D1, with Resend, Turnstile and PropTx mocked.
  * Nothing leaves this machine.
  *
  *   node scripts/test-vow.mjs
  *
  * Fails loudly on the first broken rule. Run it after any change to src/lib/vow.ts,
- * functions/api/vow/[action].ts or functions/api/sold.ts.
+ * functions/api/vow/[action].ts, functions/api/sold.ts, functions/api/lead.ts, functions/listing/[key].ts
+ * or functions/sitemap-listings.xml.ts.
  */
 import { build } from 'esbuild';
 import { DatabaseSync } from 'node:sqlite';
@@ -18,7 +19,7 @@ import site from '../src/data/site.json' with { type: 'json' };
 
 const out = mkdtempSync(join(tmpdir(), 'vow-test-'));
 await build({
-  entryPoints: { vow: 'functions/api/vow/[action].ts', sold: 'functions/api/sold.ts', lead: 'functions/api/lead.ts', upload: 'functions/api/upload/[action].ts' },
+  entryPoints: { vow: 'functions/api/vow/[action].ts', sold: 'functions/api/sold.ts', lead: 'functions/api/lead.ts', upload: 'functions/api/upload/[action].ts', listing: 'functions/listing/[key].ts', sitemap: 'functions/sitemap-listings.xml.ts' },
   bundle: true, format: 'esm', platform: 'neutral', mainFields: ['module', 'main'], outdir: out, outExtension: { '.js': '.mjs' }, logLevel: 'error',
 });
 const { onRequest: vow } = await import(pathToFileURL(join(out, 'vow.mjs')).href);
@@ -26,6 +27,8 @@ const { onRequestGet: sold } = await import(pathToFileURL(join(out, 'sold.mjs'))
 const leadModule = await import(pathToFileURL(join(out, 'lead.mjs')).href);
 const lead = leadModule.onRequestPost ?? leadModule.onRequest;
 const { onRequest: upload } = await import(pathToFileURL(join(out, 'upload.mjs')).href);
+const listingModule = await import(pathToFileURL(join(out, 'listing.mjs')).href);
+const { onRequestGet: listingsSitemap } = await import(pathToFileURL(join(out, 'sitemap.mjs')).href);
 
 /** D1's prepare/bind/first/run/all over node:sqlite. */
 const sqlite = new DatabaseSync(':memory:');
@@ -41,6 +44,8 @@ const db = {
 
 const emails = [];
 let proptxCalls = 0;
+/** The listing page tests set this to answer PropTx themselves. */
+let feed = null;
 globalThis.fetch = async (url, init = {}) => {
   const u = String(url);
   if (u.startsWith('https://api.resend.com/')) {
@@ -50,6 +55,7 @@ globalThis.fetch = async (url, init = {}) => {
   if (u.startsWith('https://challenges.cloudflare.com/')) return Response.json({ success: init.body.get('response') === 'human' });
   if (u.startsWith('https://query.ampre.ca/')) {
     proptxCalls++;
+    if (feed) return Response.json({ value: feed(decodeURIComponent(u), init) });
     return u.includes('/Media?')
       ? Response.json({ value: [] })
       : Response.json({ '@odata.count': 1, value: [{ ListingKey: 'C1234567', ClosePrice: 900000, InternetEntireListingDisplayYN: true, UnparsedAddress: '1 Test St' }] });
@@ -123,6 +129,73 @@ for (let i = 0; i < 300; i++) ins.run(aliceId, Date.now());
 ok((await search(aliceCookie)).status === 429, 'daily search limit enforced');
 sqlite.prepare("DELETE FROM audit WHERE action = 'search'").run();
 
+console.log('Listing pages');
+const edge = new Map();
+globalThis.caches = { default: { match: async (req) => edge.get(req.url)?.clone(), put: async (req, res) => void edge.set(req.url, res) } };
+const SHELL_HTML = '<title>%%LISTING_TITLE%%</title><meta name="robots" content="noindex"><link rel="canonical" href="https://kirbychantoronto.com/homes-for-sale/listing-shell/"><h1>%%LISTING_H1%%</h1>%%LISTING_BODY%%<input name="page" value="/homes-for-sale/listing-shell/">';
+const listingEnv = {
+  ...env,
+  PROPTX_IDX_TOKEN: 'idx',
+  ASSETS: {
+    fetch: async (u) => {
+      const path = new URL(u).pathname;
+      if (path === '/homes-for-sale/listing-shell/') return new Response(SHELL_HTML, { headers: { 'content-type': 'text/html', 'x-robots-tag': 'noindex, nofollow', 'content-security-policy': "default-src 'self'" } });
+      if (path === '/listing-areas.json') return Response.json({ areas: {}, medians: { period: 'August 2026', cities: {} } });
+      return new Response('not found page', { status: 404 });
+    },
+  },
+};
+const view = async (key, cookie) => {
+  const res = await listingModule.onRequestGet({ request: new Request(`${ORIGIN}/listing/${key}/`, { headers: { cookie: cookie ?? '', 'cf-connecting-ip': '203.0.113.9' } }), env: listingEnv, params: { key }, waitUntil: (p) => pending.push(p) });
+  await Promise.all(pending);
+  pending = [];
+  return { status: res.status, html: await res.text(), cache: res.headers.get('cache-control'), robots: res.headers.get('x-robots-tag'), csp: res.headers.get('content-security-policy') };
+};
+const remembered = (key) => sqlite.prepare('SELECT address, community FROM listing_pages WHERE key = ?').get(key);
+const active = { ListingKey: 'C7000001', ListPrice: 1250000, UnparsedAddress: '9 Sample Road, Toronto, ON M4G 1A1', City: 'Toronto C11', CityRegion: 'Leaside', BedroomsTotal: 3, BathroomsTotalInteger: 2, PropertySubType: 'Detached', TransactionType: 'For Sale', ListOfficeName: 'SAMPLE REALTY', PublicRemarks: 'Remarks from the listing.', TaxAnnualAmount: 7200, ListAgentFullName: 'Private Agent', InternetEntireListingDisplayYN: true, InternetAddressDisplayYN: true };
+let row = active;
+feed = (u) => (u.includes('/Media?') ? [] : u.includes("ListingKey eq '") ? (u.includes('MlsStatus') ? [{ ListingKey: row?.ListingKey, MlsStatus: 'Sold', ClosePrice: 1199000, CloseDate: '2026-09-15', InternetEntireListingDisplayYN: true }] : row ? [row] : []) : []);
+let v = await view('C7000001');
+ok(v.status === 200 && v.html.includes('$1,250,000') && v.html.includes('Listing courtesy of SAMPLE REALTY. MLS® C7000001.') && !v.html.includes('Private Agent'), 'a live listing page shows the price, the listing brokerage and the MLS number. No field outside the allowlist is shown');
+ok(v.html.includes('<link rel="canonical" href="https://kirbychantoronto.com/listing/C7000001/">') && v.html.includes('value="/listing/C7000001/"') && !v.html.includes('noindex') && v.robots === null, 'it is indexable with a canonical to itself. The enquiry form carries its address');
+ok(v.cache === 'public, max-age=600' && v.csp === "default-src 'self'" && remembered('C7000001')?.address === active.UnparsedAddress, 'it keeps the shell security headers and is remembered for later');
+row = { ...active, ListingKey: 'C7000002', TransactionType: 'For Lease', ListPrice: 4200 };
+v = await view('C7000002');
+ok(v.status === 200 && v.robots === 'noindex' && v.html.includes('noindex') && !v.html.includes('land transfer tax'), 'a lease has a page with no purchase costs and is not offered to search engines');
+row = { ...active, ListingKey: 'C7000003', InternetAddressDisplayYN: false };
+v = await view('C7000003');
+ok(v.status === 200 && !v.html.includes('Sample Road') && remembered('C7000003').address === null, 'an address the seller keeps off the internet is neither shown nor stored');
+sqlite.prepare("INSERT INTO listing_pages (key, address, community, first_seen, last_seen) VALUES ('C7000004', '4 Hidden Street', 'Leaside', 1, 1)").run();
+row = { ...active, ListingKey: 'C7000004', InternetEntireListingDisplayYN: false };
+v = await view('C7000004');
+ok(v.status === 404 && !remembered('C7000004'), 'a listing the seller keeps off the internet has no page and is forgotten');
+row = null;
+ok((await view('C7999999')).status === 404, 'a key this site never showed is not a page');
+edge.clear();
+proptxCalls = 0;
+v = await view('C7000001');
+ok(v.status === 200 && v.html.includes('no longer available') && !/\$1,|Remarks from|Sold<\/strong>|<img/.test(v.html) && v.cache === 'public, max-age=600', 'a listing that left the feed keeps its page without price, photos, remarks or sold data');
+ok(v.html.includes('/sold/') && !v.html.includes('1,199,000'), 'a visitor who is not signed in is pointed to sign in and sees no sold price');
+const auditBefore = sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search'").get().n;
+v = await view('C7000001', aliceCookie);
+ok(v.html.includes('<strong>Sold</strong> for $1,199,000 on 2026-09-15') && v.cache === 'private, no-store', 'a signed-in account sees the sold price on a page that is never cached');
+ok(sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search' AND detail = 'listing=C7000001'").get().n === 1 && auditBefore === 0, 'that sold lookup is in the audit trail');
+ok(!(await view('C7000001')).html.includes('1,199,000') && !(await view('C7000001', '__Host-kc_vow=' + 'a'.repeat(64))).html.includes('1,199,000'), 'the sold price never reaches the shared cache or a forged session');
+for (let i = 0; i < 300; i++) ins.run(aliceId, Date.now());
+ok(!(await view('C7000001', aliceCookie)).html.includes('1,199,000'), 'sold lookups on listing pages stop at the daily search limit');
+sqlite.prepare("DELETE FROM audit WHERE action = 'search'").run();
+
+sqlite.prepare("INSERT INTO listing_pages (key, address, community, first_seen, last_seen) VALUES ('C7000006', '6 Old Street', 'Leaside', 1, 1)").run();
+feed = (u) => (u.includes('$skip=0') ? [{ ListingKey: 'C7000005', UnparsedAddress: "5 O'Brien Avenue", CityRegion: 'Leaside', ModificationTimestamp: '2026-10-05T12:00:00Z', InternetAddressDisplayYN: false }, { ListingKey: 'C7000001', UnparsedAddress: '9 New Name Road', CityRegion: 'Leaside' }, { ListingKey: 'C7000006', InternetEntireListingDisplayYN: false }] : []);
+const sm = await listingsSitemap({ request: new Request(`${ORIGIN}/sitemap-listings.xml`), env: listingEnv, waitUntil: (p) => pending.push(p) });
+await Promise.all(pending);
+pending = [];
+const smXml = await sm.text();
+ok(sm.status === 200 && smXml.includes('<loc>https://kirbychantoronto.com/listing/C7000005/</loc><lastmod>2026-10-05T12:00:00Z</lastmod>') && !smXml.includes('C7000006') && sm.headers.get('x-listings') === '2', 'the listings sitemap lists active listings and leaves out the ones kept off the internet');
+ok(remembered('C7000005')?.address === null && remembered('C7000001').address === '9 New Name Road' && !remembered('C7000006'), 'the sitemap run remembers every listing in one statement without hidden addresses. It forgets withdrawn consent');
+feed = null;
+proptxCalls = 0;
+
 console.log('Cross-site posts');
 ok((await call('login', { email: alice.email, password: alice.password }, { origin: 'https://evil.example' })).status === 403, 'a post from another origin is refused');
 ok((await call('login', { email: alice.email, password: alice.password }, { type: 'text/plain' })).status === 403, 'a post that is not JSON is refused');
@@ -163,6 +236,12 @@ for (const [k, v] of Object.entries({ name: 'Bob Singh', email: 'bob@example.com
 const lr = await lead({ request: new Request(`${ORIGIN}/api/lead`, { method: 'POST', headers: { accept: 'application/json', 'cf-connecting-ip': '203.0.113.5' }, body: form }), env: { ...env, VOW_DB: undefined } });
 const leadMail = emails.find((e) => e.to[0] === site.leadsEmail);
 ok(lr.status === 200 && leadMail?.reply_to === 'bob@example.com' && leadMail.text.includes('Leaside'), `contact form enquiry is emailed to ${site.leadsEmail} with reply-to the sender`);
+const stored = () => sqlite.prepare('SELECT name, email, source, emailed, payload FROM leads ORDER BY id').all();
+const post = (extra) => lead({ request: new Request(`${ORIGIN}/api/lead`, { method: 'POST', headers: { accept: 'application/json', 'cf-connecting-ip': '203.0.113.5' }, body: (() => { const f = new FormData(); for (const [k, v] of form.entries()) f.append(k, v); f.set('source', 'listing-page'); f.set('page', '/listing/C7000001/'); return f; })() }), env: { ...env, ...extra } });
+ok((await post({})).status === 200 && stored().length === 1 && stored()[0].emailed === 1 && stored()[0].source === 'listing-page' && JSON.parse(stored()[0].payload).page === '/listing/C7000001/', 'an enquiry is kept in the database with its form and page and is marked as emailed');
+ok(emails.at(-1).text.includes('Page: /listing/C7000001/') && emails.at(-1).text.includes('Form: listing-page'), 'the email says which listing and which form the enquiry came from');
+ok((await post({ RESEND_API_KEY: undefined })).status === 200 && stored().length === 2 && stored()[1].emailed === 0, 'when email is down the enquiry is still kept and the visitor is not told it failed');
+ok((await post({ RESEND_API_KEY: undefined, VOW_DB: undefined })).status === 502, 'with no database and no email the visitor is told to call');
 const bad = new FormData();
 for (const [k, v] of Object.entries({ name: 'Bot', email: 'bot@example.com', consent: 'yes', 'cf-turnstile-response': 'robot' })) bad.append(k, v);
 ok((await lead({ request: new Request(`${ORIGIN}/api/lead`, { method: 'POST', headers: { accept: 'application/json' }, body: bad }), env })).status === 403, 'an enquiry that fails Turnstile is refused');

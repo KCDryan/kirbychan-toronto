@@ -40,5 +40,6 @@
   "leadsEmail": "info@kirbychanmarkham.com",
   "requireOneCutPro": true,
   "oneCutOnly": true,
-  "markhamSite": "https://kirbychanmarkham.com/"
+  "markhamSite": "https://kirbychanmarkham.com/",
+  "indexListings": true
 }

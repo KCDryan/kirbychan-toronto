@@ -23,10 +23,12 @@ type Row = Record<string, unknown>;
 const TTL = 300;
 
 /** Detail fields shown to the public. Allowlisted so nothing private, such as agent contact or commission, can leak. */
-const DETAIL = [
+export const DETAIL = [
   'LivingAreaRange', 'ApproximateAge', 'ArchitecturalStyle', 'Basement', 'LotWidth', 'LotDepth', 'LotSizeUnits',
   'DirectionFaces', 'ParkingTotal', 'GarageType', 'HeatType', 'Cooling', 'KitchensTotal', 'RoomsTotal',
   'AssociationFee', 'TaxAnnualAmount', 'TaxYear', 'Locker', 'PetsAllowed', 'Exposure', 'DaysOnMarket',
+  // More detail for the listing pages. A field the feed does not carry for a home is simply absent from the row.
+  'AssociationFeeIncludes', 'AssociationAmenities', 'BalconyType', 'LaundryFeatures', 'ParkingFeatures', 'InteriorFeatures', 'PropertyFeatures', 'View', 'LegalStories',
 ];
 
 const json = (body: unknown, status = 200) =>
@@ -48,7 +50,7 @@ export async function proptx(token: string, path: string): Promise<{ value: Row[
 }
 
 /** Listings the seller has kept off the internet are dropped, and hidden addresses stay hidden. */
-function publicCard(r: Row, cover?: string) {
+export function publicCard(r: Row, cover?: string) {
   const showAddress = r.InternetAddressDisplayYN !== false;
   return {
     key: r.ListingKey,

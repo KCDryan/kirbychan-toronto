@@ -75,3 +75,6 @@
 # People type the plural.
 /blogs /blog/ 301
 /blogs/ /blog/ 301
+
+# People and tools often ask for the sitemap at its common name.
+/sitemap.xml /sitemap-index.xml 301

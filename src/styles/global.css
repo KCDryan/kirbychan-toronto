@@ -80,6 +80,9 @@ a:hover { color: var(--link-hover); }
   font-weight: 600;
 }
 
+/* An author display rule (grid, flex) must never bring a hidden element back. */
+[hidden] { display: none !important; }
+
 .visually-hidden {
   position: absolute !important;
   width: 1px; height: 1px;

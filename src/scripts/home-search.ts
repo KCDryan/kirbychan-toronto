@@ -109,6 +109,9 @@ export function media(src: string | null | undefined, alt: string, badge: string
   if (src) {
     const img = el('img', 'hs__img') as HTMLImageElement;
     img.alt = alt;
+    // The card crops to its own frame. The sizes only hold the space while the photo loads.
+    img.width = 640;
+    img.height = 480;
     img.loading = 'lazy';
     img.referrerPolicy = 'no-referrer';
     img.src = src;

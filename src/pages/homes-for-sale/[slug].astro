@@ -8,6 +8,7 @@ import type { GetStaticPaths } from 'astro';
 import { getEntry, type CollectionEntry } from 'astro:content';
 import Page from '../../layouts/Page.astro';
 import IdxDisclaimer from '../../components/IdxDisclaimer.astro';
+import LeadForm from '../../components/LeadForm.astro';
 import HomeIcon from '../../components/HomeIcon.astro';
 import counts from '../../data/listing-counts.json';
 import { AREAS, HOMES } from '../../lib/proptx';
@@ -169,10 +170,10 @@ const faq = [
           <ul class="hs__results">
             {shown.map((c) => (
               <li class="hs__card">
-                <a class="hs__link" href={`/homes-for-sale/listing/?id=${encodeURIComponent(c.key)}`}>
+                <a class="hs__link" href={`/listing/${encodeURIComponent(c.key)}/`}>
                   <div class="hs__media">
                     {c.photo ? (
-                      <img class="hs__img" src={c.photo} alt={c.address ? `${c.address}, ${c.city}` : `Home in ${c.city}`} loading="lazy" referrerpolicy="no-referrer" />
+                      <img class="hs__img" width="640" height="480" src={c.photo} alt={c.address ? `${c.address}, ${c.city}` : `Home in ${c.city}`} loading="lazy" referrerpolicy="no-referrer" />
                     ) : (
                       <div class="hs__noimg"><HomeIcon kind="house" /><span>Photo coming soon</span></div>
                     )}
@@ -223,7 +224,15 @@ const faq = [
         <p>The <a href="/homes-for-sale/">Toronto home search</a> combines all of these, one press per choice.</p>
       </div>
 
+      <div class="hs-lead" id="enquire">
+        <LeadForm heading={`Looking for ${noun}?`} intro="Tell us your price range and what the home needs to have. We will get back to you about listings that match." source={`listings-${slug}`} defaultIntent="Buying" submitLabel="Send my enquiry" compact />
+      </div>
+
       <IdxDisclaimer />
     </div>
   </section>
 </Page>
+
+<style>
+  .hs-lead { max-width: 720px; margin-top: var(--sp-7); scroll-margin-top: 6rem; }
+</style>
