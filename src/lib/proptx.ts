@@ -114,6 +114,9 @@ function shared(params: URLSearchParams, priceField: string): string[] {
   if (price?.max) f.push(`${priceField} le ${price.max}`);
   const beds = int(params.get('beds'), 10);
   if (beds) f.push(`BedroomsTotal ge ${beds}`);
+  // Exactly this many bedrooms, for the similar homes on a listing page.
+  const exact = int(params.get('bedrooms'), 5);
+  if (exact) f.push(`BedroomsTotal eq ${exact}`);
   return f;
 }
 
@@ -212,7 +215,7 @@ export const LIST_PAGE = 1000;
 export const activeQuery = (page: number) =>
   odata({
     $filter: ["ContractStatus eq 'Available'", "startswith(PropertyType,'Residential')", "TransactionType eq 'For Sale'", cityFilter(HOME_CITY), homesOnly].join(' and '),
-    $select: 'ListingKey,ModificationTimestamp,UnparsedAddress,CityRegion,InternetEntireListingDisplayYN,InternetAddressDisplayYN',
+    $select: 'ListingKey,ModificationTimestamp,UnparsedAddress,City,CityRegion,InternetEntireListingDisplayYN,InternetAddressDisplayYN',
     $orderby: 'ListingKey',
     $top: String(LIST_PAGE),
     $skip: String(page * LIST_PAGE),
@@ -222,7 +225,9 @@ export const activeQuery = (page: number) =>
 export const closedQuery = (key: string) =>
   odata({ $filter: `ListingKey eq ${q(key)}`, $select: 'ListingKey,MlsStatus,ClosePrice,CloseDate,InternetEntireListingDisplayYN', $top: '1' });
 
-export const listingQuery = (key: string) => odata({ $filter: `ListingKey eq ${q(key)} and ContractStatus eq 'Available'`, $top: '1' });
+/** One listing by key. Homes only, like the search: a pasted key cannot open a parking space, a locker or a vacant lot. */
+export const listingQuery = (key: string) =>
+  odata({ $filter: `ListingKey eq ${q(key)} and ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and ${homesOnly}`, $top: '1' });
 
 export const mediaQuery = (key: string) =>
   odata({
@@ -276,5 +281,10 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   const act = new URLSearchParams(activeQuery(1));
   if (act.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto') and " + homesOnly || act.get('$skip') !== '1000') throw new Error('active ' + act);
   if (!closedQuery("C1'x").includes(encodeURIComponent("'C1''x'"))) throw new Error('closed quoting');
+  const b2 = new URLSearchParams(searchQuery(new URLSearchParams('home=condo&bedrooms=2'))).get('$filter')!;
+  if (!b2.endsWith('BedroomsTotal eq 2') || b2.includes('BedroomsTotal ge')) throw new Error('bedrooms ' + b2);
+  if (new URLSearchParams(searchQuery(new URLSearchParams('bedrooms=2 or 1 eq 1'))).get('$filter')!.includes('BedroomsTotal')) throw new Error('bedrooms injection');
+  if (!new URLSearchParams(searchQuery(new URLSearchParams('bedrooms=9'))).get('$filter')!.endsWith('BedroomsTotal eq 5')) throw new Error('bedrooms cap');
+  if (new URLSearchParams(listingQuery("C1'x")).get('$filter') !== "ListingKey eq 'C1''x' and ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and " + homesOnly) throw new Error('listingQuery');
   console.log('proptx ok');
 }

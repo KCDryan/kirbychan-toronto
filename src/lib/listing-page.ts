@@ -30,6 +30,8 @@ type Figures = { sales: number; average: number | null; median: number | null };
 export type Medians = { period: string; cities: Record<string, { name: string; types: (Figures & { type: string })[] }> };
 /** The one row of those figures that matches a listing: same city, same home type. */
 export type Median = Figures & { period: string; place: string; noun: string };
+/** What we remembered about a listing that has left the feed. City and lease are empty on a row stored before they were kept. */
+export type Gone = { key: string; address: string | null; community: string | null; city?: string | null; lease?: boolean };
 export type Sold = { price: number | null; date: string | null };
 export type PageInput = {
   origin: string;
@@ -37,7 +39,7 @@ export type PageInput = {
   /** The live listing. Null once it has left the feed. */
   listing: Listing | null;
   /** What we remembered about a listing that has left the feed. */
-  gone?: { key: string; address: string | null; community: string | null };
+  gone?: Gone;
   area?: Area;
   median?: Median;
   similar: Listing[];
@@ -100,7 +102,7 @@ const card = (c: Listing) => `<li class="lp-card"><a href="/listing/${esc(c.key)
   c.photo && /^https:\/\//.test(c.photo) ? `<img src="${esc(c.photo)}" alt="${esc(c.address ?? fallbackName(c))}" width="640" height="480" loading="lazy" referrerpolicy="no-referrer">` : ''
 }<strong>${esc(money(c.price))}${c.lease ? ' a month' : ''}</strong><span>${esc(c.address ?? fallbackName(c))}</span><span>${esc(
   [c.beds != null && plural(c.beds, 'bedroom'), c.baths != null && plural(c.baths, 'bathroom'), c.type].filter(Boolean).join(' · '),
-)}</span></a></li>`;
+)}</span><span>Listed by ${esc(c.brokerage || 'the listing brokerage')}. MLS® ${esc(c.key)}</span></a></li>`;
 
 function areaBlock(a: Area | undefined): string {
   if (!a) return `<section class="lp-area"><h2>Toronto neighbourhoods and prices</h2><p>Our neighbourhood guides set out TRREB prices by home type, transit and the housing in each area we cover.</p><p><a href="/neighbourhoods/">Toronto neighbourhood guides</a> · <a href="/toronto-house-prices/">Toronto house prices</a> · <a href="/homes-for-sale/">All Toronto homes for sale</a></p></section>`;
@@ -175,6 +177,9 @@ function sections(l: Listing, place: string, median: Median | undefined): { html
   if (lease) {
     faq.push({ q: `How do I book a showing for ${place}?`, a: `Use the form on this page or call us. Quote MLS® ${l.key}. We will confirm the listing is still available and arrange a time with the listing brokerage.` });
     faq.push({ q: `Is ${place} still for lease?`, a: `This page is refreshed from TRREB's MLS® System through the day. If the listing is leased or withdrawn the page says so. Contact us to confirm before you make plans.` });
+    out.push(
+      `<h2>What to check before you apply</h2><ol><li><strong>Read the whole lease first.</strong> Before you sign, ask for the full document and look at the term, the rent, the due date and what happens if you leave early.</li><li><strong>Ask what the rent covers.</strong> Heat, hydro, water and internet are billed in different ways from one rental to the next${parking ? `. The listing shows ${esc(plural(parking, 'parking space'))}, so ask whether that is included or costs extra` : ''}.</li><li><strong>Find out who the landlord is.</strong> Ask for a name and a way to reach them. Ask too whether a property manager handles repairs.</li><li><strong>Expect to be asked for documents.</strong> Landlords often ask for ID, proof of income and references. Ask exactly what is wanted before you send anything personal.</li><li><strong>Ask about deposits.</strong> Ontario's rules limit what a landlord may collect up front on most residential rentals. Confirm the amount and get a receipt.</li><li><strong>See the unit in person.</strong> ${l.tour ? 'The listing has a virtual tour, but photos' : 'Photos'} do not show noise, smells or the condition of the building. Note any damage with the landlord before you move in.</li></ol><p>This is general information, not legal advice. For questions about a specific lease, speak to a lawyer or a legal clinic.</p>`,
+    );
     return { html: out.join(''), faq };
   }
 
@@ -254,18 +259,20 @@ export function listingPage(p: PageInput): { title: string; description: string;
   const community = l?.community ?? p.gone?.community ?? null;
   const place = address ? short(address) : fallbackName({ community, city: l?.city ?? null });
   const areaName = p.area?.name ?? community ?? (cityOf(l?.city) || 'Toronto');
+  const lease = l?.lease ?? p.gone?.lease ?? false;
   const similar = p.similar.filter((c) => c.key !== key).slice(0, 6);
   const more = similar.length
-    ? `<section class="lp-more"><h2>${l ? 'Similar' : 'Current'} homes for ${l?.lease ? 'lease' : 'sale'} in ${esc(p.similarIn ?? 'Toronto')}</h2><ul class="lp-cards" role="list">${similar.map(card).join('')}</ul></section>`
+    ? `<section class="lp-more"><h2>${l ? 'Similar' : 'Current'} homes for ${lease ? 'rent' : 'sale'} in ${esc(p.similarIn ?? 'Toronto')}</h2><ul class="lp-cards" role="list">${similar.map(card).join('')}</ul></section>`
     : '';
   const cta = `<div class="lp-cta"><a class="btn btn--primary" href="#enquire">Ask a question or book a showing</a>${
     p.phone ? `<a class="btn btn--ghost" href="${esc(p.phone.href)}">Call ${esc(p.phone.label)}</a>` : ''
   }</div>`;
 
   if (!l) {
+    // A rental has no sold lookup, so it gets no sign-in prompt either.
     const sold = p.sold && (p.sold.price || p.sold.date)
       ? `<p class="lp-sold"><strong>Sold</strong>${p.sold.price ? ` for ${esc(money(p.sold.price))}` : ''}${p.sold.date ? ` on ${esc(p.sold.date)}` : ''}. Sold information is from TRREB and is shown to signed-in visitors only.</p>`
-      : p.signedIn
+      : p.signedIn || lease
         ? ''
         : `<p class="lp-signin"><a href="/sold/">Sign in to see sold prices</a> for Toronto homes, where TRREB has recorded a sale.</p>`;
     return {
@@ -273,7 +280,7 @@ export function listingPage(p: PageInput): { title: string; description: string;
       crumb: place,
       h1: place,
       title: clip(`${place} | No Longer Available`, 60),
-      description: fitSentences(`${place}${community ? ` in ${community}` : ''}: this listing is no longer available.`, [`See current homes for sale in ${p.area?.name ?? 'Toronto'}.`, 'Recent TRREB prices included.'], 160),
+      description: fitSentences(`${place}${community ? ` in ${community}` : ''}: this listing is no longer available.`, [`See current homes for ${lease ? 'rent' : 'sale'} in ${p.area?.name ?? 'Toronto'}.`, 'Recent TRREB prices included.'], 160),
       body: `<p class="lp-status">This listing is no longer available.</p>${sold}${cta}${more}${areaBlock(p.area)}<p class="lp-key">MLS® ${esc(key)}</p>`,
     };
   }
@@ -377,7 +384,7 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
 
   // A lease has rent, not purchase costs.
   const lease = listingPage({ ...base, listing: { ...semi, price: 4200, lease: true } });
-  need(lease.body, ['$4,200 a month', 'listed for lease'], 'lease');
+  need(lease.body, ['$4,200 a month', 'listed for lease', 'before you apply', 'not legal advice'], 'lease');
   never(lease.body, ['land transfer tax', 'down payment', 'make an offer', '"offers"'], 'lease');
 
   // A hidden address stays hidden: the page is named by its community.
@@ -385,9 +392,12 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   if (hidden.h1 !== 'Home in Leaside: semi-detached house for sale' || hidden.body.includes('Elm Avenue') || hidden.body.includes('streetAddress')) throw new Error('hidden address');
 
   // A listing that has left the feed: no price, photos or remarks. Sold data only when it is passed in.
-  const gone = listingPage({ ...base, listing: null, gone: { key: 'C1234567', address: '1 Main St', community: 'Willowdale East' } });
+  const gone = listingPage({ ...base, listing: null, gone: { key: 'C1234567', address: '1 Main St', community: 'Willowdale East', city: 'Toronto C14', lease: false } });
   if (gone.live || !gone.body.includes('no longer available') || !gone.body.includes('/sold/')) throw new Error('gone page');
   never(gone.body, ['Sold</strong>', '$', '<img', 'application/ld+json'], 'gone page');
+  const rentGone = listingPage({ ...base, listing: null, gone: { key: 'C1234567', address: '1 Main St', community: 'Willowdale East', city: 'Toronto C14', lease: true }, similar: [{ ...semi, key: 'C7000009', brokerage: 'SAMPLE REALTY' }] });
+  need(rentGone.body, ['no longer available', 'for rent', 'Listed by SAMPLE REALTY. MLS® C7000009'], 'off-market rental');
+  never(rentGone.body, ['/sold/', 'sold prices'], 'off-market rental');
   const sold = listingPage({ ...base, signedIn: true, sold: { price: 580000, date: '2026-09-01' }, listing: null, gone: { key: 'C1234567', address: null, community: null } });
   if (!sold.body.includes('<strong>Sold</strong> for $580,000 on 2026-09-01') || sold.h1 !== 'Home in Toronto') throw new Error('sold page');
 
@@ -399,6 +409,6 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   never(none.body, [/includes none|amenities on the listing/i], 'an empty feed list was printed');
 
   // House style: no dash characters, no exclamation mark and no comma before "and" or "or" in anything we wrote.
-  for (const page of [house, markham, lease, condo, gone]) never(text(page.body), [/[\u2013\u2014!]/, /,\s+(and|or)\b/], 'house style');
+  for (const page of [house, markham, lease, condo, gone, rentGone]) never(text(page.body), [/[\u2013\u2014!]/, /,\s+(and|or)\b/], 'house style');
   console.log('listing-page ok', text(house.body).split(/\s+/).length, 'words in the house sample');
 }

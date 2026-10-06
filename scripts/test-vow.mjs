@@ -133,13 +133,14 @@ console.log('Listing pages');
 const edge = new Map();
 globalThis.caches = { default: { match: async (req) => edge.get(req.url)?.clone(), put: async (req, res) => void edge.set(req.url, res) } };
 const SHELL_HTML = '<title>%%LISTING_TITLE%%</title><meta name="robots" content="noindex"><link rel="canonical" href="https://kirbychantoronto.com/homes-for-sale/listing-shell/"><h1>%%LISTING_H1%%</h1>%%LISTING_BODY%%<input name="page" value="/homes-for-sale/listing-shell/">';
+let shellHeaders = { 'content-type': 'text/html', 'x-robots-tag': 'noindex, nofollow', 'content-security-policy': "default-src 'self'" };
 const listingEnv = {
   ...env,
   PROPTX_IDX_TOKEN: 'idx',
   ASSETS: {
     fetch: async (u) => {
       const path = new URL(u).pathname;
-      if (path === '/homes-for-sale/listing-shell/') return new Response(SHELL_HTML, { headers: { 'content-type': 'text/html', 'x-robots-tag': 'noindex, nofollow', 'content-security-policy': "default-src 'self'" } });
+      if (path === '/homes-for-sale/listing-shell/') return new Response(SHELL_HTML, { headers: shellHeaders });
       if (path === '/listing-areas.json') return Response.json({ areas: {}, medians: { period: 'August 2026', cities: {} } });
       return new Response('not found page', { status: 404 });
     },
@@ -149,9 +150,9 @@ const view = async (key, cookie) => {
   const res = await listingModule.onRequestGet({ request: new Request(`${ORIGIN}/listing/${key}/`, { headers: { cookie: cookie ?? '', 'cf-connecting-ip': '203.0.113.9' } }), env: listingEnv, params: { key }, waitUntil: (p) => pending.push(p) });
   await Promise.all(pending);
   pending = [];
-  return { status: res.status, html: await res.text(), cache: res.headers.get('cache-control'), robots: res.headers.get('x-robots-tag'), csp: res.headers.get('content-security-policy') };
+  return { status: res.status, html: await res.text(), cache: res.headers.get('cache-control'), robots: res.headers.get('x-robots-tag'), csp: res.headers.get('content-security-policy'), nosniff: res.headers.get('x-content-type-options'), type: res.headers.get('content-type') };
 };
-const remembered = (key) => sqlite.prepare('SELECT address, community FROM listing_pages WHERE key = ?').get(key);
+const remembered = (key) => sqlite.prepare('SELECT address, community, city, lease FROM listing_pages WHERE key = ?').get(key);
 const active = { ListingKey: 'C7000001', ListPrice: 1250000, UnparsedAddress: '9 Sample Road, Toronto, ON M4G 1A1', City: 'Toronto C11', CityRegion: 'Leaside', BedroomsTotal: 3, BathroomsTotalInteger: 2, PropertySubType: 'Detached', TransactionType: 'For Sale', ListOfficeName: 'SAMPLE REALTY', PublicRemarks: 'Remarks from the listing.', TaxAnnualAmount: 7200, ListAgentFullName: 'Private Agent', InternetEntireListingDisplayYN: true, InternetAddressDisplayYN: true };
 let row = active;
 feed = (u) => (u.includes('/Media?') ? [] : u.includes("ListingKey eq '") ? (u.includes('MlsStatus') ? [{ ListingKey: row?.ListingKey, MlsStatus: 'Sold', ClosePrice: 1199000, CloseDate: '2026-09-15', InternetEntireListingDisplayYN: true }] : row ? [row] : []) : []);
@@ -162,6 +163,25 @@ ok(v.cache === 'public, max-age=600' && v.csp === "default-src 'self'" && rememb
 row = { ...active, ListingKey: 'C7000002', TransactionType: 'For Lease', ListPrice: 4200 };
 v = await view('C7000002');
 ok(v.status === 200 && v.robots === 'noindex' && v.html.includes('noindex') && !v.html.includes('land transfer tax'), 'a lease has a page with no purchase costs and is not offered to search engines');
+ok(remembered('C7000002')?.lease === 1 && remembered('C7000002')?.city === 'Toronto C11', 'a rental is remembered with its city and as a rental');
+row = active;
+shellHeaders = { 'content-type': 'text/html' };
+edge.clear();
+v = await view('C7000001');
+ok(v.status === 200 && v.csp?.includes("frame-ancestors 'self'") && v.csp.includes('challenges.cloudflare.com') && v.nosniff === 'nosniff', 'when the shell comes without security headers the listing page sets them itself');
+shellHeaders = { 'content-type': 'text/html', 'x-robots-tag': 'noindex, nofollow', 'content-security-policy': "default-src 'self'" };
+edge.clear();
+let asked = '';
+row = { ...active, ListingKey: 'C7000010', PropertySubType: 'Parking Space' };
+feed = (u) => ((asked += u + '\n'), u.includes('/Media?') ? [] : [row]);
+await view('C7000010');
+ok(/ListingKey eq 'C7000010' and .*startswith\(PropertyType,'Residential'\) and .*PropertySubType ne 'Parking Space' and PropertySubType ne 'Locker'/.test(asked), 'a pasted key is looked up among homes only, so a parking space or locker has no page');
+feed = () => { throw new Error('feed down'); };
+console.error = () => {};
+edge.clear();
+v = await view('C7000001');
+ok(v.status === 503 && v.robots === 'noindex' && v.type === 'text/plain; charset=utf-8', 'the feed not answering gives a 503 that is noindex and plain text');
+feed = (u) => (u.includes('/Media?') ? [] : u.includes("ListingKey eq '") ? (u.includes('MlsStatus') ? [{ ListingKey: row?.ListingKey, MlsStatus: 'Sold', ClosePrice: 1199000, CloseDate: '2026-09-15', InternetEntireListingDisplayYN: true }] : row ? [row] : []) : []);
 row = { ...active, ListingKey: 'C7000003', InternetAddressDisplayYN: false };
 v = await view('C7000003');
 ok(v.status === 200 && !v.html.includes('Sample Road') && remembered('C7000003').address === null, 'an address the seller keeps off the internet is neither shown nor stored');
@@ -184,14 +204,31 @@ ok(!(await view('C7000001')).html.includes('1,199,000') && !(await view('C700000
 for (let i = 0; i < 300; i++) ins.run(aliceId, Date.now());
 ok(!(await view('C7000001', aliceCookie)).html.includes('1,199,000'), 'sold lookups on listing pages stop at the daily search limit');
 sqlite.prepare("DELETE FROM audit WHERE action = 'search'").run();
+row = null;
+edge.clear();
+v = await view('C7000002', aliceCookie);
+ok(v.status === 200 && v.html.includes('no longer available') && !v.html.includes('/sold/') && sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE detail = 'listing=C7000002'").get().n === 0, 'an off-market rental gets no sign-in prompt and no sold lookup, even for a signed-in account');
+
+// The table already exists in production without city and lease: the columns are added once and a second run changes nothing.
+const old = new DatabaseSync(':memory:');
+old.exec('CREATE TABLE listing_pages (key TEXT PRIMARY KEY, address TEXT, community TEXT, first_seen INTEGER NOT NULL, last_seen INTEGER NOT NULL)');
+old.exec("INSERT INTO listing_pages VALUES ('C1000001', '1 Old Street', 'Leaside', 1, 1)");
+const oldDb = { prepare: (sql) => ({ bind: (...v) => ({ run: async () => old.prepare(sql).run(...v), all: async () => ({ results: old.prepare(sql).all(...v) }), first: async () => old.prepare(sql).get(...v) ?? null }) }) };
+await listingModule.ensureListingTable(oldDb);
+await listingModule.ensureListingTable(oldDb);
+const migrated = old.prepare("SELECT city, lease FROM listing_pages WHERE key = 'C1000001'").get();
+ok(migrated.city === null && migrated.lease === 0 && old.prepare("SELECT COUNT(*) AS n FROM pragma_table_info('listing_pages')").get().n === 7, 'an existing listing_pages table gains city and lease safely and a second run does not throw');
+await listingModule.ensureListingTable(db);
+ok(sqlite.prepare("SELECT COUNT(*) AS n FROM pragma_table_info('listing_pages')").get().n === 7, 'a new table has the same seven columns');
 
 sqlite.prepare("INSERT INTO listing_pages (key, address, community, first_seen, last_seen) VALUES ('C7000006', '6 Old Street', 'Leaside', 1, 1)").run();
-feed = (u) => (u.includes('$skip=0') ? [{ ListingKey: 'C7000005', UnparsedAddress: "5 O'Brien Avenue", CityRegion: 'Leaside', ModificationTimestamp: '2026-10-05T12:00:00Z', InternetAddressDisplayYN: false }, { ListingKey: 'C7000001', UnparsedAddress: '9 New Name Road', CityRegion: 'Leaside' }, { ListingKey: 'C7000006', InternetEntireListingDisplayYN: false }] : []);
+feed = (u) => (u.includes('$skip=0') ? [{ ListingKey: 'C7000005', UnparsedAddress: "5 O'Brien Avenue", CityRegion: 'Leaside', ModificationTimestamp: '2026-10-05T12:00:00Z', InternetAddressDisplayYN: false }, { ListingKey: 'C7000001', UnparsedAddress: '9 New Name Road', CityRegion: 'Leaside' }, { ListingKey: 'C7000006', InternetEntireListingDisplayYN: false }, { ListingKey: 'C7000008"><x', UnparsedAddress: 'Bad Key' }] : []);
 const sm = await listingsSitemap({ request: new Request(`${ORIGIN}/sitemap-listings.xml`), env: listingEnv, waitUntil: (p) => pending.push(p) });
 await Promise.all(pending);
 pending = [];
 const smXml = await sm.text();
 ok(sm.status === 200 && smXml.includes('<loc>https://kirbychantoronto.com/listing/C7000005/</loc><lastmod>2026-10-05T12:00:00Z</lastmod>') && !smXml.includes('C7000006') && sm.headers.get('x-listings') === '2', 'the listings sitemap lists active listings and leaves out the ones kept off the internet');
+ok(!smXml.includes('C7000008') && !smXml.includes('<x') && sm.headers.get('x-content-type-options') === 'nosniff', 'a listing key is validated before it goes into the XML and the sitemap says nosniff');
 ok(remembered('C7000005')?.address === null && remembered('C7000001').address === '9 New Name Road' && !remembered('C7000006'), 'the sitemap run remembers every listing in one statement without hidden addresses. It forgets withdrawn consent');
 feed = null;
 proptxCalls = 0;

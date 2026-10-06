@@ -12,10 +12,11 @@
  * trail and counts against the account's daily limit, the same as a sold search.
  *
  * A listing the seller keeps off the internet (InternetEntireListingDisplayYN false) has no page.
+ * A pasted key opens homes only: a parking space, a locker or a vacant lot is a 404.
  */
 import site from '../../src/data/site.json';
-import { AREAS, CITIES, HOME_CITY, NOT_HOMES, PROPTX_BASE, areaOf, cleanKey, closedQuery, coverQuery, homeKinds, listingQuery, mediaQuery, photos, searchQuery } from '../../src/lib/proptx';
-import { listingPage, medianFor, type Area, type Listing, type Medians, type Sold } from '../../src/lib/listing-page';
+import { AREAS, CITIES, HOME_CITY, PROPTX_BASE, areaOf, cleanKey, closedQuery, coverQuery, homeKinds, listingQuery, mediaQuery, photos, searchQuery } from '../../src/lib/proptx';
+import { listingPage, medianFor, type Area, type Gone, type Listing, type Medians, type Sold } from '../../src/lib/listing-page';
 import { COOKIE, SEARCHES_PER_DAY, audit, countSince, currentUser, ensureSchema, ipTag, keys, type D1, type User } from '../../src/lib/vow';
 import { DETAIL, proptx, publicCard } from '../api/listings';
 
@@ -37,23 +38,55 @@ const SHELL = '/homes-for-sale/listing-shell/';
 const TTL = 600;
 const INDEX = (site as { indexListings?: boolean }).indexListings === true;
 
-export const LISTING_SCHEMA =
-  'CREATE TABLE IF NOT EXISTS listing_pages (key TEXT PRIMARY KEY, address TEXT, community TEXT, first_seen INTEGER NOT NULL, last_seen INTEGER NOT NULL)';
+/**
+ * public/_headers gives the shell these when Cloudflare serves it. They are set here as well, only
+ * where missing, so a listing page can never go out without them. Photos come from PropTx's image
+ * host and the enquiry form loads the Turnstile check. Same policy as public/_headers, minus the
+ * video hosts, which a listing page does not use.
+ */
+const SECURITY: Record<string, string> = {
+  'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+  'x-content-type-options': 'nosniff',
+  'x-frame-options': 'SAMEORIGIN',
+  'referrer-policy': 'strict-origin-when-cross-origin',
+  'content-security-policy':
+    "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com https://static.cloudflareinsights.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; upgrade-insecure-requests",
+};
+
+const LISTING_SCHEMA =
+  'CREATE TABLE IF NOT EXISTS listing_pages (key TEXT PRIMARY KEY, address TEXT, community TEXT, city TEXT, lease INTEGER NOT NULL DEFAULT 0, first_seen INTEGER NOT NULL, last_seen INTEGER NOT NULL)';
+/**
+ * Creates the table, or brings the one already in production up to date. SQLite has no
+ * ADD COLUMN IF NOT EXISTS, so a column is added only when the table lacks it, and a second
+ * run (or a second Worker racing the first) finds nothing to do.
+ */
+export async function ensureListingTable(db: D1): Promise<void> {
+  await db.prepare(LISTING_SCHEMA).bind().run();
+  const have = new Set(((await db.prepare("SELECT name FROM pragma_table_info('listing_pages')").bind().all<{ name: string }>()).results ?? []).map((c) => c.name));
+  for (const [name, def] of [['city', 'TEXT'], ['lease', 'INTEGER NOT NULL DEFAULT 0']]) {
+    if (have.has(name)) continue;
+    try {
+      await db.prepare(`ALTER TABLE listing_pages ADD COLUMN ${name} ${def}`).bind().run();
+    } catch (e) {
+      if (!/duplicate column/i.test(String(e))) throw e;
+    }
+  }
+}
 /** Remembers a listing while it is active, so its page can stay up after it leaves the feed. */
-export const remember = (db: D1, key: string, address: string | null, community: string | null, now = Date.now()) =>
+export const remember = (db: D1, key: string, address: string | null, community: string | null, city: string | null, lease: boolean, now = Date.now()) =>
   db
-    .prepare('INSERT INTO listing_pages (key, address, community, first_seen, last_seen) VALUES (?1, ?2, ?3, ?4, ?4) ON CONFLICT(key) DO UPDATE SET address = ?2, community = ?3, last_seen = ?4')
-    .bind(key, address, community, now);
+    .prepare('INSERT INTO listing_pages (key, address, community, city, lease, first_seen, last_seen) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?6) ON CONFLICT(key) DO UPDATE SET address = ?2, community = ?3, city = ?4, lease = ?5, last_seen = ?6')
+    .bind(key, address, community, city, lease ? 1 : 0, now);
 /** A seller who takes a listing off the internet takes its page with it. */
 /**
  * A page of the feed remembered in one statement. D1 allows 100 bound values a statement and a
  * Worker a limited number of statements a request, so the rows travel as one JSON value.
  */
-export const rememberMany = (db: D1, rows: [key: string, address: string | null, community: string | null][], now = Date.now()) =>
+export const rememberMany = (db: D1, rows: [key: string, address: string | null, community: string | null, city: string | null][], now = Date.now()) =>
   db
     .prepare(
-      "INSERT INTO listing_pages (key, address, community, first_seen, last_seen) SELECT json_extract(value, '$[0]'), json_extract(value, '$[1]'), json_extract(value, '$[2]'), ?2, ?2 FROM json_each(?1) WHERE true " +
-        'ON CONFLICT(key) DO UPDATE SET address = excluded.address, community = excluded.community, last_seen = excluded.last_seen',
+      "INSERT INTO listing_pages (key, address, community, city, lease, first_seen, last_seen) SELECT json_extract(value, '$[0]'), json_extract(value, '$[1]'), json_extract(value, '$[2]'), json_extract(value, '$[3]'), 0, ?2, ?2 FROM json_each(?1) WHERE true " +
+        'ON CONFLICT(key) DO UPDATE SET address = excluded.address, community = excluded.community, city = excluded.city, lease = 0, last_seen = excluded.last_seen',
     )
     .bind(JSON.stringify(rows), now);
 export const forget = (db: D1, keys: string[]) => db.prepare('DELETE FROM listing_pages WHERE key IN (SELECT value FROM json_each(?1))').bind(JSON.stringify(keys));
@@ -90,7 +123,7 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   }
 
   let listing: Listing | null = null;
-  let gone: { key: string; address: string | null; community: string | null } | undefined;
+  let gone: Gone | undefined;
   let sold: Sold | undefined;
   let similar: Listing[] = [];
   try {
@@ -101,7 +134,10 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
     const r = found.value[0];
     if (r && r.InternetEntireListingDisplayYN === false) {
       // The seller has asked for no internet display: no page and nothing kept from an earlier visit.
-      if (env.VOW_DB) ctx.waitUntil(forget(env.VOW_DB, [key]).run().catch(() => undefined));
+      if (env.VOW_DB) {
+        const db = env.VOW_DB;
+        ctx.waitUntil(ensureListingTable(db).then(() => forget(db, [key]).run()).catch(() => undefined));
+      }
       return notFound(env, request);
     }
     if (r) {
@@ -111,26 +147,28 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
       if (env.VOW_DB) {
         const db = env.VOW_DB;
         // publicCard has already dropped an address the seller keeps off the internet, so none is stored.
-        ctx.waitUntil(db.prepare(LISTING_SCHEMA).bind().run().then(() => remember(db, key, listing!.address, listing!.community).run()).catch(() => undefined));
+        const l = listing;
+        ctx.waitUntil(ensureListingTable(db).then(() => remember(db, key, l.address, l.community, l.city, l.lease === true).run()).catch(() => undefined));
       }
     }
   } catch (err) {
     console.error(err);
     // The feed did not answer. Saying "no longer available" would be a false statement, so say nothing yet.
-    return new Response('The listing feed is not answering. Please try again in a minute.', { status: 503, headers: { 'retry-after': '60', 'cache-control': 'no-store' } });
+    return new Response('The listing feed is not answering. Please try again in a minute.', { status: 503, headers: { 'retry-after': '60', 'cache-control': 'no-store', 'content-type': 'text/plain; charset=utf-8', 'x-robots-tag': 'noindex' } });
   }
 
   if (!listing) {
     if (!env.VOW_DB) return notFound(env, request);
     try {
-      await env.VOW_DB.prepare(LISTING_SCHEMA).bind().run();
-      gone = (await env.VOW_DB.prepare('SELECT key, address, community FROM listing_pages WHERE key = ?1').bind(key).first<NonNullable<typeof gone>>()) ?? undefined;
+      await ensureListingTable(env.VOW_DB);
+      const row = await env.VOW_DB.prepare('SELECT key, address, community, city, lease FROM listing_pages WHERE key = ?1').bind(key).first<{ key: string; address: string | null; community: string | null; city: string | null; lease: number }>();
+      gone = row ? { ...row, lease: row.lease === 1 } : undefined;
     } catch {
       gone = undefined;
     }
     // A key this site never showed is not a page.
     if (!gone) return notFound(env, request);
-    if (user && k && env.PROPTX_VOW_TOKEN) {
+    if (user && k && env.PROPTX_VOW_TOKEN && !gone.lease) {
       try {
         const db = env.VOW_DB;
         // VOW rules: every look at sold data is logged and an account has a daily limit, so sold prices cannot be scraped page by page.
@@ -150,7 +188,10 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   // The neighbourhood this listing sits in and what else is listed there.
   const community = listing?.community ?? gone?.community ?? null;
   const slug = areaOf(community);
-  const toronto = !listing || /^Toronto\b/i.test(listing.city ?? '');
+  // A listing that left the feed with no city on file is treated as Toronto, as before the city was stored.
+  const cityName = listing?.city ?? gone?.city ?? null;
+  const toronto = !cityName || /^Toronto\b/i.test(cityName);
+  const lease = listing?.lease ?? gone?.lease ?? false;
   let area: Area | undefined;
   let medians: Medians | undefined;
   try {
@@ -161,15 +202,15 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
     area = undefined;
   }
   // Similar homes come from the same neighbourhood where we cover it. Otherwise from the same city.
-  const otherCity = toronto ? undefined : CITIES.find((c) => c === listing?.city);
+  const otherCity = toronto ? undefined : CITIES.find((c) => c === cityName);
   const similarIn = slug && toronto && AREAS[slug] ? AREAS[slug].label : (otherCity ?? HOME_CITY);
   if (toronto || otherCity) {
     try {
       const params = new URLSearchParams(slug && toronto && AREAS[slug] ? { area: slug } : otherCity ? { city: otherCity } : {});
       const home = homeKinds({ PropertySubType: listing?.type ?? '' })[0];
       if (home) params.set('home', home);
-      if (listing?.lease) params.set('for', 'lease');
-      if (listing?.beds) params.set('beds', String(Math.min(listing.beds, 5)));
+      if (lease) params.set('for', 'lease');
+      if (listing?.beds) params.set('bedrooms', String(Math.min(listing.beds, 5)));
       const data = await proptx(env.PROPTX_IDX_TOKEN, `Property?${searchQuery(params)}`);
       const rows = data.value.filter((r) => r.InternetEntireListingDisplayYN !== false && r.ListingKey !== key).slice(0, 6);
       const covers = new Map<string, string>();
@@ -188,10 +229,10 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   const shell = await env.ASSETS.fetch(new URL(SHELL, request.url));
   if (!shell.ok) return notFound(env, request);
   // Search engines are offered what the listings sitemap lists: Toronto homes for sale. A lease, a
-  // home in another city or a parking space still has its page for visitors, without being indexed.
+  // home in another city still has its page for visitors, without being indexed.
   // A listing that has left the market keeps its address for visitors but is not offered to search
   // engines: the page has little on it, and a withdrawn listing should fade from results.
-  const index = INDEX && !!listing && toronto && !listing.lease && !NOT_HOMES.includes(listing.type ?? '');
+  const index = INDEX && !!listing && toronto && !listing.lease;
   const attr = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   let html = (await shell.text())
     .split(`${site.url}${SHELL}`).join(`${site.url}/listing/${key}/`)
@@ -208,6 +249,7 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   headers.delete('etag');
   headers.delete('x-robots-tag');
   if (!index) headers.set('x-robots-tag', 'noindex');
+  for (const [name, value] of Object.entries(SECURITY)) if (!headers.has(name)) headers.set(name, value);
   headers.set('content-type', 'text/html; charset=utf-8');
   // Sold data is for the signed-in visitor alone.
   headers.set('cache-control', signedIn ? 'private, no-store' : `public, max-age=${TTL}`);

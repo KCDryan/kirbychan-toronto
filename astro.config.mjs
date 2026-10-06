@@ -74,6 +74,9 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
+      // The listing pages come from the live feed (functions/sitemap-listings.xml.ts), so their
+      // sitemap is added to the index by address.
+      customSitemaps: [`${SITE}/sitemap-listings.xml`],
       filter: (page) => {
         // Whatever a page decides about indexing, the sitemap follows: a built page that carries
         // noindex (thin video notes, empty listings) is left out. The sitemap runs after the pages build.
