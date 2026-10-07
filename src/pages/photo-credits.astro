@@ -1,0 +1,87 @@
+---
+/**
+ * Where every picture on the site comes from: who made it, the licence it is used under and a link
+ * to the original. Cards, grids and share images show photos with no caption, so their credit lives
+ * here. Built from src/data/photo-credits.json; scripts/check-photos.mjs stops the build if a photo
+ * in src/assets/photos has no entry.
+ */
+import Page from '../layouts/Page.astro';
+import site from '../data/site.json';
+import credits from '../data/photo-credits.json';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Photo credits', path: '/photo-credits/' },
+];
+type Credit = { slug: string; shows: string; author: string; license: string; licenseUrl?: string; source?: string; title?: string; own?: boolean };
+const licensed = (credits as Credit[]).filter((c) => !c.own);
+const own = (credits as Credit[]).filter((c) => c.own);
+---
+
+<Page
+  title="Photo Credits and Image Sources | Kirby Chan & Co."
+  description="The source of every picture on kirbychantoronto.com: the photographer, the licence and a link to the original file, plus listing photos, maps and video covers."
+  eyebrow="Legal"
+  h1="Photo credits and image sources"
+  accent="credits"
+  lede="Where each picture on this website comes from and what allows us to use it."
+  crumbs={crumbs}
+  tone="sand"
+>
+  <section class="section">
+    <div class="wrap-narrow prose">
+      <h2>Toronto photos from Wikimedia Commons</h2>
+      <p>
+        The neighbourhood and city photos below were published on Wikimedia Commons under an open
+        licence. Beside each one is its photographer, its licence and a link to the file as it was
+        uploaded. Our copies are cropped and made smaller to suit the page, with nothing else
+        altered. No photographer listed here has reviewed or endorsed this website. A photo under a
+        share-alike licence keeps that licence in the size we show.
+      </p>
+      <ul>
+        {
+          licensed.map((c) => (
+            <li>
+              {c.shows} Photo: {c.author}, <a href={c.licenseUrl} rel="noopener noreferrer license" target="_blank">{c.license}</a>.{' '}
+              <a href={c.source} rel="noopener noreferrer" target="_blank">See the original{c.title ? ` (${c.title})` : ''}</a>.
+            </li>
+          ))
+        }
+      </ul>
+      <p>
+        You will see these photos in more than one place: on a neighbourhood guide, on blog cards,
+        on the city comparison pages and in the preview a page shows when it is shared. This list is
+        the credit for all of them.
+      </p>
+
+      <h2>Photos we took</h2>
+      <p>These are the property of {site.name}. Please ask before using them.</p>
+      <ul>
+        {own.map((c) => <li>{c.shows}</li>)}
+        <li>The {site.shortName} logo, the site icon and the share card.</li>
+      </ul>
+
+      <h2>Photos of homes for sale</h2>
+      <p>
+        Listing photos are supplied by the brokerage that listed the home, through the Toronto
+        Regional Real Estate Board's MLS® System. The listing brokerage is named on every listing
+        page. The photos remain the property of that brokerage or the photographer it hired.
+      </p>
+
+      <h2>Maps</h2>
+      <p>
+        The map search is drawn on map images © <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">OpenStreetMap contributors</a>.
+        The <a href="/map-of-toronto/">map of Toronto neighbourhoods</a> is our own drawing of the neighbourhood boundaries the City of Toronto publishes on its Open Data portal.
+      </p>
+
+      <h2>Video covers</h2>
+      <p>The picture on each video is the cover of our own video on YouTube.</p>
+
+      <h2>Is a credit wrong?</h2>
+      <p>
+        Is one of these photos yours? If the credit is wrong or you want the photo taken down, write
+        to <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a> and we will correct it.
+      </p>
+    </div>
+  </section>
+</Page>

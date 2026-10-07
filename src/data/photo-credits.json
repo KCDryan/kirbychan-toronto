@@ -200,5 +200,37 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "source": "https://commons.wikimedia.org/wiki/File:View_of_Mimico_Waterfront_Park_and_buildings,_Toronto_2026.jpg",
     "title": "View of Mimico Waterfront Park and buildings, Toronto 2026"
+  },
+  {
+    "slug": "kirby-portrait",
+    "file": "kirby-portrait",
+    "shows": "Portrait of Kirby Chan, Broker.",
+    "author": "Kirby Chan & Co. Real Estate Team",
+    "license": "All rights reserved",
+    "own": true
+  },
+  {
+    "slug": "kirby-office-casual",
+    "file": "kirby-office-casual",
+    "shows": "Kirby Chan, Broker, at the office.",
+    "author": "Kirby Chan & Co. Real Estate Team",
+    "license": "All rights reserved",
+    "own": true
+  },
+  {
+    "slug": "home-hero-suit",
+    "file": "home-hero-suit",
+    "shows": "Kirby Chan, Broker, standing in a dark suit.",
+    "author": "Kirby Chan & Co. Real Estate Team",
+    "license": "All rights reserved",
+    "own": true
+  },
+  {
+    "slug": "about-team",
+    "file": "about-team",
+    "shows": "The Kirby Chan & Co. Real Estate Team.",
+    "author": "Kirby Chan & Co. Real Estate Team",
+    "license": "All rights reserved",
+    "own": true
   }
 ]
