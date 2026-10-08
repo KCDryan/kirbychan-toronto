@@ -5,11 +5,14 @@
  * poured into the built shell (/homes-for-sale/listing-shell/) so it carries the site's header,
  * footer, styles and security headers.
  *
- * When a listing leaves the feed its page stays up at the same address and says it is no longer
- * available. The photos, price and description are gone (IDX rules: a withdrawn listing comes down).
- * A signed-in visitor also sees the sold price where TRREB recorded a sale. Sold data never reaches
- * a visitor who is not signed in, a crawler or the shared cache. Each sold lookup goes in the audit
- * trail and counts against the account's daily limit, the same as a sold search.
+ * When a listing leaves the feed the same address answers 410 Gone. The body still says it is no
+ * longer available and links to current homes, so a person who kept the link is not stranded, but
+ * crawlers are told to drop the URL. The photos, price and description are gone (IDX rules: a
+ * withdrawn listing comes down). A signed-in visitor also sees the sold price where TRREB recorded
+ * a sale. Sold data never reaches a visitor who is not signed in, a crawler or the shared cache.
+ * Each sold lookup goes in the audit trail and counts against the account's daily limit, the same
+ * as a sold search. A 301 is not used: the same MLS key often comes back if a deal falls through,
+ * and browsers keep a 301. A key this site never published is a 404, not a 410.
  *
  * A listing the seller keeps off the internet (InternetEntireListingDisplayYN false) has no page.
  * A pasted key opens homes only: a parking space, a locker or a vacant lot is a 404.
@@ -230,8 +233,7 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   if (!shell.ok) return notFound(env, request);
   // Search engines are offered what the listings sitemap lists: Toronto homes for sale. A lease, a
   // home in another city still has its page for visitors, without being indexed.
-  // A listing that has left the market keeps its address for visitors but is not offered to search
-  // engines: the page has little on it, and a withdrawn listing should fade from results.
+  // A listing that has left the market is 410. The body stays for the visitor who had the link.
   const index = INDEX && !!listing && toronto && !listing.lease;
   const attr = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   let html = (await shell.text())
@@ -253,7 +255,8 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   headers.set('content-type', 'text/html; charset=utf-8');
   // Sold data is for the signed-in visitor alone.
   headers.set('cache-control', signedIn ? 'private, no-store' : `public, max-age=${TTL}`);
-  const res = new Response(html, { status: 200, headers });
+  // 410 only after the feed confirmed the key is gone. A feed outage already returned 503 above.
+  const res = new Response(html, { status: listing ? 200 : 410, headers });
   if (!signedIn) ctx.waitUntil(cache.put(cacheKey, res.clone()));
   return res;
 }

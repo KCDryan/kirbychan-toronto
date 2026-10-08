@@ -1,8 +1,13 @@
 /**
  * GET /sitemap-listings.xml   every active Toronto home for sale, straight from the feed.
  *
- * It also records each active listing in the database, so a listing nobody opened still keeps its
- * page after it leaves the feed. The daily counts workflow calls it once a day for that reason.
+ * Sold, expired and withdrawn listings are not in this file. The query is ContractStatus Available
+ * only, and a listing the seller keeps off the internet is left out too. A key that is merely
+ * remembered in the database is not listed. The file is cached for six hours, so a listing that
+ * leaves the feed drops out on the next uncached build, and its page then answers 410.
+ *
+ * It also records each active listing in the database, so a listing nobody opened still has a page
+ * after it leaves the feed. The daily counts workflow calls it once a day for that reason.
  * Until site.json "indexListings" is true the list is empty: the listings are remembered but not
  * offered to search engines.
  */

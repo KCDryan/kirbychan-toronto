@@ -32,12 +32,14 @@ const { onRequestGet: listingsSitemap } = await import(pathToFileURL(join(out, '
 
 /** D1's prepare/bind/first/run/all over node:sqlite. */
 const sqlite = new DatabaseSync(':memory:');
+/** node:sqlite rejects spread values for ?1-style placeholders. D1 accepts them, so bind those by number. */
+const bound = (sql, v) => (/\?\d/.test(sql) ? [Object.fromEntries(v.map((val, i) => [i + 1, val]))] : v);
 const db = {
   prepare: (sql) => ({
     bind: (...v) => ({
-      first: async () => sqlite.prepare(sql).get(...v) ?? null,
-      run: async () => sqlite.prepare(sql).run(...v),
-      all: async () => ({ results: sqlite.prepare(sql).all(...v) }),
+      first: async () => sqlite.prepare(sql).get(...bound(sql, v)) ?? null,
+      run: async () => sqlite.prepare(sql).run(...bound(sql, v)),
+      all: async () => ({ results: sqlite.prepare(sql).all(...bound(sql, v)) }),
     }),
   }),
 };
@@ -194,11 +196,11 @@ ok((await view('C7999999')).status === 404, 'a key this site never showed is not
 edge.clear();
 proptxCalls = 0;
 v = await view('C7000001');
-ok(v.status === 200 && v.html.includes('no longer available') && !/\$1,|Remarks from|Sold<\/strong>|<img/.test(v.html) && v.cache === 'public, max-age=600', 'a listing that left the feed keeps its page without price, photos, remarks or sold data');
+ok(v.status === 410 && v.robots === 'noindex' && v.html.includes('noindex') && v.html.includes('no longer available') && !/\$1,|Remarks from|Sold<\/strong>|<img/.test(v.html) && v.cache === 'public, max-age=600', 'a listing that left the feed answers 410 without price, photos, remarks or sold data');
 ok(v.html.includes('/sold/') && !v.html.includes('1,199,000'), 'a visitor who is not signed in is pointed to sign in and sees no sold price');
 const auditBefore = sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search'").get().n;
 v = await view('C7000001', aliceCookie);
-ok(v.html.includes('<strong>Sold</strong> for $1,199,000 on 2026-09-15') && v.cache === 'private, no-store', 'a signed-in account sees the sold price on a page that is never cached');
+ok(v.status === 410 && v.html.includes('<strong>Sold</strong> for $1,199,000 on 2026-09-15') && v.cache === 'private, no-store', 'a signed-in account sees the sold price on a 410 page that is never cached');
 ok(sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search' AND detail = 'listing=C7000001'").get().n === 1 && auditBefore === 0, 'that sold lookup is in the audit trail');
 ok(!(await view('C7000001')).html.includes('1,199,000') && !(await view('C7000001', '__Host-kc_vow=' + 'a'.repeat(64))).html.includes('1,199,000'), 'the sold price never reaches the shared cache or a forged session');
 for (let i = 0; i < 300; i++) ins.run(aliceId, Date.now());
@@ -207,7 +209,7 @@ sqlite.prepare("DELETE FROM audit WHERE action = 'search'").run();
 row = null;
 edge.clear();
 v = await view('C7000002', aliceCookie);
-ok(v.status === 200 && v.html.includes('no longer available') && !v.html.includes('/sold/') && sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE detail = 'listing=C7000002'").get().n === 0, 'an off-market rental gets no sign-in prompt and no sold lookup, even for a signed-in account');
+ok(v.status === 410 && v.html.includes('no longer available') && !v.html.includes('/sold/') && sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE detail = 'listing=C7000002'").get().n === 0, 'an off-market rental answers 410, with no sign-in prompt and no sold lookup, even for a signed-in account');
 
 // The table already exists in production without city and lease: the columns are added once and a second run changes nothing.
 const old = new DatabaseSync(':memory:');
@@ -227,7 +229,7 @@ const sm = await listingsSitemap({ request: new Request(`${ORIGIN}/sitemap-listi
 await Promise.all(pending);
 pending = [];
 const smXml = await sm.text();
-ok(sm.status === 200 && smXml.includes('<loc>https://kirbychantoronto.com/listing/C7000005/</loc><lastmod>2026-10-05T12:00:00Z</lastmod>') && !smXml.includes('C7000006') && sm.headers.get('x-listings') === '2', 'the listings sitemap lists active listings and leaves out the ones kept off the internet');
+ok(sm.status === 200 && smXml.includes('<loc>https://kirbychantoronto.com/listing/C7000005/</loc><lastmod>2026-10-05T12:00:00Z</lastmod>') && !smXml.includes('C7000006') && !smXml.includes('C7000002') && !smXml.includes('C7000003') && sm.headers.get('x-listings') === '2', 'the listings sitemap lists active listings only. Hidden listings and keys merely remembered from an earlier day stay out');
 ok(!smXml.includes('C7000008') && !smXml.includes('<x') && sm.headers.get('x-content-type-options') === 'nosniff', 'a listing key is validated before it goes into the XML and the sitemap says nosniff');
 ok(remembered('C7000005')?.address === null && remembered('C7000001').address === '9 New Name Road' && !remembered('C7000006'), 'the sitemap run remembers every listing in one statement without hidden addresses. It forgets withdrawn consent');
 feed = null;
