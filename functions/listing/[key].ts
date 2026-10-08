@@ -198,9 +198,9 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
       // Clients may cache it anyway. That trade-off is noted for whoever reads the code.
       return new Response(null, { status: 301, headers: { location: new URL(target, url.origin).href, 'cache-control': 'no-store' } });
     }
-    if (user && k && env.PROPTX_VOW_TOKEN && !gone.lease) {
+    if (user && k && env.VOW_DB && env.PROPTX_VOW_TOKEN && !gone.lease) {
+      const db = env.VOW_DB;
       try {
-        const db = env.VOW_DB;
         // VOW rules: every look at sold data is logged and an account has a daily limit, so sold prices cannot be scraped page by page.
         if ((await countSince(db, 'user_id', user.id, ['search'], 864e5)) < SEARCHES_PER_DAY) {
           await audit(db, user.id, 'search', `listing=${key}`, await ipTag(await k, request));
