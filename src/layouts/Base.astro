@@ -127,5 +127,8 @@ const graphs = [agent, isHome && website(), ...jsonLd].filter(Boolean);
       <slot />
     </main>
     <Footer />
+    {/* Kirbify CRM: copies name, email, phone and message from a submitted enquiry form into the team's
+        CRM. It skips any form with a password field. Its address is allowed in public/_headers. */}
+    <script is:inline src="https://admin.kirbify.com/s/ks_SADBRbNyyo3ZVRD6bDZ5Io5t/site.js" async></script>
   </body>
 </html>
