@@ -143,7 +143,7 @@ const listingEnv = {
     fetch: async (u) => {
       const path = new URL(u).pathname;
       if (path === '/homes-for-sale/listing-shell/') return new Response(SHELL_HTML, { headers: shellHeaders });
-      if (path === '/listing-areas.json') return Response.json({ areas: {}, medians: { period: 'August 2026', cities: {} } });
+      if (path === '/listing-areas.json') return Response.json({ areas: { leaside: { name: 'Leaside', path: '/leaside-toronto/', intro: 'Intro.', transit: '', bands: [] } }, medians: { period: 'August 2026', cities: {} } });
       return new Response('not found page', { status: 404 });
     },
   },
@@ -152,7 +152,7 @@ const view = async (key, cookie) => {
   const res = await listingModule.onRequestGet({ request: new Request(`${ORIGIN}/listing/${key}/`, { headers: { cookie: cookie ?? '', 'cf-connecting-ip': '203.0.113.9' } }), env: listingEnv, params: { key }, waitUntil: (p) => pending.push(p) });
   await Promise.all(pending);
   pending = [];
-  return { status: res.status, html: await res.text(), cache: res.headers.get('cache-control'), robots: res.headers.get('x-robots-tag'), csp: res.headers.get('content-security-policy'), nosniff: res.headers.get('x-content-type-options'), type: res.headers.get('content-type') };
+  return { status: res.status, html: await res.text(), cache: res.headers.get('cache-control'), robots: res.headers.get('x-robots-tag'), csp: res.headers.get('content-security-policy'), nosniff: res.headers.get('x-content-type-options'), type: res.headers.get('content-type'), location: res.headers.get('location') };
 };
 const remembered = (key) => sqlite.prepare('SELECT address, community, city, lease FROM listing_pages WHERE key = ?').get(key);
 const active = { ListingKey: 'C7000001', ListPrice: 1250000, UnparsedAddress: '9 Sample Road, Toronto, ON M4G 1A1', City: 'Toronto C11', CityRegion: 'Leaside', BedroomsTotal: 3, BathroomsTotalInteger: 2, PropertySubType: 'Detached', TransactionType: 'For Sale', ListOfficeName: 'SAMPLE REALTY', PublicRemarks: 'Remarks from the listing.', TaxAnnualAmount: 7200, ListAgentFullName: 'Private Agent', InternetEntireListingDisplayYN: true, InternetAddressDisplayYN: true };
@@ -196,20 +196,36 @@ ok((await view('C7999999')).status === 404, 'a key this site never showed is not
 edge.clear();
 proptxCalls = 0;
 v = await view('C7000001');
-ok(v.status === 410 && v.robots === 'noindex' && v.html.includes('noindex') && v.html.includes('no longer available') && !/\$1,|Remarks from|Sold<\/strong>|<img/.test(v.html) && v.cache === 'public, max-age=600', 'a listing that left the feed answers 410 without price, photos, remarks or sold data');
-ok(v.html.includes('/sold/') && !v.html.includes('1,199,000'), 'a visitor who is not signed in is pointed to sign in and sees no sold price');
+ok(v.status === 301 && v.location === `${ORIGIN}/leaside-toronto/` && v.cache === 'no-store' && !v.html.includes('no longer available'), 'a gone listing in a neighbourhood we publish redirects to that guide');
 const auditBefore = sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search'").get().n;
 v = await view('C7000001', aliceCookie);
+ok(v.status === 301 && v.location === `${ORIGIN}/leaside-toronto/` && auditBefore === 0, 'a signed-in visitor is redirected too, and no sold lookup is spent on a redirect');
+row = { ...active, ListingKey: 'C7000001' };
+v = await view('C7000001');
+ok(v.status === 200 && v.html.includes('$1,250,000') && v.location === null, 'the same MLS key back on the market is a normal listing page, because the redirect was not cached');
+row = null;
+sqlite.prepare("INSERT INTO listing_pages (key, address, community, city, lease, first_seen, last_seen) VALUES ('C7000011', '11 Side Street', 'Woburn', 'Toronto E08', 0, 1, 1), ('C7000012', '12 Side Street', 'Woburn', 'Toronto E08', 1, 1, 1), ('C7000013', '13 Park Street', 'Lawrence Park South', 'Toronto C10', 0, 1, 1), ('C7000007', '7 Union Street', 'Unionville', 'Markham', 0, 1, 1)").run();
+v = await view('C7000011');
+ok(v.status === 301 && v.location === `${ORIGIN}/homes-for-sale/`, 'a Toronto listing outside the guides redirects to the Toronto search');
+v = await view('C7000012');
+ok(v.status === 301 && v.location === `${ORIGIN}/homes-for-sale/?for=lease`, 'a Toronto rental outside the guides keeps the rent filter');
+v = await view('C7000013');
+ok(v.status === 301 && v.location === `${ORIGIN}/homes-for-sale/lawrence-park/`, 'a covered community with no guide yet redirects to its homes-for-sale page');
+edge.clear();
+v = await view('C7000007');
+ok(v.status === 410 && v.robots === 'noindex' && v.html.includes('no longer available') && !/\$1,|Remarks from|Sold<\/strong>|<img/.test(v.html) && v.cache === 'public, max-age=600', 'a gone listing with no page on this site answers 410 without price, photos or remarks');
+ok(v.html.includes('/sold/') && !v.html.includes('1,199,000'), 'a visitor who is not signed in is pointed to sign in and sees no sold price');
+v = await view('C7000007', aliceCookie);
 ok(v.status === 410 && v.html.includes('<strong>Sold</strong> for $1,199,000 on 2026-09-15') && v.cache === 'private, no-store', 'a signed-in account sees the sold price on a 410 page that is never cached');
-ok(sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search' AND detail = 'listing=C7000001'").get().n === 1 && auditBefore === 0, 'that sold lookup is in the audit trail');
-ok(!(await view('C7000001')).html.includes('1,199,000') && !(await view('C7000001', '__Host-kc_vow=' + 'a'.repeat(64))).html.includes('1,199,000'), 'the sold price never reaches the shared cache or a forged session');
+ok(sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search' AND detail = 'listing=C7000007'").get().n === 1 && auditBefore === 0, 'that sold lookup is in the audit trail');
+ok(!(await view('C7000007')).html.includes('1,199,000') && !(await view('C7000007', '__Host-kc_vow=' + 'a'.repeat(64))).html.includes('1,199,000'), 'the sold price never reaches the shared cache or a forged session');
 for (let i = 0; i < 300; i++) ins.run(aliceId, Date.now());
-ok(!(await view('C7000001', aliceCookie)).html.includes('1,199,000'), 'sold lookups on listing pages stop at the daily search limit');
+ok(!(await view('C7000007', aliceCookie)).html.includes('1,199,000'), 'sold lookups on listing pages stop at the daily search limit');
 sqlite.prepare("DELETE FROM audit WHERE action = 'search'").run();
 row = null;
 edge.clear();
 v = await view('C7000002', aliceCookie);
-ok(v.status === 410 && v.html.includes('no longer available') && !v.html.includes('/sold/') && sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE detail = 'listing=C7000002'").get().n === 0, 'an off-market rental answers 410, with no sign-in prompt and no sold lookup, even for a signed-in account');
+ok(v.status === 301 && v.location === `${ORIGIN}/leaside-toronto/` && sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE detail = 'listing=C7000002'").get().n === 0, 'an off-market rental in a published neighbourhood redirects there, with no sold lookup');
 
 // The table already exists in production without city and lease: the columns are added once and a second run changes nothing.
 const old = new DatabaseSync(':memory:');

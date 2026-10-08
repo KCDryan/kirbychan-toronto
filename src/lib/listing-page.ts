@@ -1,4 +1,5 @@
 import { firstTimeRelief, ontarioLtt, torontoMltt } from './ltt.ts';
+import { areaOf } from './proptx.ts';
 /**
  * The HTML for one listing page at /listing/<key>/, built by functions/listing/[key].ts and poured
  * into the built shell page. Pure and escaped: every value from the feed goes through esc().
@@ -33,6 +34,21 @@ export type Median = Figures & { period: string; place: string; noun: string };
 /** What we remembered about a listing that has left the feed. City and lease are empty on a row stored before they were kept. */
 export type Gone = { key: string; address: string | null; community: string | null; city?: string | null; lease?: boolean };
 export type Sold = { price: number | null; date: string | null };
+
+/**
+ * Where a listing that has left the feed should send the visitor.
+ * A published neighbourhood guide wins. Otherwise the /homes-for-sale/ page for that
+ * neighbourhood, then the Toronto search (rentals keep the rent filter). Null means
+ * this site has no relevant page, so the URL answers 410.
+ */
+export function goneTarget(g: { community?: string | null; city?: string | null; lease?: boolean }, guidePath?: string | null): string | null {
+  if (guidePath) return guidePath;
+  const slug = areaOf(g.community);
+  if (slug) return `/homes-for-sale/${slug}/`;
+  const toronto = !g.city || /^Toronto\b/i.test(g.city);
+  if (!toronto) return null;
+  return g.lease ? '/homes-for-sale/?for=lease' : '/homes-for-sale/';
+}
 export type PageInput = {
   origin: string;
   phone?: { label: string; href: string };
@@ -400,6 +416,13 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   never(rentGone.body, ['/sold/', 'sold prices'], 'off-market rental');
   const sold = listingPage({ ...base, signedIn: true, sold: { price: 580000, date: '2026-09-01' }, listing: null, gone: { key: 'C1234567', address: null, community: null } });
   if (!sold.body.includes('<strong>Sold</strong> for $580,000 on 2026-09-01') || sold.h1 !== 'Home in Toronto') throw new Error('sold page');
+
+  if (goneTarget({ community: 'Leaside', city: 'Toronto C11' }, '/leaside-toronto/') !== '/leaside-toronto/') throw new Error('guide redirect');
+  if (goneTarget({ community: 'Lawrence Park South', city: 'Toronto C10' }) !== '/homes-for-sale/lawrence-park/') throw new Error('category redirect');
+  if (goneTarget({ community: 'Woburn', city: 'Toronto E08' }) !== '/homes-for-sale/') throw new Error('toronto search redirect');
+  if (goneTarget({ community: 'Woburn', city: 'Toronto E08', lease: true }) !== '/homes-for-sale/?for=lease') throw new Error('rent redirect');
+  if (goneTarget({ community: 'Leaside' }) !== '/homes-for-sale/leaside/') throw new Error('missing city still maps the community');
+  if (goneTarget({ community: 'Unionville', city: 'Markham' }) !== null || goneTarget({ community: null, city: 'Vaughan' }) !== null) throw new Error('other cities have no hub');
 
   if (minDown(400000) !== 20000 || minDown(700000) !== 45000 || minDown(1500000) !== 300000) throw new Error('minDown');
   const condo = listingPage({ ...base, median: medianFor({ city: 'Toronto C14', type: 'Condo Apartment' }, medians), area: { slug: 'willowdale', name: 'Willowdale', path: '/willowdale-toronto/', intro: 'Intro.', transit: 'Line 1.', bands: [], faq: [{ q: 'Q?', a: 'A.' }] }, listing: { key: 'C1234567', price: 600000, address: '1 Main St 5, Toronto, ON', city: 'Toronto C14', community: 'Willowdale East', beds: 2, baths: 2, type: 'Condo Apartment', brokerage: 'X', facts: { AssociationFee: 600, TaxAnnualAmount: 2400, ParkingTotal: 1, Locker: 'Owned', AssociationFeeIncludes: ['Water Included', 'Heat Included'] } } });

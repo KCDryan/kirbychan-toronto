@@ -4,7 +4,8 @@
  * Sold, expired and withdrawn listings are not in this file. The query is ContractStatus Available
  * only, and a listing the seller keeps off the internet is left out too. A key that is merely
  * remembered in the database is not listed. The file is cached for six hours, so a listing that
- * leaves the feed drops out on the next uncached build, and its page then answers 410.
+ * leaves the feed drops out on the next uncached build. Its address then redirects to a relevant
+ * page, or answers 410 when this site has none.
  *
  * It also records each active listing in the database, so a listing nobody opened still has a page
  * after it leaves the feed. The daily counts workflow calls it once a day for that reason.

@@ -5,21 +5,23 @@
  * poured into the built shell (/homes-for-sale/listing-shell/) so it carries the site's header,
  * footer, styles and security headers.
  *
- * When a listing leaves the feed the same address answers 410 Gone. The body still says it is no
- * longer available and links to current homes, so a person who kept the link is not stranded, but
- * crawlers are told to drop the URL. The photos, price and description are gone (IDX rules: a
- * withdrawn listing comes down). A signed-in visitor also sees the sold price where TRREB recorded
- * a sale. Sold data never reaches a visitor who is not signed in, a crawler or the shared cache.
- * Each sold lookup goes in the audit trail and counts against the account's daily limit, the same
- * as a sold search. A 301 is not used: the same MLS key often comes back if a deal falls through,
- * and browsers keep a 301. A key this site never published is a 404, not a 410.
+ * When a listing leaves the feed, a visitor is sent with a 301 to the neighbourhood guide for its
+ * community when this site has one, otherwise to that neighbourhood's /homes-for-sale/ page, otherwise
+ * to the Toronto search. A rental with no neighbourhood page keeps the rent filter. The redirect is
+ * not stored here, so the next request that reaches us is a normal listing page again if the same
+ * MLS key is back in the feed. Browsers and Google may still remember a 301. Only a gone listing
+ * with no relevant page on this site answers 410. The photos, price and description are gone (IDX
+ * rules: a withdrawn listing comes down). On that 410 page a signed-in visitor also sees the sold
+ * price where TRREB recorded a sale. Sold data never reaches a visitor who is not signed in, a
+ * crawler or the shared cache. Each sold lookup goes in the audit trail and counts against the
+ * account's daily limit, the same as a sold search. A key this site never published is a 404.
  *
  * A listing the seller keeps off the internet (InternetEntireListingDisplayYN false) has no page.
  * A pasted key opens homes only: a parking space, a locker or a vacant lot is a 404.
  */
 import site from '../../src/data/site.json';
 import { AREAS, CITIES, HOME_CITY, PROPTX_BASE, areaOf, cleanKey, closedQuery, coverQuery, homeKinds, listingQuery, mediaQuery, photos, searchQuery } from '../../src/lib/proptx';
-import { listingPage, medianFor, type Area, type Gone, type Listing, type Medians, type Sold } from '../../src/lib/listing-page';
+import { goneTarget, listingPage, medianFor, type Area, type Gone, type Listing, type Medians, type Sold } from '../../src/lib/listing-page';
 import { COOKIE, SEARCHES_PER_DAY, audit, countSince, currentUser, ensureSchema, ipTag, keys, type D1, type User } from '../../src/lib/vow';
 import { DETAIL, proptx, publicCard } from '../api/listings';
 
@@ -171,21 +173,6 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
     }
     // A key this site never showed is not a page.
     if (!gone) return notFound(env, request);
-    if (user && k && env.PROPTX_VOW_TOKEN && !gone.lease) {
-      try {
-        const db = env.VOW_DB;
-        // VOW rules: every look at sold data is logged and an account has a daily limit, so sold prices cannot be scraped page by page.
-        if ((await countSince(db, 'user_id', user.id, ['search'], 864e5)) < SEARCHES_PER_DAY) {
-          await audit(db, user.id, 'search', `listing=${key}`, await ipTag(await k, request));
-          const res = await fetch(`${PROPTX_BASE}/Property?${closedQuery(key)}`, { headers: { authorization: `Bearer ${env.PROPTX_VOW_TOKEN.trim()}`, accept: 'application/json' } });
-          const row = res.ok ? ((await res.json()) as { value: Record<string, unknown>[] }).value[0] : undefined;
-          // A listing the seller kept off the internet stays off, sold or not.
-          if (row && row.MlsStatus === 'Sold' && row.InternetEntireListingDisplayYN !== false) sold = { price: typeof row.ClosePrice === 'number' ? row.ClosePrice : null, date: typeof row.CloseDate === 'string' ? row.CloseDate.slice(0, 10) : null };
-        }
-      } catch {
-        sold = undefined;
-      }
-    }
   }
 
   // The neighbourhood this listing sits in and what else is listed there.
@@ -203,6 +190,30 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
     medians = data.medians;
   } catch {
     area = undefined;
+  }
+
+  if (!listing && gone) {
+    const target = goneTarget(gone, area?.path);
+    if (target) {
+      // Not cached. A 301 that we stored would hide the same key when it is listed again.
+      // Clients may cache it anyway. That trade-off is noted for whoever reads the code.
+      return new Response(null, { status: 301, headers: { location: new URL(target, url.origin).href, 'cache-control': 'no-store' } });
+    }
+    if (user && k && env.PROPTX_VOW_TOKEN && !gone.lease) {
+      try {
+        const db = env.VOW_DB;
+        // VOW rules: every look at sold data is logged and an account has a daily limit, so sold prices cannot be scraped page by page.
+        if ((await countSince(db, 'user_id', user.id, ['search'], 864e5)) < SEARCHES_PER_DAY) {
+          await audit(db, user.id, 'search', `listing=${key}`, await ipTag(await k, request));
+          const res = await fetch(`${PROPTX_BASE}/Property?${closedQuery(key)}`, { headers: { authorization: `Bearer ${env.PROPTX_VOW_TOKEN.trim()}`, accept: 'application/json' } });
+          const row = res.ok ? ((await res.json()) as { value: Record<string, unknown>[] }).value[0] : undefined;
+          // A listing the seller kept off the internet stays off, sold or not.
+          if (row && row.MlsStatus === 'Sold' && row.InternetEntireListingDisplayYN !== false) sold = { price: typeof row.ClosePrice === 'number' ? row.ClosePrice : null, date: typeof row.CloseDate === 'string' ? row.CloseDate.slice(0, 10) : null };
+        }
+      } catch {
+        sold = undefined;
+      }
+    }
   }
   // Similar homes come from the same neighbourhood where we cover it. Otherwise from the same city.
   const otherCity = toronto ? undefined : CITIES.find((c) => c === cityName);
@@ -233,7 +244,7 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   if (!shell.ok) return notFound(env, request);
   // Search engines are offered what the listings sitemap lists: Toronto homes for sale. A lease, a
   // home in another city still has its page for visitors, without being indexed.
-  // A listing that has left the market is 410. The body stays for the visitor who had the link.
+  // Reaching here without a live listing means 410: there was no neighbourhood or search page to send them to.
   const index = INDEX && !!listing && toronto && !listing.lease;
   const attr = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   let html = (await shell.text())
@@ -255,7 +266,7 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   headers.set('content-type', 'text/html; charset=utf-8');
   // Sold data is for the signed-in visitor alone.
   headers.set('cache-control', signedIn ? 'private, no-store' : `public, max-age=${TTL}`);
-  // 410 only after the feed confirmed the key is gone. A feed outage already returned 503 above.
+  // 410 only after the feed confirmed the key is gone and no relevant page exists. A feed outage already returned 503 above.
   const res = new Response(html, { status: listing ? 200 : 410, headers });
   if (!signedIn) ctx.waitUntil(cache.put(cacheKey, res.clone()));
   return res;
