@@ -4,8 +4,8 @@
  * Sold, expired and withdrawn listings are not in this file. The query is ContractStatus Available
  * only, and a listing the seller keeps off the internet is left out too. A key that is merely
  * remembered in the database is not listed. The file is cached for six hours, so a listing that
- * leaves the feed drops out on the next uncached build. Its address then redirects to a relevant
- * page, or answers 410 when this site has none.
+ * leaves the feed drops out on the next uncached build. Its address then 301s to the neighbourhood
+ * guide when this site has one, and answers 410 otherwise.
  *
  * It also records each active listing in the database, so a listing nobody opened still has a page
  * after it leaves the feed. The daily counts workflow calls it once a day for that reason.
@@ -60,7 +60,7 @@ export async function onRequestGet({ request, env, waitUntil }: Context): Promis
       (async () => {
         await ensureListingTable(db);
         for (let i = 0; i < shown.length; i += LIST_PAGE) {
-          await rememberMany(db, shown.slice(i, i + LIST_PAGE).map((r) => [String(r.ListingKey), r.InternetAddressDisplayYN === false ? null : ((r.UnparsedAddress as string) ?? null), (r.CityRegion as string) ?? null, (r.City as string) ?? null])).run();
+          await rememberMany(db, shown.slice(i, i + LIST_PAGE).map((r) => [String(r.ListingKey), r.InternetAddressDisplayYN === false ? null : ((r.UnparsedAddress as string) ?? null), (r.CityRegion as string) ?? null, (r.City as string) ?? null, typeof r.PropertySubType === 'string' ? r.PropertySubType : null, typeof r.ListPrice === 'number' ? r.ListPrice : null])).run();
         }
         if (hidden.length) await forget(db, hidden).run();
       })().catch((e) => console.error(e)),

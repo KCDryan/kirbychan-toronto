@@ -5,22 +5,21 @@
  * poured into the built shell (/homes-for-sale/listing-shell/) so it carries the site's header,
  * footer, styles and security headers.
  *
- * When a listing leaves the feed, a visitor is sent with a 301 to the neighbourhood guide for its
- * community when this site has one, otherwise to that neighbourhood's /homes-for-sale/ page, otherwise
- * to the Toronto search. A rental with no neighbourhood page keeps the rent filter. The redirect is
- * not stored here, so the next request that reaches us is a normal listing page again if the same
- * MLS key is back in the feed. Browsers and Google may still remember a 301. Only a gone listing
- * with no relevant page on this site answers 410. The photos, price and description are gone (IDX
- * rules: a withdrawn listing comes down). On that 410 page a signed-in visitor also sees the sold
- * price where TRREB recorded a sale. Sold data never reaches a visitor who is not signed in, a
- * crawler or the shared cache. Each sold lookup goes in the audit trail and counts against the
- * account's daily limit, the same as a sold search. A key this site never published is a 404.
+ * When a listing leaves the feed, a visitor is sent with a 301 only if its community has a published
+ * neighbourhood guide. The redirect is not stored here, so the next request that reaches us is a
+ * normal listing page again if the same MLS key is back in the feed. Browsers and Google may still
+ * remember a 301. Every other gone listing answers 410: no photos, price or description from the
+ * old listing, a note that it has sold or been leased, links to current Toronto homes, and the
+ * enquiry form in the shell. On that 410 page a signed-in visitor also sees the sold price where
+ * TRREB recorded a sale. Sold data never reaches a visitor who is not signed in, a crawler or the
+ * shared cache. Each sold lookup goes in the audit trail and counts against the account's daily
+ * limit, the same as a sold search. A key this site never published is a 404.
  *
  * A listing the seller keeps off the internet (InternetEntireListingDisplayYN false) has no page.
  * A pasted key opens homes only: a parking space, a locker or a vacant lot is a 404.
  */
 import site from '../../src/data/site.json';
-import { AREAS, CITIES, HOME_CITY, PROPTX_BASE, areaOf, cleanKey, closedQuery, coverQuery, homeKinds, listingQuery, mediaQuery, photos, searchQuery } from '../../src/lib/proptx';
+import { AREAS, CITIES, HOME_CITY, PROPTX_BASE, areaOf, cleanKey, closedQuery, coverQuery, homeKinds, listingQuery, mediaQuery, photos, priceBand, searchQuery } from '../../src/lib/proptx';
 import { goneTarget, listingPage, medianFor, type Area, type Gone, type Listing, type Medians, type Sold } from '../../src/lib/listing-page';
 import { COOKIE, SEARCHES_PER_DAY, audit, countSince, currentUser, ensureSchema, ipTag, keys, type D1, type User } from '../../src/lib/vow';
 import { DETAIL, proptx, publicCard } from '../api/listings';
@@ -59,7 +58,7 @@ const SECURITY: Record<string, string> = {
 };
 
 const LISTING_SCHEMA =
-  'CREATE TABLE IF NOT EXISTS listing_pages (key TEXT PRIMARY KEY, address TEXT, community TEXT, city TEXT, lease INTEGER NOT NULL DEFAULT 0, first_seen INTEGER NOT NULL, last_seen INTEGER NOT NULL)';
+  'CREATE TABLE IF NOT EXISTS listing_pages (key TEXT PRIMARY KEY, address TEXT, community TEXT, city TEXT, lease INTEGER NOT NULL DEFAULT 0, home_type TEXT, price INTEGER, first_seen INTEGER NOT NULL, last_seen INTEGER NOT NULL)';
 /**
  * Creates the table, or brings the one already in production up to date. SQLite has no
  * ADD COLUMN IF NOT EXISTS, so a column is added only when the table lacks it, and a second
@@ -68,7 +67,7 @@ const LISTING_SCHEMA =
 export async function ensureListingTable(db: D1): Promise<void> {
   await db.prepare(LISTING_SCHEMA).bind().run();
   const have = new Set(((await db.prepare("SELECT name FROM pragma_table_info('listing_pages')").bind().all<{ name: string }>()).results ?? []).map((c) => c.name));
-  for (const [name, def] of [['city', 'TEXT'], ['lease', 'INTEGER NOT NULL DEFAULT 0']]) {
+  for (const [name, def] of [['city', 'TEXT'], ['lease', 'INTEGER NOT NULL DEFAULT 0'], ['home_type', 'TEXT'], ['price', 'INTEGER']]) {
     if (have.has(name)) continue;
     try {
       await db.prepare(`ALTER TABLE listing_pages ADD COLUMN ${name} ${def}`).bind().run();
@@ -78,20 +77,20 @@ export async function ensureListingTable(db: D1): Promise<void> {
   }
 }
 /** Remembers a listing while it is active, so its page can stay up after it leaves the feed. */
-export const remember = (db: D1, key: string, address: string | null, community: string | null, city: string | null, lease: boolean, now = Date.now()) =>
+export const remember = (db: D1, key: string, address: string | null, community: string | null, city: string | null, lease: boolean, homeType: string | null, price: number | null, now = Date.now()) =>
   db
-    .prepare('INSERT INTO listing_pages (key, address, community, city, lease, first_seen, last_seen) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?6) ON CONFLICT(key) DO UPDATE SET address = ?2, community = ?3, city = ?4, lease = ?5, last_seen = ?6')
-    .bind(key, address, community, city, lease ? 1 : 0, now);
+    .prepare('INSERT INTO listing_pages (key, address, community, city, lease, home_type, price, first_seen, last_seen) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8) ON CONFLICT(key) DO UPDATE SET address = ?2, community = ?3, city = ?4, lease = ?5, home_type = ?6, price = ?7, last_seen = ?8')
+    .bind(key, address, community, city, lease ? 1 : 0, homeType, price, now);
 /** A seller who takes a listing off the internet takes its page with it. */
 /**
  * A page of the feed remembered in one statement. D1 allows 100 bound values a statement and a
  * Worker a limited number of statements a request, so the rows travel as one JSON value.
  */
-export const rememberMany = (db: D1, rows: [key: string, address: string | null, community: string | null, city: string | null][], now = Date.now()) =>
+export const rememberMany = (db: D1, rows: [key: string, address: string | null, community: string | null, city: string | null, homeType: string | null, price: number | null][], now = Date.now()) =>
   db
     .prepare(
-      "INSERT INTO listing_pages (key, address, community, city, lease, first_seen, last_seen) SELECT json_extract(value, '$[0]'), json_extract(value, '$[1]'), json_extract(value, '$[2]'), json_extract(value, '$[3]'), 0, ?2, ?2 FROM json_each(?1) WHERE true " +
-        'ON CONFLICT(key) DO UPDATE SET address = excluded.address, community = excluded.community, city = excluded.city, lease = 0, last_seen = excluded.last_seen',
+      "INSERT INTO listing_pages (key, address, community, city, lease, home_type, price, first_seen, last_seen) SELECT json_extract(value, '$[0]'), json_extract(value, '$[1]'), json_extract(value, '$[2]'), json_extract(value, '$[3]'), 0, json_extract(value, '$[4]'), json_extract(value, '$[5]'), ?2, ?2 FROM json_each(?1) WHERE true " +
+        'ON CONFLICT(key) DO UPDATE SET address = excluded.address, community = excluded.community, city = excluded.city, lease = 0, home_type = excluded.home_type, price = excluded.price, last_seen = excluded.last_seen',
     )
     .bind(JSON.stringify(rows), now);
 export const forget = (db: D1, keys: string[]) => db.prepare('DELETE FROM listing_pages WHERE key IN (SELECT value FROM json_each(?1))').bind(JSON.stringify(keys));
@@ -153,7 +152,7 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
         const db = env.VOW_DB;
         // publicCard has already dropped an address the seller keeps off the internet, so none is stored.
         const l = listing;
-        ctx.waitUntil(ensureListingTable(db).then(() => remember(db, key, l.address, l.community, l.city, l.lease === true).run()).catch(() => undefined));
+        ctx.waitUntil(ensureListingTable(db).then(() => remember(db, key, l.address, l.community, l.city, l.lease === true, l.type ?? null, typeof l.price === 'number' ? l.price : null).run()).catch(() => undefined));
       }
     }
   } catch (err) {
@@ -166,8 +165,8 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
     if (!env.VOW_DB) return notFound(env, request);
     try {
       await ensureListingTable(env.VOW_DB);
-      const row = await env.VOW_DB.prepare('SELECT key, address, community, city, lease FROM listing_pages WHERE key = ?1').bind(key).first<{ key: string; address: string | null; community: string | null; city: string | null; lease: number }>();
-      gone = row ? { ...row, lease: row.lease === 1 } : undefined;
+      const row = await env.VOW_DB.prepare('SELECT key, address, community, city, lease, home_type, price FROM listing_pages WHERE key = ?1').bind(key).first<{ key: string; address: string | null; community: string | null; city: string | null; lease: number; home_type: string | null; price: number | null }>();
+      gone = row ? { key: row.key, address: row.address, community: row.community, city: row.city, lease: row.lease === 1, type: row.home_type, price: row.price } : undefined;
     } catch {
       gone = undefined;
     }
@@ -193,7 +192,7 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   }
 
   if (!listing && gone) {
-    const target = goneTarget(gone, area?.path);
+    const target = goneTarget(area?.path);
     if (target) {
       // Not cached. A 301 that we stored would hide the same key when it is listed again.
       // Clients may cache it anyway. That trade-off is noted for whoever reads the code.
@@ -216,15 +215,21 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
     }
   }
   // Similar homes come from the same neighbourhood where we cover it. Otherwise from the same city.
-  const otherCity = toronto ? undefined : CITIES.find((c) => c === cityName);
-  const similarIn = slug && toronto && AREAS[slug] ? AREAS[slug].label : (otherCity ?? HOME_CITY);
-  if (toronto || otherCity) {
+  // A gone listing always looks in Toronto. Its old type and price narrow the search only when we
+  // stored them from the IDX feed while it was still active. They are never printed on the 410 page.
+  const otherCity = listing && !toronto ? CITIES.find((c) => c === cityName) : undefined;
+  const similarIn = slug && (toronto || !listing) && AREAS[slug] ? AREAS[slug].label : (otherCity ?? HOME_CITY);
+  if (listing ? toronto || otherCity : true) {
     try {
-      const params = new URLSearchParams(slug && toronto && AREAS[slug] ? { area: slug } : otherCity ? { city: otherCity } : {});
-      const home = homeKinds({ PropertySubType: listing?.type ?? '' })[0];
+      const params = new URLSearchParams(slug && AREAS[slug] && (toronto || !listing) ? { area: slug } : otherCity ? { city: otherCity } : {});
+      const home = homeKinds({ PropertySubType: listing?.type ?? gone?.type ?? '' })[0];
       if (home) params.set('home', home);
       if (lease) params.set('for', 'lease');
       if (listing?.beds) params.set('bedrooms', String(Math.min(listing.beds, 5)));
+      if (!listing && !lease) {
+        const band = priceBand(gone?.price);
+        if (band) params.set('price', band);
+      }
       const data = await proptx(env.PROPTX_IDX_TOKEN, `Property?${searchQuery(params)}`);
       const rows = data.value.filter((r) => r.InternetEntireListingDisplayYN !== false && r.ListingKey !== key).slice(0, 6);
       const covers = new Map<string, string>();
@@ -244,7 +249,7 @@ export async function onRequestGet(ctx: Context): Promise<Response> {
   if (!shell.ok) return notFound(env, request);
   // Search engines are offered what the listings sitemap lists: Toronto homes for sale. A lease, a
   // home in another city still has its page for visitors, without being indexed.
-  // Reaching here without a live listing means 410: there was no neighbourhood or search page to send them to.
+  // Reaching here without a live listing means 410: the community has no published guide.
   const index = INDEX && !!listing && toronto && !listing.lease;
   const attr = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   let html = (await shell.text())
