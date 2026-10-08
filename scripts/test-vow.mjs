@@ -32,12 +32,14 @@ const { onRequestGet: listingsSitemap } = await import(pathToFileURL(join(out, '
 
 /** D1's prepare/bind/first/run/all over node:sqlite. */
 const sqlite = new DatabaseSync(':memory:');
+/** node:sqlite rejects spread values for ?1-style placeholders. D1 accepts them, so bind those by number. */
+const bound = (sql, v) => (/\?\d/.test(sql) ? [Object.fromEntries(v.map((val, i) => [i + 1, val]))] : v);
 const db = {
   prepare: (sql) => ({
     bind: (...v) => ({
-      first: async () => sqlite.prepare(sql).get(...v) ?? null,
-      run: async () => sqlite.prepare(sql).run(...v),
-      all: async () => ({ results: sqlite.prepare(sql).all(...v) }),
+      first: async () => sqlite.prepare(sql).get(...bound(sql, v)) ?? null,
+      run: async () => sqlite.prepare(sql).run(...bound(sql, v)),
+      all: async () => ({ results: sqlite.prepare(sql).all(...bound(sql, v)) }),
     }),
   }),
 };
@@ -132,7 +134,7 @@ sqlite.prepare("DELETE FROM audit WHERE action = 'search'").run();
 console.log('Listing pages');
 const edge = new Map();
 globalThis.caches = { default: { match: async (req) => edge.get(req.url)?.clone(), put: async (req, res) => void edge.set(req.url, res) } };
-const SHELL_HTML = '<title>%%LISTING_TITLE%%</title><meta name="robots" content="noindex"><link rel="canonical" href="https://kirbychantoronto.com/homes-for-sale/listing-shell/"><h1>%%LISTING_H1%%</h1>%%LISTING_BODY%%<input name="page" value="/homes-for-sale/listing-shell/">';
+const SHELL_HTML = '<title>%%LISTING_TITLE%%</title><meta name="robots" content="noindex"><link rel="canonical" href="https://kirbychantoronto.com/homes-for-sale/listing-shell/"><h1>%%LISTING_H1%%</h1>%%LISTING_BODY%%<div id="enquire"></div><input name="page" value="/homes-for-sale/listing-shell/">';
 let shellHeaders = { 'content-type': 'text/html', 'x-robots-tag': 'noindex, nofollow', 'content-security-policy': "default-src 'self'" };
 const listingEnv = {
   ...env,
@@ -141,7 +143,7 @@ const listingEnv = {
     fetch: async (u) => {
       const path = new URL(u).pathname;
       if (path === '/homes-for-sale/listing-shell/') return new Response(SHELL_HTML, { headers: shellHeaders });
-      if (path === '/listing-areas.json') return Response.json({ areas: {}, medians: { period: 'August 2026', cities: {} } });
+      if (path === '/listing-areas.json') return Response.json({ areas: { leaside: { name: 'Leaside', path: '/leaside-toronto/', intro: 'Intro.', transit: '', bands: [] } }, medians: { period: 'August 2026', cities: {} } });
       return new Response('not found page', { status: 404 });
     },
   },
@@ -150,16 +152,16 @@ const view = async (key, cookie) => {
   const res = await listingModule.onRequestGet({ request: new Request(`${ORIGIN}/listing/${key}/`, { headers: { cookie: cookie ?? '', 'cf-connecting-ip': '203.0.113.9' } }), env: listingEnv, params: { key }, waitUntil: (p) => pending.push(p) });
   await Promise.all(pending);
   pending = [];
-  return { status: res.status, html: await res.text(), cache: res.headers.get('cache-control'), robots: res.headers.get('x-robots-tag'), csp: res.headers.get('content-security-policy'), nosniff: res.headers.get('x-content-type-options'), type: res.headers.get('content-type') };
+  return { status: res.status, html: await res.text(), cache: res.headers.get('cache-control'), robots: res.headers.get('x-robots-tag'), csp: res.headers.get('content-security-policy'), nosniff: res.headers.get('x-content-type-options'), type: res.headers.get('content-type'), location: res.headers.get('location') };
 };
-const remembered = (key) => sqlite.prepare('SELECT address, community, city, lease FROM listing_pages WHERE key = ?').get(key);
+const remembered = (key) => sqlite.prepare('SELECT address, community, city, lease, home_type, price FROM listing_pages WHERE key = ?').get(key);
 const active = { ListingKey: 'C7000001', ListPrice: 1250000, UnparsedAddress: '9 Sample Road, Toronto, ON M4G 1A1', City: 'Toronto C11', CityRegion: 'Leaside', BedroomsTotal: 3, BathroomsTotalInteger: 2, PropertySubType: 'Detached', TransactionType: 'For Sale', ListOfficeName: 'SAMPLE REALTY', PublicRemarks: 'Remarks from the listing.', TaxAnnualAmount: 7200, ListAgentFullName: 'Private Agent', InternetEntireListingDisplayYN: true, InternetAddressDisplayYN: true };
 let row = active;
 feed = (u) => (u.includes('/Media?') ? [] : u.includes("ListingKey eq '") ? (u.includes('MlsStatus') ? [{ ListingKey: row?.ListingKey, MlsStatus: 'Sold', ClosePrice: 1199000, CloseDate: '2026-09-15', InternetEntireListingDisplayYN: true }] : row ? [row] : []) : []);
 let v = await view('C7000001');
 ok(v.status === 200 && v.html.includes('$1,250,000') && v.html.includes('Listing courtesy of SAMPLE REALTY. MLS® C7000001.') && !v.html.includes('Private Agent'), 'a live listing page shows the price, the listing brokerage and the MLS number. No field outside the allowlist is shown');
 ok(v.html.includes('<link rel="canonical" href="https://kirbychantoronto.com/listing/C7000001/">') && v.html.includes('value="/listing/C7000001/"') && !v.html.includes('noindex') && v.robots === null, 'it is indexable with a canonical to itself. The enquiry form carries its address');
-ok(v.cache === 'public, max-age=600' && v.csp === "default-src 'self'" && remembered('C7000001')?.address === active.UnparsedAddress, 'it keeps the shell security headers and is remembered for later');
+ok(v.cache === 'public, max-age=600' && v.csp === "default-src 'self'" && remembered('C7000001')?.address === active.UnparsedAddress && remembered('C7000001')?.home_type === 'Detached' && remembered('C7000001')?.price === 1250000, 'it keeps the shell security headers and is remembered for later, including the type and price used to find similar homes');
 row = { ...active, ListingKey: 'C7000002', TransactionType: 'For Lease', ListPrice: 4200 };
 v = await view('C7000002');
 ok(v.status === 200 && v.robots === 'noindex' && v.html.includes('noindex') && !v.html.includes('land transfer tax'), 'a lease has a page with no purchase costs and is not offered to search engines');
@@ -194,20 +196,51 @@ ok((await view('C7999999')).status === 404, 'a key this site never showed is not
 edge.clear();
 proptxCalls = 0;
 v = await view('C7000001');
-ok(v.status === 200 && v.html.includes('no longer available') && !/\$1,|Remarks from|Sold<\/strong>|<img/.test(v.html) && v.cache === 'public, max-age=600', 'a listing that left the feed keeps its page without price, photos, remarks or sold data');
-ok(v.html.includes('/sold/') && !v.html.includes('1,199,000'), 'a visitor who is not signed in is pointed to sign in and sees no sold price');
+ok(v.status === 301 && v.location === `${ORIGIN}/leaside-toronto/` && v.cache === 'no-store' && !v.html.includes('no longer available'), 'a gone listing in a neighbourhood we publish redirects to that guide');
 const auditBefore = sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search'").get().n;
 v = await view('C7000001', aliceCookie);
-ok(v.html.includes('<strong>Sold</strong> for $1,199,000 on 2026-09-15') && v.cache === 'private, no-store', 'a signed-in account sees the sold price on a page that is never cached');
-ok(sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search' AND detail = 'listing=C7000001'").get().n === 1 && auditBefore === 0, 'that sold lookup is in the audit trail');
-ok(!(await view('C7000001')).html.includes('1,199,000') && !(await view('C7000001', '__Host-kc_vow=' + 'a'.repeat(64))).html.includes('1,199,000'), 'the sold price never reaches the shared cache or a forged session');
+ok(v.status === 301 && v.location === `${ORIGIN}/leaside-toronto/` && auditBefore === 0, 'a signed-in visitor is redirected too, and no sold lookup is spent on a redirect');
+row = { ...active, ListingKey: 'C7000001' };
+v = await view('C7000001');
+ok(v.status === 200 && v.html.includes('$1,250,000') && v.location === null, 'the same MLS key back on the market is a normal listing page, because the redirect was not cached');
+row = null;
+sqlite.prepare("INSERT INTO listing_pages (key, address, community, city, lease, home_type, price, first_seen, last_seen) VALUES ('C7000011', '11 Side Street', 'Woburn', 'Toronto E08', 0, NULL, NULL, 1, 1), ('C7000012', '12 Side Street', 'Woburn', 'Toronto E08', 1, NULL, NULL, 1, 1), ('C7000013', '13 Park Street', 'Lawrence Park South', 'Toronto C10', 0, NULL, NULL, 1, 1), ('C7000007', '7 Union Street', 'Unionville', 'Markham', 0, 'Detached', 1250000, 1, 1)").run();
+const current = { ListingKey: 'C7000009', ListPrice: 990000, UnparsedAddress: '9 Current Road, Toronto, ON', City: 'Toronto C10', CityRegion: 'Lawrence Park South', BedroomsTotal: 3, BathroomsTotalInteger: 2, PropertySubType: 'Detached', TransactionType: 'For Sale', ListOfficeName: 'SAMPLE REALTY', InternetEntireListingDisplayYN: true, InternetAddressDisplayYN: true };
+asked = '';
+feed = (u) => {
+  asked += decodeURIComponent(u) + '\n';
+  if (u.includes('/Media?')) return [];
+  if (u.includes('MlsStatus')) return [{ ListingKey: 'C7000007', MlsStatus: 'Sold', ClosePrice: 1199000, CloseDate: '2026-09-15', InternetEntireListingDisplayYN: true }];
+  if (u.includes("ListingKey eq '")) return [];
+  return [current];
+};
+v = await view('C7000011');
+ok(v.status === 410 && v.robots === 'noindex' && v.html.includes('noindex') && v.html.includes('This home has sold.') && v.html.includes('href="/homes-for-sale/"') && v.html.includes('href="/listing/C7000009/"') && v.html.includes('id="enquire"') && !v.html.includes('1,250,000') && !v.html.includes('1,199,000'), 'a Toronto listing outside the guides answers 410 with current homes and the enquiry form, and no old price');
+ok(asked.includes("startswith(City,'Toronto')") && !asked.includes('CityRegion in'), 'that search is Toronto-wide when the community is not one we cover');
+asked = '';
+v = await view('C7000012');
+ok(v.status === 410 && v.html.includes('This home has been leased.') && v.html.includes('href="/homes-for-sale/?for=lease"') && !v.html.includes('This home has sold'), 'a Toronto rental outside the guides says it has been leased and links to homes for rent');
+ok(asked.includes("TransactionType eq 'For Lease'"), 'the rental search asks the feed for leases');
+asked = '';
+v = await view('C7000013');
+ok(v.status === 410 && v.location === null && asked.includes("CityRegion in ('Lawrence Park South','Lawrence Park North')"), 'a covered community with no published guide answers 410 and the similar homes stay in that community');
+edge.clear();
+asked = '';
+v = await view('C7000007');
+ok(v.status === 410 && v.robots === 'noindex' && v.html.includes('This home has sold.') && v.html.includes('href="/listing/C7000009/"') && v.html.includes('id="enquire"') && !/1,250,000|1,199,000|Remarks from|Sold<\/strong>|<img/.test(v.html) && v.cache === 'public, max-age=600', 'a gone listing outside Toronto answers 410 without its old price, photos or remarks');
+ok(asked.includes("startswith(City,'Toronto')") && !asked.includes("City eq 'Markham'") && asked.includes('ListPrice ge 1200000') && asked.includes("PropertySubType eq 'Detached'"), 'similar homes use the remembered type and price band, and stay in Toronto');
+ok(v.html.includes('/sold/') && !v.html.includes('1,199,000'), 'a visitor who is not signed in is pointed to sign in and sees no sold price');
+v = await view('C7000007', aliceCookie);
+ok(v.status === 410 && v.html.includes('<strong>Sold</strong> for $1,199,000 on 2026-09-15') && v.cache === 'private, no-store', 'a signed-in account sees the sold price on a 410 page that is never cached');
+ok(sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE action = 'search' AND detail = 'listing=C7000007'").get().n === 1 && auditBefore === 0, 'that sold lookup is in the audit trail');
+ok(!(await view('C7000007')).html.includes('1,199,000') && !(await view('C7000007', '__Host-kc_vow=' + 'a'.repeat(64))).html.includes('1,199,000'), 'the sold price never reaches the shared cache or a forged session');
 for (let i = 0; i < 300; i++) ins.run(aliceId, Date.now());
-ok(!(await view('C7000001', aliceCookie)).html.includes('1,199,000'), 'sold lookups on listing pages stop at the daily search limit');
+ok(!(await view('C7000007', aliceCookie)).html.includes('1,199,000'), 'sold lookups on listing pages stop at the daily search limit');
 sqlite.prepare("DELETE FROM audit WHERE action = 'search'").run();
 row = null;
 edge.clear();
 v = await view('C7000002', aliceCookie);
-ok(v.status === 200 && v.html.includes('no longer available') && !v.html.includes('/sold/') && sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE detail = 'listing=C7000002'").get().n === 0, 'an off-market rental gets no sign-in prompt and no sold lookup, even for a signed-in account');
+ok(v.status === 301 && v.location === `${ORIGIN}/leaside-toronto/` && sqlite.prepare("SELECT COUNT(*) AS n FROM audit WHERE detail = 'listing=C7000002'").get().n === 0, 'an off-market rental in a published neighbourhood redirects there, with no sold lookup');
 
 // The table already exists in production without city and lease: the columns are added once and a second run changes nothing.
 const old = new DatabaseSync(':memory:');
@@ -217,9 +250,9 @@ const oldDb = { prepare: (sql) => ({ bind: (...v) => ({ run: async () => old.pre
 await listingModule.ensureListingTable(oldDb);
 await listingModule.ensureListingTable(oldDb);
 const migrated = old.prepare("SELECT city, lease FROM listing_pages WHERE key = 'C1000001'").get();
-ok(migrated.city === null && migrated.lease === 0 && old.prepare("SELECT COUNT(*) AS n FROM pragma_table_info('listing_pages')").get().n === 7, 'an existing listing_pages table gains city and lease safely and a second run does not throw');
+ok(migrated.city === null && migrated.lease === 0 && old.prepare("SELECT COUNT(*) AS n FROM pragma_table_info('listing_pages')").get().n === 9, 'an existing listing_pages table gains city, lease, home type and price safely and a second run does not throw');
 await listingModule.ensureListingTable(db);
-ok(sqlite.prepare("SELECT COUNT(*) AS n FROM pragma_table_info('listing_pages')").get().n === 7, 'a new table has the same seven columns');
+ok(sqlite.prepare("SELECT COUNT(*) AS n FROM pragma_table_info('listing_pages')").get().n === 9, 'a new table has the same nine columns');
 
 sqlite.prepare("INSERT INTO listing_pages (key, address, community, first_seen, last_seen) VALUES ('C7000006', '6 Old Street', 'Leaside', 1, 1)").run();
 feed = (u) => (u.includes('$skip=0') ? [{ ListingKey: 'C7000005', UnparsedAddress: "5 O'Brien Avenue", CityRegion: 'Leaside', ModificationTimestamp: '2026-10-05T12:00:00Z', InternetAddressDisplayYN: false }, { ListingKey: 'C7000001', UnparsedAddress: '9 New Name Road', CityRegion: 'Leaside' }, { ListingKey: 'C7000006', InternetEntireListingDisplayYN: false }, { ListingKey: 'C7000008"><x', UnparsedAddress: 'Bad Key' }] : []);
@@ -227,7 +260,7 @@ const sm = await listingsSitemap({ request: new Request(`${ORIGIN}/sitemap-listi
 await Promise.all(pending);
 pending = [];
 const smXml = await sm.text();
-ok(sm.status === 200 && smXml.includes('<loc>https://kirbychantoronto.com/listing/C7000005/</loc><lastmod>2026-10-05T12:00:00Z</lastmod>') && !smXml.includes('C7000006') && sm.headers.get('x-listings') === '2', 'the listings sitemap lists active listings and leaves out the ones kept off the internet');
+ok(sm.status === 200 && smXml.includes('<loc>https://kirbychantoronto.com/listing/C7000005/</loc><lastmod>2026-10-05T12:00:00Z</lastmod>') && !smXml.includes('C7000006') && !smXml.includes('C7000002') && !smXml.includes('C7000003') && sm.headers.get('x-listings') === '2', 'the listings sitemap lists active listings only. Hidden listings and keys merely remembered from an earlier day stay out');
 ok(!smXml.includes('C7000008') && !smXml.includes('<x') && sm.headers.get('x-content-type-options') === 'nosniff', 'a listing key is validated before it goes into the XML and the sitemap says nosniff');
 ok(remembered('C7000005')?.address === null && remembered('C7000001').address === '9 New Name Road' && !remembered('C7000006'), 'the sitemap run remembers every listing in one statement without hidden addresses. It forgets withdrawn consent');
 feed = null;

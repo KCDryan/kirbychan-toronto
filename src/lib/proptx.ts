@@ -79,6 +79,15 @@ export const AREAS: Record<string, { label: string; communities: string[] }> = {
 
 export const areaOf = (region: unknown) => Object.keys(AREAS).find((k) => AREAS[k].communities.includes(String(region))) ?? null;
 
+/** The price band a remembered asking price falls in, for a similar-homes search. Null when we never stored one. */
+export function priceBand(price: number | null | undefined): string | null {
+  if (typeof price !== 'number' || !(price > 0)) return null;
+  if (price < 800000) return 'u800';
+  if (price <= 1200000) return '800-1200';
+  if (price <= 1600000) return '1200-1600';
+  return 'o1600';
+}
+
 /** One-click price ranges, [min, max]. */
 export const PRICES: Record<string, { label: string; min?: number; max?: number }> = {
   u800: { label: 'Under $800,000', max: 800000 },
@@ -215,7 +224,7 @@ export const LIST_PAGE = 1000;
 export const activeQuery = (page: number) =>
   odata({
     $filter: ["ContractStatus eq 'Available'", "startswith(PropertyType,'Residential')", "TransactionType eq 'For Sale'", cityFilter(HOME_CITY), homesOnly].join(' and '),
-    $select: 'ListingKey,ModificationTimestamp,UnparsedAddress,City,CityRegion,InternetEntireListingDisplayYN,InternetAddressDisplayYN',
+    $select: 'ListingKey,ModificationTimestamp,UnparsedAddress,City,CityRegion,ListPrice,PropertySubType,InternetEntireListingDisplayYN,InternetAddressDisplayYN',
     $orderby: 'ListingKey',
     $top: String(LIST_PAGE),
     $skip: String(page * LIST_PAGE),
@@ -279,7 +288,8 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
   const hood = new URLSearchParams(mapQuery(new URLSearchParams('area=leaside'), 1)).get('$filter')!;
   if (hood.includes("City eq 'Ajax'") || !hood.includes("CityRegion in ('Leaside')")) throw new Error('map area ' + hood);
   const act = new URLSearchParams(activeQuery(1));
-  if (act.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto') and " + homesOnly || act.get('$skip') !== '1000') throw new Error('active ' + act);
+  if (act.get('$filter') !== "ContractStatus eq 'Available' and startswith(PropertyType,'Residential') and TransactionType eq 'For Sale' and startswith(City,'Toronto') and " + homesOnly || act.get('$skip') !== '1000' || !act.get('$select')!.includes('ListPrice')) throw new Error('active ' + act);
+  if (priceBand(799999) !== 'u800' || priceBand(800000) !== '800-1200' || priceBand(1600000) !== '1200-1600' || priceBand(1600001) !== 'o1600' || priceBand(null) !== null) throw new Error('priceBand');
   if (!closedQuery("C1'x").includes(encodeURIComponent("'C1''x'"))) throw new Error('closed quoting');
   const b2 = new URLSearchParams(searchQuery(new URLSearchParams('home=condo&bedrooms=2'))).get('$filter')!;
   if (!b2.endsWith('BedroomsTotal eq 2') || b2.includes('BedroomsTotal ge')) throw new Error('bedrooms ' + b2);
