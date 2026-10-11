@@ -79,7 +79,7 @@ export async function ensureListingTable(db: D1): Promise<void> {
 /** Remembers a listing while it is active, so its page can stay up after it leaves the feed. */
 export const remember = (db: D1, key: string, address: string | null, community: string | null, city: string | null, lease: boolean, homeType: string | null, price: number | null, now = Date.now()) =>
   db
-    .prepare('INSERT INTO listing_pages (key, address, community, city, lease, home_type, price, first_seen, last_seen) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8) ON CONFLICT(key) DO UPDATE SET address = ?2, community = ?3, city = ?4, lease = ?5, home_type = ?6, price = ?7, last_seen = ?8')
+    .prepare('INSERT INTO listing_pages (key, address, community, city, lease, home_type, price, first_seen, last_seen) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8) ON CONFLICT(key) DO UPDATE SET address = ?2, community = ?3, city = ?4, lease = ?5, home_type = ?6, price = ?7, last_seen = ?8 WHERE listing_pages.last_seen < ?8 - 86400000 OR listing_pages.address IS NOT ?2 OR listing_pages.community IS NOT ?3 OR listing_pages.city IS NOT ?4 OR listing_pages.lease IS NOT ?5 OR listing_pages.home_type IS NOT ?6 OR listing_pages.price IS NOT ?7')
     .bind(key, address, community, city, lease ? 1 : 0, homeType, price, now);
 /** A seller who takes a listing off the internet takes its page with it. */
 /**
@@ -90,7 +90,7 @@ export const rememberMany = (db: D1, rows: [key: string, address: string | null,
   db
     .prepare(
       "INSERT INTO listing_pages (key, address, community, city, lease, home_type, price, first_seen, last_seen) SELECT json_extract(value, '$[0]'), json_extract(value, '$[1]'), json_extract(value, '$[2]'), json_extract(value, '$[3]'), 0, json_extract(value, '$[4]'), json_extract(value, '$[5]'), ?2, ?2 FROM json_each(?1) WHERE true " +
-        'ON CONFLICT(key) DO UPDATE SET address = excluded.address, community = excluded.community, city = excluded.city, lease = 0, home_type = excluded.home_type, price = excluded.price, last_seen = excluded.last_seen',
+        'ON CONFLICT(key) DO UPDATE SET address = excluded.address, community = excluded.community, city = excluded.city, lease = 0, home_type = excluded.home_type, price = excluded.price, last_seen = excluded.last_seen WHERE listing_pages.last_seen < excluded.last_seen - 86400000 OR listing_pages.address IS NOT excluded.address OR listing_pages.community IS NOT excluded.community OR listing_pages.city IS NOT excluded.city OR listing_pages.lease IS NOT 0 OR listing_pages.home_type IS NOT excluded.home_type OR listing_pages.price IS NOT excluded.price',
     )
     .bind(JSON.stringify(rows), now);
 export const forget = (db: D1, keys: string[]) => db.prepare('DELETE FROM listing_pages WHERE key IN (SELECT value FROM json_each(?1))').bind(JSON.stringify(keys));
