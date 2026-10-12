@@ -23,7 +23,8 @@ jobs:
 
       - name: Remember today's listings
         # Records every active listing so its page stays up after it leaves the feed. Never stops the counts.
-        run: curl -sS --max-time 120 -o /dev/null -w "listings recorded: %{http_code}\n" https://kirbychan-toronto.pages.dev/sitemap-listings.xml || true
+        run: |
+          curl -sS --max-time 120 -o /dev/null -w "listings recorded: %{http_code}\n" https://kirbychan-toronto.pages.dev/sitemap-listings.xml || true
 
       - name: Place new listings on the map
         # Each call starts up to 1,000 address lookups in the background (the site caps a day at the
