@@ -50,3 +50,19 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Sources checked: ontario.ca home and community care, seniors finances and Seniors Care at Home Tax Credit; CRA lines 31285 and 45355 and principal residence; FCAC reverse mortgages; toronto.ca building permits and tax relief (9 listed on the post)
 - Claims verified: every figure and rule matches a listed source. Claims left out because they could not be verified: Home Accessibility Tax Credit rate; permit fees; reverse mortgage carrying-cost duties
 - Needs owner attention: none
+
+## 2026-10-13, selling-parents-house-after-death-ontario-taxes
+
+- Primary keyword: selling a parent's house after death taxes Ontario (no exact match in KEYWORDS.md; it confirms estate searches say "Ontario")
+- Words: about 1,620
+- Sources checked: canada.ca (capital gains, filing deadlines, final return, clearance certificate, who files a T3), ontario.ca (estate administration tax, apply for probate), toronto.ca Vacant Home Tax (8 listed on the post)
+- Claims verified: about 30. Claims left out because they could not be verified: T1 payment dates beyond the filing table, graduated rate estate 36 month rules, the 2026 Vacant Home Tax declaration deadline, Toronto property tax figures
+- Needs owner attention: the post has nine `##` sections, one over the playbook's 5 to 8. The checkers pass. Written at the owner's request on 2026-10-13 as one of two posts that day
+
+## 2026-10-13, average-home-price-toronto-vs-median
+
+- Primary keyword: average home price toronto
+- Words: about 1,580
+- Sources checked: TRREB Market Watch index and the September 2026 Market Watch PDF (released October 6, 2026), both listed on the post
+- Claims verified: about 35, then re-checked by the owner's chat: every dollar figure not in the PDF was a difference computed from it or part of the labelled worked example, and each was recalculated. Claims left out: that TRREB shows figures by home type because of sales mix (not in the PDF)
+- Needs owner attention: the post uses September 2026 while `/toronto-house-prices/` and src/data/trreb-monthly.json still hold August 2026. The post says so. Update the data file when convenient. Written at the owner's request as the second of two posts on 2026-10-13

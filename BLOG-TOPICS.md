@@ -53,6 +53,8 @@ guide or service page is worse than a missed day.
 - [x] What to do with a parent's house when they move into care | downsizing | parent moving into long term care house | parent-moving-into-care-house-toronto
 - [x] Retiring in Toronto: homes, costs and services | downsizing | retiring in toronto | retiring-in-toronto
 - [x] Stay or sell a long-held Toronto house | downsizing | stay or sell house | stay-or-sell-toronto-house
+- [x] Selling a parent's house after death: the taxes in Ontario | costs-and-taxes | selling parents house after death canada taxes ontario | selling-parents-house-after-death-ontario-taxes
+- [x] Average home price in Toronto vs the median: why the two differ | market | average home price toronto | average-home-price-toronto-vs-median
 
 ## Sunday: downsizing in Toronto
 
@@ -85,7 +87,6 @@ points the reader to an estates lawyer. Never state a rule that is not on a gove
 page opened during the run. Posts may set `guide: selling-an-estate-home-toronto` and link to
 `/selling-an-estate-home-toronto/`. Say "estate home", never "estate sale".
 
-- [ ] Selling a parent's house after death: the taxes in Ontario | costs-and-taxes | selling parents house after death canada taxes ontario
 - [ ] Is it better to sell a house before or after death | selling | is it better to sell a house before or after death
 - [ ] Selling a house in Ontario when there is no will | selling | probate ontario no will
 - [ ] How long probate takes in Ontario and what it means for a sale | selling | probate ontario how long
@@ -127,7 +128,6 @@ buy first.
 Anything outside the six themes above that a Toronto buyer, seller or owner would search. Market
 data, neighbourhoods, condos, investing, city services. Pick from this list or add a better idea.
 
-- [ ] Average home price in Toronto vs the median: why the two differ | market | average home price toronto
 - [ ] Toronto house prices over the last 10 years: what TRREB reported | market | toronto house prices last 10 years
 - [ ] Toronto property tax lookup: checking a home's tax and assessment | costs-and-taxes | toronto property tax lookup
 - [ ] Why Toronto has a municipal land transfer tax | costs-and-taxes | why does toronto have a municipal land transfer tax
