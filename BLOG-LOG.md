@@ -66,3 +66,37 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Sources checked: TRREB Market Watch index and the September 2026 Market Watch PDF (released October 6, 2026), both listed on the post
 - Claims verified: about 35, then re-checked by the owner's chat: every dollar figure not in the PDF was a difference computed from it or part of the labelled worked example, and each was recalculated. Claims left out: that TRREB shows figures by home type because of sales mix (not in the PDF)
 - Needs owner attention: the post uses September 2026 while `/toronto-house-prices/` and src/data/trreb-monthly.json still hold August 2026. The post says so. Update the data file when convenient. Written at the owner's request as the second of two posts on 2026-10-13
+
+## 2026-10-19, queued selling-a-house-in-ontario-taxes, to publish 2026-10-21
+
+- Primary keyword: selling a house in ontario taxes (Wednesday queue, BLOG-TOPICS.md)
+- Draft: true. Published date set to 2026-10-21 (a Wednesday)
+- Sources checked: CRA principal residence, flipping rule, capital gains definitions, line 12700, GST/HST and home construction, non-resident dispositions; ontario.ca land transfer tax; toronto.ca MLTT rates and fees (8 listed on the post)
+- Claims left out because they could not be verified: HST on commission, the late designation penalty amount, property tax adjustment mechanics (linked to the existing post instead)
+- Topic skipped: "What it costs to sell a house in Toronto" overlaps toronto-downsizing-costs (commission and legal fees on the sale)
+- Needs owner attention: BLOG-TOPICS.md not ticked (out of scope for this run). Flip draft to false on the publish date
+
+## 2026-10-19, queued riverdale-toronto-real-estate, to publish 2026-10-23
+
+- Primary keyword: riverdale toronto real estate (Friday queue, BLOG-TOPICS.md)
+- Draft: true. Published date set to 2026-10-23 (a Friday)
+- Sources checked: TTC subway map (09/26) and Broadview, Pape, Main Street and Woodbine station pages; toronto.ca heritage conservation districts, Kingswood Road South HCD plan, tree and ravine permit rules; TPL Beaches and Riverdale branches (10 listed on the post)
+- Claims left out: all TRREB prices and sales counts (no sold data in this batch; the neighbourhood guides carry them); 2021 Census figures (profiles not retrievable as text this run); park addresses (City park pages did not render)
+- Needs owner attention: BLOG-TOPICS.md not ticked. No new photo used, so photo-credits.json is unchanged. Flip draft to false on the publish date
+
+## 2026-10-19, queued first-time-home-buyer-ontario-down-payment, to publish 2026-10-26
+
+- Primary keyword: first time home buyer ontario down payment (Monday queue, BLOG-TOPICS.md)
+- Draft: true. Published date set to 2026-10-26 (a Monday)
+- Sources checked: FCAC down payment; Finance Canada December 15, 2024 mortgage reforms; CMHC homeowner purchase criteria and premium table; CRA HBP, FHSA contributions and withdrawals (7 listed on the post)
+- Claims left out: gift letter requirements and proof of funds periods (no primary source states them); the Ontario PST rate on premiums (not on the pages opened)
+- Topics skipped: "Toronto condo prices per square foot" and "How condo fees change what a first time buyer can borrow" (the first needs price data, the second repeats the condo example in mortgage-stress-test-toronto)
+- Needs owner attention: the FCAC down payment page still cites a $1 million insured cap; the post relies on Finance Canada and CMHC for $1.5 million. BLOG-TOPICS.md not ticked. Flip draft to false on the publish date
+
+## 2026-10-19, follow-up SEO pass on the three queued drafts
+
+- Wrote `research/toronto-blog-map.md` (same format as the North York map) with the target query and required internal links for each of the three topics. The posts were edited to match it
+- Each target query now appears verbatim in the title, description, first paragraph, H1 and one H2. Titles 44 to 48 characters, descriptions 152 to 154
+- Renamed `riverdale-toronto-real-estate-vs-the-beaches` to `riverdale-toronto-real-estate` (short keyword slug). Nothing linked to the old slug
+- Links added: /downsizing-toronto/ (taxes); /homes-for-sale/riverdale/, /homes-for-sale/the-beaches/, /blog/leaside-vs-lawrence-park/ (Riverdale); /land-transfer-tax-calculator-toronto/ (down payment). Every link target is in the current build
+- No body images in any of the three; card photos come from the neighbourhood photos, which already carry alt text in photo-credits.json, so that file is unchanged. Facts and sources were not changed
