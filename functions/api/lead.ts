@@ -135,6 +135,26 @@ export const onRequestPost = async ({ request, env }: Context): Promise<Response
   }
 
   // 5. Build the payload. Zapier maps these keys straight onto Lofty fields.
+  //    Without JavaScript the home review page cannot compose `message`, so
+  //    build it here the same way public/home-review/index.html does.
+  let message = clean(form.get('message'), MAX_FIELD);
+  if (!message) {
+    const note = clean(form.get('note'), MAX_FIELD);
+    const bestTime = clean(form.get('best_time'), 80);
+    const street = clean(form.get('street'), 120);
+    if (note || bestTime || street) {
+      message = [
+        'Room by room home review request (door knock)',
+        'Best time: ' + bestTime,
+        street && 'Flyer batch: ' + street,
+        note,
+      ]
+        .filter(Boolean)
+        .join('\n')
+        .slice(0, MAX_FIELD);
+    }
+  }
+
   const payload = {
     name,
     email,
@@ -143,7 +163,7 @@ export const onRequestPost = async ({ request, env }: Context): Promise<Response
     neighbourhood: clean(form.get('neighbourhood'), 80),
     intent: clean(form.get('intent'), 40),
     timeline: clean(form.get('timeline'), 40),
-    message: clean(form.get('message'), MAX_FIELD),
+    message,
     consent: true,
     consentText:
       'Agreed to be contacted by Kirby Chan & Co. about this enquiry and about Toronto real estate, with the right to withdraw consent at any time',
