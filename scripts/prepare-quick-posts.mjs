@@ -13,9 +13,11 @@
  * checkout such as a Cloudflare or GitHub Actions build. Without --apply it
  * only reports, so running it locally never rewrites anyone's post.
  *
- * Posts uploaded at /upload/ arrive here as .md files (scripts/pull-uploads.mjs). They are live
- * already, exactly as written, so they are never rewritten: one that fails a check is only held
- * back from the blog list, sitemap and feed, and its own page stays up.
+ * Posts uploaded at /upload/ arrive here as .md files (scripts/pull-uploads.mjs) and get the same
+ * mechanical fixes, which matters because OneCut Content writes American spelling ("neighborhood").
+ * Without them the style check would hold the post back from the blog list, sitemap and feed. Only the
+ * copy built into the site changes: the post as published at /upload/ is not touched, and links are
+ * never edited. A post that still fails a check is held back from the list and its own page stays up.
  *
  * Full blog posts are not touched. Their problems still fail the build.
  */
@@ -85,8 +87,7 @@ function problemsFor(script) {
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-const all = (await readdir(QUICK).catch(() => [])).filter((n) => /\.mdx?$/.test(n) && !n.startsWith('_'));
-const names = all.filter((n) => n.endsWith('.mdx'));
+const names = (await readdir(QUICK).catch(() => [])).filter((n) => /\.mdx?$/.test(n) && !n.startsWith('_'));
 const fixed = [];
 
 for (const name of names) {
@@ -121,7 +122,7 @@ for (const [name, reasons] of held) {
   console.warn(`Quick post ${name} held back from this deploy:`);
   for (const r of reasons) console.warn(`  - ${r}`);
 }
-if (!fixed.length && !held.size) console.log(`Quick posts ready: ${all.length}`);
+if (!fixed.length && !held.size) console.log(`Quick posts ready: ${names.length}`);
 
 if (apply) {
   const when = new Date().toLocaleString('en-CA', { timeZone: 'America/Toronto', dateStyle: 'long', timeStyle: 'short' });

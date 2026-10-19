@@ -11,7 +11,7 @@ import MarkdownIt from 'markdown-it';
 import { BLOG_CATEGORIES, readingMinutes, wordCount } from './blog.ts';
 import { longDate } from './format.ts';
 import type { D1 } from './vow.ts';
-import { HOODS, SERVICES, autoLinks } from './post-links.ts';
+import { HOODS, SERVICES, autoLinks, leastUsed } from './post-links.ts';
 
 export interface UploadEnv {
   VOW_DB?: D1;
@@ -256,7 +256,9 @@ export function fillShell(shell: string, post: Post): string {
 /**
  * The built blog list with uploaded posts it does not have yet added at the top, newest first, so a
  * post shows on /blog/ the moment it is published. The first built card is the pattern: its markup
- * and style hooks are kept and only the address, topic, date, title and summary change. A post older
+ * and style hooks are kept and only the address, topic, date, title and summary change. A post that
+ * names a neighbourhood (hoodOf) gets that photo. Any other gets the photo least used among the cards
+ * on the page, never the one on the card beside it; the next build may choose differently. A post older
  * than the oldest card on the page is left out: it belongs on a later page of the list. Returns the
  * page unchanged if there is nothing to add or no card to copy.
  */
@@ -268,17 +270,34 @@ export function addToList(html: string, posts: Post[], categories: Record<string
     if (hood !== undefined) media.set(hood, block.trim());
   }
   const card = html.match(/<li[^>]*>\s*<a class="bcard" href="[^"]*"[\s\S]*?<\/a>\s*<\/li>/)?.[0];
+  // Photos already on the page's cards, outside the hidden set, and the one on the first card.
+  const shown = [...html.replace(/<template id="card-media"[\s\S]*?<\/template>/, '').matchAll(/<span class="bcard__media" data-hood="([^"]*)"/g)].map((m) => m[1]);
+  const used = new Map<string, number>();
+  for (const h of shown) used.set(h, (used.get(h) ?? 0) + 1);
+  const hoods = [...media.keys()].filter((k) => k !== 'none');
   const oldest = Math.min(...[...html.matchAll(/<a class="bcard"[^>]*>[\s\S]*?<time datetime="([^"]*)"/g)].map((m) => Date.parse(m[1])));
   const fresh = posts
     .filter((p) => !p.draft && p.published > oldest && !html.includes(`href="/blog/${p.slug}/"`))
     .sort((a, b) => b.published - a.published);
   if (!card || !fresh.length) return html;
   const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  // Oldest of the new posts first, so each one knows the photo of the card it will sit above.
+  const picked = new Map<string, string>();
+  let below = shown[0];
+  for (const p of [...fresh].reverse()) {
+    const named = hoodOf(p);
+    const hood = named && media.has(named) ? named : hoods.length ? leastUsed(hoods, used, new Set(below ? [below] : []), p.slug) : undefined;
+    if (hood) {
+      picked.set(p.slug, hood);
+      used.set(hood, (used.get(hood) ?? 0) + 1);
+      below = hood;
+    }
+  }
   const made = fresh.map((p) => {
     const when = new Date(p.published);
     const day = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Toronto' }).format(when);
     const band = (media.get('none') ?? '').replace(/(<span class="bcard__band"[^>]*>)[^<]*/, (_, open) => open + esc(categories[p.category] ?? ''));
-    const picture = media.get(hoodOf(p) ?? '') ?? band;
+    const picture = media.get(picked.get(p.slug) ?? '') ?? band;
     return card
       .replace(/<span class="bcard__media"[\s\S]*?(?=<span class="bcard__meta")/, () => picture + ' ')
       .replace(/href="[^"]*"/, () => `href="/blog/${p.slug}/"`)
@@ -314,7 +333,10 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
     const withPics = addToList(pics, [{ ...post('rose', Date.UTC(2026, 9, 7)), related: ['rosedale'] } as Post, { ...post('plain', Date.UTC(2026, 9, 8)), related: [] } as unknown as Post], { condos: 'Condos' });
     const cardOf = (slug: string) => withPics.slice(withPics.indexOf(`/blog/${slug}/`), withPics.indexOf('</a>', withPics.indexOf(`/blog/${slug}/`)));
     assert(cardOf('rose').includes('rosedale.webp') && !cardOf('rose').includes('leaside.webp'), 'neighbourhood picture');
-    assert(cardOf('plain').includes('bcard__band" z>Condos<') && !cardOf('plain').includes('.webp'), 'band names the topic');
+    assert(cardOf('plain').includes('rosedale.webp'), 'a post about no neighbourhood still gets a photo');
+    const bare = pics.replace(/<span class="bcard__media" data-hood="rosedale"[\s\S]*?<\/span> /, '');
+    const noPhotos = addToList(bare, [{ ...post('plain2', Date.UTC(2026, 9, 8)), related: [] } as unknown as Post], { condos: 'Condos' });
+    assert(noPhotos.includes('bcard__band" z>Condos<'), 'with no photos on the page the band names the topic');
     assert(cardOf('old').includes('leaside.webp'), 'built card keeps its own picture');
   }
   const words = Array.from({ length: 120 }, () => 'home').join(' ');

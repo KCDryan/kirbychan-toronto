@@ -3,7 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import BlogCard from '../components/BlogCard.astro';
 import BlogCardMedia from '../components/BlogCardMedia.astro';
-import { HOODS, cardHood } from '../lib/post-links';
+import { HOODS, anyHood } from '../lib/post-links';
+import { cardPhotos } from '../lib/blog-posts';
 import Cta from '../components/Cta.astro';
 import { BLOG_CATEGORIES, type BlogCategory } from '../lib/blog';
 import { blog } from '../lib/schema';
@@ -40,6 +41,8 @@ const {
   noindex = false,
   withBlogSchema = false,
 } = Astro.props;
+// One photo per post, worked out across every post so the same picture is not used more than it has to be.
+const photoFor = await cardPhotos();
 
 const pageHref = (n: number) => (n <= 1 ? '/blog/' : `/blog/page/${n}/`);
 const prev = page > 1 ? pageHref(page - 1) : undefined;
@@ -105,7 +108,7 @@ const extraJsonLd = withBlogSchema
                   published={p.data.published}
                   level={2}
                   media
-                  photo={cardHood(p.id.split('/').pop()!, [p.data.neighbourhood, p.data.related[0]], `${p.data.h1} ${p.data.description}`)}
+                  photo={photoFor.get(p.id.split('/').pop()!) ?? anyHood(p.id)}
                 />
               </li>
             ))}
