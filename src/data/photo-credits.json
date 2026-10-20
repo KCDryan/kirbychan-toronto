@@ -232,5 +232,35 @@
     "author": "Kirby Chan & Co. Real Estate Team",
     "license": "All rights reserved",
     "own": true
+  },
+  {
+    "slug": "selling-a-house-in-ontario-taxes",
+    "file": "blog/selling-a-house-in-ontario-taxes",
+    "shows": "Late 19th century Victorian row houses along Shaw Street in Toronto.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Homes_along_Shaw_Street_in_Toronto,_August_26_2026_(02).jpg",
+    "title": "Homes along Shaw Street in Toronto, August 26 2026 (02).jpg"
+  },
+  {
+    "slug": "riverdale-toronto-real-estate",
+    "file": "blog/riverdale-toronto-real-estate",
+    "shows": "The downtown Toronto skyline and CN Tower seen across Riverdale Park East.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Toronto_Skyline_from_Riverdale_Park,_April_11_2026_(06).jpg",
+    "title": "Toronto Skyline from Riverdale Park, April 11 2026 (06).jpg"
+  },
+  {
+    "slug": "first-time-home-buyer-ontario-down-payment",
+    "file": "blog/first-time-home-buyer-ontario-down-payment",
+    "shows": "Semi-detached homes on Strathmore Boulevard at Dewhurst Boulevard in Toronto.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Homes_on_Strathmore_Blvd_in_Toronto,_September_19_2026_(02).jpg",
+    "title": "Homes on Strathmore Blvd in Toronto, September 19 2026 (02).jpg"
   }
 ]

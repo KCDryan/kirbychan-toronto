@@ -109,6 +109,8 @@ const extraJsonLd = withBlogSchema
                   level={2}
                   media
                   photo={photoFor.get(p.id.split('/').pop()!) ?? anyHood(p.id)}
+                  image={p.data.ogImage}
+                  imageAlt={p.data.imageAlt}
                 />
               </li>
             ))}

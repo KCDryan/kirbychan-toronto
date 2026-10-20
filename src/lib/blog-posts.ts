@@ -4,11 +4,14 @@ import { assignCardHoods, namedHood } from './post-links';
 
 let cardPhotoMemo: Promise<Map<string, string>> | undefined;
 
-/** The neighbourhood photo on each post's blog card, worked out once across every post (see assignCardHoods). */
+/**
+ * The neighbourhood photo on each post's blog card, worked out once across every post (see
+ * assignCardHoods). Posts with their own photo (ogImage) are left out, so they take no turn.
+ */
 export const cardPhotos = () =>
   (cardPhotoMemo ??= publishedPosts().then((posts) =>
     assignCardHoods(
-      posts.map((p) => ({
+      posts.filter((p) => !p.data.ogImage).map((p) => ({
         slug: p.id.split('/').pop()!,
         published: p.data.published.valueOf(),
         named: namedHood([p.data.neighbourhood, p.data.related[0]], `${p.data.h1} ${p.data.description}`),
