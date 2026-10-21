@@ -100,3 +100,8 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Renamed `riverdale-toronto-real-estate-vs-the-beaches` to `riverdale-toronto-real-estate` (short keyword slug). Nothing linked to the old slug
 - Links added: /downsizing-toronto/ (taxes); /homes-for-sale/riverdale/, /homes-for-sale/the-beaches/, /blog/leaside-vs-lawrence-park/ (Riverdale); /land-transfer-tax-calculator-toronto/ (down payment). Every link target is in the current build
 - No body images in any of the three; card photos come from the neighbourhood photos, which already carry alt text in photo-credits.json, so that file is unchanged. Facts and sources were not changed
+
+## 2026-10-21, publish run
+
+- 2026-10-21: published `selling-a-house-in-ontario-taxes`, live at https://kirbychantoronto.com/blog/selling-a-house-in-ontario-taxes/ (200, in sitemap-0.xml, own Shaw Street photo set as og:image and on the /blog/ card; post pages carry no hero image). SEO checks passed, CRA figures (365 days, Jan 1 2023, 10 days, 25%/50% withholding, 1/2 inclusion rate) unchanged, verify passed
+- Needs owner attention: only 2 drafts left in the queue (fewer than 6)
