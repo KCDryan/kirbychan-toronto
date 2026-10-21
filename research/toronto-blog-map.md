@@ -54,6 +54,50 @@ Queries held by published posts, guides and pages. None of the three topics belo
 - **Sources:** FCAC down payment, Finance Canada (December 15, 2024 reforms), CMHC purchase criteria and premium table, CRA HBP and FHSA pages.
 - **Do not:** state gift letter requirements or proof of funds periods (no primary source), or a Toronto average price.
 
+## 4 more topics, drafted 2026-10-21
+
+The three topics above were all used, so these four were taken from `BLOG-TOPICS.md`: the first usable topic in each day's queue, in rota order (Sunday, Tuesday, Wednesday, Thursday). Skipped: Monday's remaining condo topics (need price data, or repeat `mortgage-stress-test-toronto`, per the 2026-10-19 log), "Buying a first condo" ("toronto condo for sale" supports `/buyers/`), "Are Toronto condo prices falling" (TRREB price data), "What it costs to sell" (overlaps `toronto-downsizing-costs`), and "Toronto property tax compared with Markham" (covered by `/toronto-vs-markham/` and the other comparison pages). Each is a draft with a past date; set a new published date when flipping it live.
+
+### 4. Downsizing from a house to renting an apartment in Toronto
+- **Used:** drafted 2026-10-21 as `downsizing-from-house-to-apartment-toronto` (draft, published date 2026-10-18, a Sunday).
+- **Target query:** downsizing from house to apartment. From the downsizing questions in `KEYWORDS.md` and the Sunday queue in `BLOG-TOPICS.md`. The pillar `/downsizing-toronto/` covers buying a condo, townhouse or bungalow, so the post takes the renting angle only.
+- **Gap:** nothing on the site explains what a downsizer signs up to as a tenant: the standard lease, the rent deposit cap, the rent increase guideline and the November 15, 2018 exemption, notice to leave and the landlord's own use rules changed on September 21, 2026. The care home post covers the landlord side of renting out a parent's house, not the tenant side.
+- **Pillar:** /downsizing-toronto/
+- **Required links:** /downsizing-toronto/, /services/downsizing/, /sellers/, /home-valuation/, /blog/condo-vs-retirement-residence-cost-toronto/, /blog/sell-first-or-buy-first-downsizing-toronto/
+- **Extras:** /blog/selling-a-house-in-ontario-taxes/, /blog/toronto-downsizing-costs/, /contact/
+- **Sources:** ontario.ca (Renting in Ontario: your rights, residential rent increases, guide to the standard lease), LTB brochures (A Guide to the Residential Tenancies Act, How a Landlord Can End a Tenancy, updated September 21, 2026), CRA principal residence, toronto.ca RentSafeTO for tenants.
+- **Do not:** quote average Toronto rents (no primary source opened), say that a given share of buildings is exempt from rent control or repeat the principal residence rules (link to the taxes post).
+
+### 5. Is it better to sell a house before or after death
+- **Used:** drafted 2026-10-21 as `sell-house-before-or-after-death-ontario` (draft, published date 2026-10-20).
+- **Target query:** is it better to sell a house before or after death. From the estates and probate seeds in `KEYWORDS.md` and the Tuesday queue in `BLOG-TOPICS.md`. The phrase carries no place name, so "Ontario" sits in the slug, H1 and body rather than in the query.
+- **Gap:** the estate posts each cover one path (the taxes after death, selling before probate, selling with a power of attorney). Nothing compares the two paths side by side: who signs, the deemed sale against a sale during life, what Estate Administration Tax is charged on and the Vacant Home Tax exemptions for each.
+- **Pillar:** /selling-an-estate-home-toronto/
+- **Required links:** /selling-an-estate-home-toronto/, /services/estate-sales/, /sellers/, /home-valuation/, /blog/selling-a-house-before-probate-ontario/, /blog/selling-parents-house-after-death-ontario-taxes/, /blog/selling-a-parents-house-with-power-of-attorney-ontario/
+- **Extras:** /blog/toronto-property-tax/, /contact/
+- **Sources:** ontario.ca Estate Administration Tax and apply for probate, ontario.ca make a power of attorney, Substitute Decisions Act s. 12, Estates Administration Act ss. 9 and 17, canada.ca (CRA capital gains for deceased persons, principal residence, final return due dates), toronto.ca Vacant Home Tax.
+- **Do not:** say selling first avoids probate or its tax, advise on joint ownership or adding a child to title, quote legal or commission fees or describe a real family.
+
+### 6. How real estate commission works when you sell in Ontario
+- **Used:** drafted 2026-10-21 as `selling-a-house-in-ontario-commission` (draft, dated 2026-10-14).
+- **Target query:** selling a house in ontario commission. From `KEYWORDS.md` target 7 (selling a house in ontario, with costs, taxes and calculator angles) and the Wednesday queue in `BLOG-TOPICS.md`. The head term "selling a house in ontario" belongs to `/sellers/` and the taxes angle to `selling-a-house-in-ontario-taxes`, so the post takes the commission angle only.
+- **Gap:** `toronto-downsizing-costs` says in two paragraphs that commission is negotiable. Nothing on the site explains what a listing agreement must say about payment, what a seller may offer the buyer's brokerage, how multiple representation changes the amount, the ban on commission based on the list to sale price difference or when commission is still owed.
+- **Pillar:** /sellers/
+- **Required links:** /sellers/, /home-valuation/, /blog/selling-a-house-in-ontario-taxes/, /blog/toronto-downsizing-costs/, /selling-an-estate-home-toronto/, /contact/
+- **Extras:** /downsizing-toronto/, /selling-a-home-after-separation-toronto/, /buyers/
+- **Sources:** reco.on.ca (signing a contract with a brokerage, multiple representation, working with an agent, RECO Information Guide PDF, choosing an agent as a seller, risks of representing yourself), canada.ca (CRA definitions for capital gains).
+- **Do not:** quote commission percentages, ranges or typical rates, compare brokerages, state HST on commission or when commission is paid (no primary source opened), or imply our own fees.
+
+### 7. Don Mills or Leaside: two Line 5 neighbourhoods compared
+- **Used:** drafted 2026-10-21 as `don-mills-real-estate-vs-leaside` (draft, published date 2026-10-15, a Thursday).
+- **Target query:** don mills real estate. From the neighbourhood seeds in `KEYWORDS.md` (target 10: "don mills real estate and similar") and the Thursday queue in `BLOG-TOPICS.md`. The Don Mills guide targets "living in don mills, toronto", so there is no overlap.
+- **Gap:** both neighbourhood guides carry prices and a transit paragraph each. Nothing compares the six Line 5 stations across the two areas (station type, buses, parking, stops to Union) or sets their 2021 Census housing stock side by side for a newcomer.
+- **Pillar:** /relocating-to-toronto/
+- **Required links:** /don-mills-toronto/, /leaside-toronto/, /relocating-to-toronto/, /homes-for-sale/don-mills/, /homes-for-sale/leaside/, /blog/leaside-vs-lawrence-park/, /blog/toronto-subway-commute-by-neighbourhood/
+- **Extras:** /map-of-toronto/, /contact/
+- **Sources:** TTC Line 5 opening notice (February 6, 2026) and station pages for Leaside, Laird, Sunnybrook Park, Don Valley, Aga Khan Park & Museum and Wynford; TTC subway map; Metrolinx Eglinton Crosstown page; City of Toronto 2021 Neighbourhood Profiles (158 model workbook on open.toronto.ca); toronto.ca heritage conservation districts and tree and ravine permits; TPL Leaside, Don Mills and Brookbanks branch pages.
+- **Do not:** quote TRREB prices or sales counts (the guides carry them), state a North York-wide figure, describe either area as suited to a type of buyer or give commutes in minutes.
+
 ## Next step
 
 Flip each draft to `draft: false` on its publish date, tick the topic in `BLOG-TOPICS.md` and add a line here marking it published.

@@ -105,3 +105,43 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 
 - 2026-10-21: published `selling-a-house-in-ontario-taxes`, live at https://kirbychantoronto.com/blog/selling-a-house-in-ontario-taxes/ (200, in sitemap-0.xml, own Shaw Street photo set as og:image and on the /blog/ card; post pages carry no hero image). SEO checks passed, CRA figures (365 days, Jan 1 2023, 10 days, 25%/50% withholding, 1/2 inclusion rate) unchanged, verify passed
 - Needs owner attention: only 2 drafts left in the queue (fewer than 6)
+
+## 2026-10-21, queued downsizing-from-house-to-apartment-toronto
+
+- Primary keyword: downsizing from house to apartment (Sunday queue, BLOG-TOPICS.md)
+- Draft: true. Published date set to 2026-10-18 (a Sunday)
+- Words: 1,794
+- Sources checked: ontario.ca Renting in Ontario (updated September 18, 2026), residential rent increases (updated June 23, 2026), guide to the standard lease; LTB A Guide to the Residential Tenancies Act and How a Landlord Can End a Tenancy (updated September 21, 2026); LTB operational updates of June 30 and September 21, 2026 (checked for Bill 60 changes to deposits and notice, none found); CRA principal residence; toronto.ca RentSafeTO for tenants (7 listed on the post)
+- Claims left out: average Toronto rents (no primary source opened), how many Toronto buildings are exempt from the guideline (no source), Toronto heat bylaw dates (the post uses the Act's vital services wording instead)
+- Photo: Apartment buildings viewed from High Park, 2026 (Chicken4War, CC BY-SA 4.0, Wikimedia Commons)
+- Needs owner attention: the LTB's general guide to the Act was last updated December 2020; the deposit and notice rules quoted from it match the May 2023 new tenants brochure and the 2026 operational updates. BLOG-TOPICS.md not ticked. Flip draft to false when publishing
+
+## 2026-10-21, queued sell-house-before-or-after-death-ontario
+
+- Primary keyword: is it better to sell a house before or after death (Tuesday queue, BLOG-TOPICS.md)
+- Draft: true. Published date set to 2026-10-20 (a Tuesday)
+- Words: 1,860
+- Sources checked: ontario.ca Estate Administration Tax, apply for probate and make a power of attorney; Substitute Decisions Act s. 12; Estates Administration Act ss. 9 and 17; CRA capital gains for deceased persons, principal residence and final return due dates; toronto.ca Vacant Home Tax (9 listed on the post, all returned 200 on 2026-10-21)
+- Claims left out: tax effects of joint ownership or adding a child to title (no primary source opened); insurance on a vacant house; legal and commission fees. The worked estate tax example uses round illustrative figures and was recalculated
+- Photo: Homes on High Park Blvd, Toronto (11-01-24) 001.jpg by Dillan Payne, CC BY-SA 2.0, cropped to remove a house number and parked cars' plates
+- Needs owner attention: BLOG-TOPICS.md not ticked. Flip draft to false on the publish date
+
+## 2026-10-21, queued selling-a-house-in-ontario-commission
+
+- Primary keyword: selling a house in ontario commission (Wednesday queue, BLOG-TOPICS.md)
+- Draft: true. Published date set to 2026-10-14 (a Wednesday)
+- Words: 1,675
+- Sources checked: RECO signing a contract with a real estate brokerage, understanding multiple representation, working with a real estate agent, RECO Information Guide (PDF), how do I choose a real estate agent as a seller, know the risks of representing yourself; CRA definitions for capital gains (7 listed on the post, each returned 200 on 2026-10-21)
+- Claims left out because they could not be verified: HST on commission (no CRA page found that states it), when commission is paid out of the deposit or at closing (no primary source), any commission rate or range (map rule). The TRESA text on ontario.ca/laws did not render, so the post cites RECO's pages and its Information Guide disclaimer for the Act
+- Photo: Homes on Harold Street in Mimico, Toronto, May 16 2026, by Dillan Payne, CC BY-SA 4.0, cropped to 1920 by 1280 with one small house number plaque removed and both parked cars cropped out
+- Needs owner attention: BLOG-TOPICS.md not ticked. Flip draft to false on the publish date
+
+## 2026-10-21, queued don-mills-real-estate-vs-leaside
+
+- Primary keyword: don mills real estate (Thursday queue, BLOG-TOPICS.md)
+- Draft: true. Published date set to 2026-10-15 (a Thursday)
+- Words: 1,566
+- Sources checked: TTC Line 5 opening notice and six Line 5 station pages, TTC subway map, Metrolinx Eglinton Crosstown, City of Toronto 2021 Neighbourhood Profiles workbook (Banbury-Don Mills and Leaside-Bennington columns), toronto.ca heritage conservation districts and tree and ravine permits, TPL Leaside, Don Mills and Brookbanks branches (15 listed on the post)
+- Claims left out: all TRREB prices and sales counts (no sold data; the guides carry them); bus routes at Don Valley station other than the 954 Lawrence East (the TTC station page lists no surface routes); planning history of Don Mills and Leaside (no primary source opened); that either area backs onto the Don Valley ravines (not verified)
+- Photo: Leaside station on Line 5 by Dillan Payne, CC BY-SA 4.0, cropped to exclude parked cars and people
+- Needs owner attention: BLOG-TOPICS.md not ticked. Flip draft to false on the publish date
