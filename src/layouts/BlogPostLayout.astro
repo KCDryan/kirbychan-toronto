@@ -17,6 +17,7 @@ import { blogPhotoKey, neighbourhoodPhoto, photo } from '../lib/photos';
 import { GUIDES, servicePath } from '../lib/guides';
 import { blogPosting, breadcrumbList, faqPage } from '../lib/schema';
 import { autoLinks } from '../lib/post-links';
+import { publishedPosts } from '../lib/blog-posts';
 
 interface Props {
   entry: CollectionEntry<'blog'>;
@@ -64,9 +65,7 @@ const linkedServices = serviceIds
 const linkedTools = (TOOLS[d.category] ?? []).filter((t) => t.href !== Astro.url.pathname);
 
 // Related posts: same category first, then the newest of the rest.
-const others = (await getCollection('blog', ({ data }) => !data.draft))
-  .filter((p) => p.id !== entry.id)
-  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const others = (await publishedPosts()).filter((p) => p.id !== entry.id);
 const morePosts = [
   ...others.filter((p) => p.data.category === d.category),
   ...others.filter((p) => p.data.category !== d.category),

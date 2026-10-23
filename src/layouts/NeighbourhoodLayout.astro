@@ -21,6 +21,7 @@ import credits from '../data/photo-credits.json';
 import { longDate, neighbourhoodPath } from '../lib/format';
 import { servicePath } from '../lib/guides';
 import { blogPosting, breadcrumbList, faqPage, place } from '../lib/schema';
+import { publishedPosts } from '../lib/blog-posts';
 
 interface Props {
   entry: CollectionEntry<'neighbourhoods'>;
@@ -43,7 +44,7 @@ const videos = (await getCollection('videos', ({ data }) => !data.draft))
   .filter((v) => v.data.neighbourhood === entry.id)
   .slice(0, 2);
 
-const articles = (await getCollection('blog', ({ data }) => !data.draft))
+const articles = (await publishedPosts())
   .filter((a) => a.data.neighbourhood === entry.id || a.data.related.includes(entry.id))
   .slice(0, 3);
 

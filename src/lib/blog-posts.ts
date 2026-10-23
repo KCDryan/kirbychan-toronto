@@ -19,9 +19,10 @@ export const cardPhotos = () =>
     )
   ));
 
-/** Published posts, newest first. Ties break on the slug so order is stable. */
+/** Published posts, newest first: no drafts and nothing dated after the build. Ties break on the slug so order is stable. */
 export async function publishedPosts(): Promise<CollectionEntry<'blog'>[]> {
-  return (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  const now = Date.now();
+  return (await getCollection('blog', ({ data }) => !data.draft && data.published.valueOf() <= now)).sort(
     (a, b) => b.data.published.valueOf() - a.data.published.valueOf() || a.id.localeCompare(b.id)
   );
 }

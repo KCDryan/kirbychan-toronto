@@ -269,31 +269,49 @@ export function addToList(html: string, posts: Post[], categories: Record<string
     const hood = block.match(/^<span class="bcard__media" data-hood="([^"]*)"/)?.[1];
     if (hood !== undefined) media.set(hood, block.trim());
   }
-  const card = html.match(/<li[^>]*>\s*<a class="bcard" href="[^"]*"[\s\S]*?<\/a>\s*<\/li>/)?.[0];
-  // Photos already on the page's cards, outside the hidden set, and the one on the first card.
+  // The built cards in page order (newest first), each with its date, slug and photo.
+  const built = [...html.matchAll(/<li[^>]*>\s*<a class="bcard" href="\/blog\/([^"/]*)\/"[\s\S]*?<\/a>\s*<\/li>/g)].map((m) => ({
+    html: m[0],
+    slug: m[1],
+    published: Date.parse(m[0].match(/<time datetime="([^"]*)"/)?.[1] ?? ''),
+    hood: m[0].match(/<span class="bcard__media" data-hood="([^"]*)"/)?.[1],
+  }));
+  const card = built[0]?.html;
+  // Photos already on the page's cards, outside the hidden set.
   const shown = [...html.replace(/<template id="card-media"[\s\S]*?<\/template>/, '').matchAll(/<span class="bcard__media" data-hood="([^"]*)"/g)].map((m) => m[1]);
   const used = new Map<string, number>();
   for (const h of shown) used.set(h, (used.get(h) ?? 0) + 1);
   const hoods = [...media.keys()].filter((k) => k !== 'none');
-  const oldest = Math.min(...[...html.matchAll(/<a class="bcard"[^>]*>[\s\S]*?<time datetime="([^"]*)"/g)].map((m) => Date.parse(m[1])));
+  const oldest = Math.min(...built.map((c) => c.published));
+  const now = Date.now();
+  // Same order as the build: newest first, ties on the slug.
+  const before = (a: { published: number; slug: string }, b: { published: number; slug: string }) => b.published - a.published || a.slug.localeCompare(b.slug);
   const fresh = posts
-    .filter((p) => !p.draft && p.published > oldest && !html.includes(`href="/blog/${p.slug}/"`))
-    .sort((a, b) => b.published - a.published);
+    .filter((p) => !p.draft && p.published <= now && p.published > oldest && !html.includes(`href="/blog/${p.slug}/"`))
+    .sort(before);
   if (!card || !fresh.length) return html;
+  // Each new post goes above the first built card that comes after it in date order.
+  const slot = new Map<number, Post[]>();
+  for (const p of fresh) {
+    const i = built.findIndex((c) => before(p, c) < 0);
+    slot.set(i, [...(slot.get(i) ?? []), p]);
+  }
   const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   // Oldest of the new posts first, so each one knows the photo of the card it will sit above.
   const picked = new Map<string, string>();
-  let below = shown[0];
-  for (const p of [...fresh].reverse()) {
-    const named = hoodOf(p);
-    const hood = named && media.has(named) ? named : hoods.length ? leastUsed(hoods, used, new Set(below ? [below] : []), p.slug) : undefined;
-    if (hood) {
-      picked.set(p.slug, hood);
-      used.set(hood, (used.get(hood) ?? 0) + 1);
-      below = hood;
+  for (const [i, group] of [...slot].sort((a, b) => b[0] - a[0])) {
+    let below = built[i].hood;
+    for (const p of [...group].reverse()) {
+      const named = hoodOf(p);
+      const hood = named && media.has(named) ? named : hoods.length ? leastUsed(hoods, used, new Set(below ? [below] : []), p.slug) : undefined;
+      if (hood) {
+        picked.set(p.slug, hood);
+        used.set(hood, (used.get(hood) ?? 0) + 1);
+        below = hood;
+      }
     }
   }
-  const made = fresh.map((p) => {
+  const make = (p: Post) => {
     const when = new Date(p.published);
     const day = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Toronto' }).format(when);
     const band = (media.get('none') ?? '').replace(/(<span class="bcard__band"[^>]*>)[^<]*/, (_, open) => open + esc(categories[p.category] ?? ''));
@@ -305,8 +323,10 @@ export function addToList(html: string, posts: Post[], categories: Record<string
       .replace(/<time datetime="[^"]*"([^>]*)>[^<]*/, (_, rest) => `<time datetime="${when.toISOString()}"${rest}>${day}`)
       .replace(/(<h[23] class="bcard__title"[^>]*>)[^<]*/, (_, open) => open + esc(p.headline))
       .replace(/(<span class="bcard__sub"[^>]*>)[^<]*/, (_, open) => open + esc(p.summary));
-  });
-  return html.replace(card, () => made.join('') + card);
+  };
+  let out = html;
+  for (const [i, group] of slot) out = out.replace(built[i].html, () => group.map(make).join('') + built[i].html);
+  return out;
 }
 
 /** Asks Cloudflare for a fresh build, so the blog list, sitemap and feed catch up within minutes. */
@@ -327,6 +347,11 @@ if (typeof process !== 'undefined' && !!import.meta.filename && import.meta.file
     assert(out.indexOf('/blog/two/') < out.indexOf('/blog/one/') && out.indexOf('/blog/one/') < out.indexOf('/blog/old/'), 'newest first, above built');
     assert(out.split('class="bcard"').length === 4 && !out.includes('hidden') && !out.includes('page-two'), 'built, draft and older posts not added');
     assert(out.includes('>A &amp; &lt;B&gt;<') && out.includes('>Sum $1<') && out.includes('>Condos<') && out.includes('October 5, 2026'), 'card filled and escaped');
+    const two = '<ul>' + ['2026-10-10', '2026-10-01'].map((d) => `<li x> <a class="bcard" href="/blog/b${d}/" y> <span class="bcard__cat" y>Buying</span> <time datetime="${d}T00:00:00.000Z" y>x</time> <h2 class="bcard__title" y="true">T</h2> <span class="bcard__sub" y>S</span> </a>  </li>`).join('') + '</ul>';
+    const mid = addToList(two, [post('mid', Date.UTC(2026, 9, 5)), post('top', Date.UTC(2026, 9, 12)), post('later', Date.now() + 864e5)], { condos: 'Condos' });
+    const at = (s: string) => mid.indexOf(`/blog/${s}/`);
+    assert(at('top') < at('b2026-10-10') && at('b2026-10-10') < at('mid') && at('mid') < at('b2026-10-01'), 'merged into date order');
+    assert(!mid.includes('/blog/later/'), 'future post not listed');
     assert(addToList('<p>none</p>', [post('one', Date.now())], {}) === '<p>none</p>', 'no card to copy');
     const pics = list.replace('<a class="bcard" href="/blog/old/" y> ', '<a class="bcard" href="/blog/old/" y> <span class="bcard__media" data-hood="leaside" z><img src="leaside.webp"></span> <span class="bcard__meta" y></span> ') +
       '<template id="card-media"><span class="bcard__media" data-hood="rosedale" z><img src="rosedale.webp"></span> <span class="bcard__media" data-hood="none" z><span class="bcard__band" z>Buying</span></span></template>';
