@@ -99,6 +99,20 @@ The three topics above were all used, so these four were taken from `BLOG-TOPICS
 - **Sources:** TTC Line 5 opening notice (February 6, 2026) and station pages for Leaside, Laird, Sunnybrook Park, Don Valley, Aga Khan Park & Museum and Wynford; TTC subway map; Metrolinx Eglinton Crosstown page; City of Toronto 2021 Neighbourhood Profiles (158 model workbook on open.toronto.ca); toronto.ca heritage conservation districts and tree and ravine permits; TPL Leaside, Don Mills and Brookbanks branch pages.
 - **Do not:** quote TRREB prices or sales counts (the guides carry them), state a North York-wide figure, describe either area as suited to a type of buyer or give commutes in minutes.
 
+## 1 more topic, drafted 2026-10-23
+
+All seven topics above are used, so this one comes from the Friday queue in `BLOG-TOPICS.md` (first unused Friday topic; the Riverdale topic is published).
+
+### 8. High Park or The Annex: family houses on Line 2 compared
+- **Used:** drafted 2026-10-23 as `high-park-toronto-real-estate` (draft, published date 2026-11-06, a Friday).
+- **Target query:** high park toronto real estate. From the neighbourhood seeds in `KEYWORDS.md` (target 10) and the Friday queue in `BLOG-TOPICS.md`. "Toronto" must stay in the phrase: bare "high park" completes to Highland Park in several US cities (`KEYWORDS.md`, poisoned seeds). The High Park guide targets "living in high park, toronto", so there is no overlap.
+- **Gap:** both neighbourhood guides carry prices, Census stock and a transit paragraph. Nothing on the site covers what a move up buyer may add to a Toronto lot (multiplexes of up to four or six units, garden suites, laneway suites) or what happens when the house being bought has tenants (the purchaser's own use N12 rule). The Riverdale post covers trees and ravines, so this post links to it rather than repeating them.
+- **Pillar:** /upsizing-toronto/
+- **Required links:** /high-park-toronto/, /the-annex-toronto/, /upsizing-toronto/, /homes-for-sale/high-park/, /homes-for-sale/the-annex/, /blog/toronto-subway-commute-by-neighbourhood/, /blog/riverdale-toronto-real-estate/
+- **Extras:** /map-of-toronto/, /best-toronto-neighbourhoods-for-families/, /blog/leaside-vs-lawrence-park/, /home-valuation/, /contact/
+- **Sources:** TTC map and station pages (High Park, Keele, Runnymede, Dundas West, Spadina, St George, Bathurst), toronto.ca heritage conservation districts, multiplex housing, Expanding Housing Options in Neighbourhoods, garden suites and laneway suites, LTB How a Landlord Can End a Tenancy.
+- **Do not:** quote TRREB prices or sales counts (the guides carry them), describe either area as suited to a type of buyer, give commutes in minutes, say High Park is in the Toronto and East York District (not verified) or state the purchaser N12 compensation rule as settled.
+
 ## Next step
 
 Flip each draft to `draft: false` on its publish date, tick the topic in `BLOG-TOPICS.md` and add a line here marking it published.
