@@ -69,6 +69,7 @@ The three topics above were all used, so these four were taken from `BLOG-TOPICS
 - **Do not:** quote average Toronto rents (no primary source opened), say that a given share of buildings is exempt from rent control or repeat the principal residence rules (link to the taxes post).
 
 ### 5. Is it better to sell a house before or after death
+- **Replaced 2026-10-23:** the draft repeated `selling-parents-house-after-death-ontario-taxes` and was removed. The Nov 4 slot now holds `probate-ontario-no-will` (target query: probate ontario no will). See `BLOG-LOG.md`.
 - **Used:** drafted 2026-10-21 as `sell-house-before-or-after-death-ontario` (draft, published date 2026-10-20).
 - **Target query:** is it better to sell a house before or after death. From the estates and probate seeds in `KEYWORDS.md` and the Tuesday queue in `BLOG-TOPICS.md`. The phrase carries no place name, so "Ontario" sits in the slug, H1 and body rather than in the query.
 - **Gap:** the estate posts each cover one path (the taxes after death, selling before probate, selling with a power of attorney). Nothing compares the two paths side by side: who signs, the deemed sale against a sale during life, what Estate Administration Tax is charged on and the Vacant Home Tax exemptions for each.

@@ -87,7 +87,7 @@ points the reader to an estates lawyer. Never state a rule that is not on a gove
 page opened during the run. Posts may set `guide: selling-an-estate-home-toronto` and link to
 `/selling-an-estate-home-toronto/`. Say "estate home", never "estate sale".
 
-- [ ] Is it better to sell a house before or after death | selling | is it better to sell a house before or after death
+- [ ] Is it better to sell a house before or after death | selling | is it better to sell a house before or after death (skipped 2026-10-23: the draft repeated selling-parents-house-after-death-ontario-taxes, see BLOG-LOG.md)
 - [ ] Selling a house in Ontario when there is no will | selling | probate ontario no will
 - [ ] How long probate takes in Ontario and what it means for a sale | selling | probate ontario how long
 
