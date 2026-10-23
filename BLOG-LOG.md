@@ -145,3 +145,5 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Claims left out: all TRREB prices and sales counts (no sold data; the guides carry them); bus routes at Don Valley station other than the 954 Lawrence East (the TTC station page lists no surface routes); planning history of Don Mills and Leaside (no primary source opened); that either area backs onto the Don Valley ravines (not verified)
 - Photo: Leaside station on Line 5 by Dillan Payne, CC BY-SA 4.0, cropped to exclude parked cars and people
 - Needs owner attention: BLOG-TOPICS.md not ticked. Flip draft to false on the publish date
+
+- 2026-10-23: published riverdale-toronto-real-estate. Verify passed; live at https://kirbychantoronto.com/blog/riverdale-toronto-real-estate/ (200, in sitemap, own photo shown). Heritage years (2008, 2010) and tree permit rules (30 cm, 1.4 m) re-checked on toronto.ca. 5 drafts left in the queue (fewer than 6).
