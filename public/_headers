@@ -48,6 +48,10 @@
 /blog/upload-shell/*
   X-Robots-Tag: noindex, nofollow
 
+# Door-knocking landing page (static file, not built by Astro). Never indexed.
+/home-review/*
+  X-Robots-Tag: noindex
+
 # MLS® listing search and the listing pages (functions/listing/[key].ts serves them with the headers of
 # /homes-for-sale/listing-shell/). Listing photos come from PropTx's image host, so images may load from
 # any https source. The enquiry form on these pages needs the Turnstile spam check.
