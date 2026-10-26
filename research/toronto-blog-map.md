@@ -113,6 +113,20 @@ All seven topics above are used, so this one comes from the Friday queue in `BLO
 - **Sources:** TTC map and station pages (High Park, Keele, Runnymede, Dundas West, Spadina, St George, Bathurst), toronto.ca heritage conservation districts, multiplex housing, Expanding Housing Options in Neighbourhoods, garden suites and laneway suites, LTB How a Landlord Can End a Tenancy.
 - **Do not:** quote TRREB prices or sales counts (the guides carry them), describe either area as suited to a type of buyer, give commutes in minutes, say High Park is in the Toronto and East York District (not verified) or state the purchaser N12 compensation rule as settled.
 
+## 1 more topic, drafted 2026-10-26
+
+From the Monday queue in `BLOG-TOPICS.md` (first unused Monday topic; the down payment topic is published).
+
+### 9. Toronto condo prices per square foot: how to compare units
+- **Used:** drafted 2026-10-26 as `toronto-condo-prices-per-square-foot` (draft, published date 2026-11-09, a Monday).
+- **Target query:** toronto condo prices per square foot. From the Condos paragraph in `KEYWORDS.md` and the Monday queue in `BLOG-TOPICS.md`. Earlier runs skipped it as needing price data; this post takes a method angle and quotes no market prices.
+- **Gap:** nothing on the site explains how a stated condo floor area is measured (HCRA Directive 3), where unit boundaries and fee shares are registered (declaration Schedules C and D, the description) or how parking, lockers, balconies, the fee and property tax change a price per square foot comparison. The status certificate and stress test posts cover the documents and the fee in approval, so this post links to them.
+- **Pillar:** /first-time-home-buyers-toronto/
+- **Required links:** /first-time-home-buyers-toronto/, /buyers/, /mortgage-calculator-toronto/, /blog/condo-status-certificate-toronto/, /blog/mortgage-stress-test-toronto/, /blog/closing-costs-buying-home-toronto/, /land-transfer-tax-calculator-toronto/, /contact/
+- **Extras:** /new-construction-toronto/, /blog/toronto-property-tax/
+- **Sources:** HCRA Directive 3 Floor Area Calculations; Condominium Act, 1998 ss. 2, 7, 8, 49, 72, 84; O. Reg. 48/01 s. 5; O. Reg. 49/01 ss. 5 and 6; CAO Fees and finances and What are common elements; MPAC condominium assessments; toronto.ca property tax rates and fees.
+- **Do not:** state a Toronto-wide or neighbourhood price per square foot, average or median, use sold data, re-explain the status certificate contents, the GDS condo fee rule, closing costs, land transfer tax or the down payment, or claim a measurement standard for resale listings (none found).
+
 ## Next step
 
 Flip each draft to `draft: false` on its publish date, tick the topic in `BLOG-TOPICS.md` and add a line here marking it published.
