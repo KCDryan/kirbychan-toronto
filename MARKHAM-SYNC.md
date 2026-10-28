@@ -48,3 +48,9 @@ f71add5 in detail:
 | retiring-in-markham | ADAPT | retiring-in-toronto (99aaa74) |
 | stay-or-sell-aging-in-place-ontario | ADAPT | stay-or-sell-toronto-house (99aaa74) |
 | unionville-vs-markham-village, Markham neighbourhood wording | SKIP | Markham-only content |
+
+## Handled outside a run, 2026-10-28
+
+| Markham | Subject | Class | Toronto result |
+|---|---|---|---|
+| 80f746e | Add Made by Kirbify footer credit | ALREADY | Footer credit ported: "Made by Kirbify" link in the footer legal row and on /home-review/ (c1fc7d1) |
