@@ -53,4 +53,4 @@ f71add5 in detail:
 
 | Markham | Subject | Class | Toronto result |
 |---|---|---|---|
-| 80f746e | Add Made by Kirbify footer credit | ALREADY | Footer credit ported: "Made by Kirbify" link in the footer legal row and on /home-review/ (c1fc7d1) |
+| 80f746e | Add Made by Kirbify footer credit | PORT | Already handled, footer credit ported: "Made by Kirbify" link in the footer legal row and on /home-review/ (c1fc7d1) |
