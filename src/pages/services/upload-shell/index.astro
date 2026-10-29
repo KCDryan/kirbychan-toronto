@@ -1,0 +1,52 @@
+---
+/**
+ * An empty service page built with the real layout. A page published at /uploadservice/ is poured into
+ * it by functions/services/[[path]].ts (fillServiceShell in src/lib/service-uploads.ts), so a page that
+ * goes live before the next build looks exactly like a built one. Never indexed or linked.
+ */
+import Base from '../../../layouts/Base.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import ServiceBody from '../../../components/ServiceBody.astro';
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import { neighbourhoodPhoto, photoAlt } from '../../../lib/photos';
+import credits from '../../../data/photo-credits.json';
+import { breadcrumbList, faqPage, service } from '../../../lib/schema';
+
+const MAX = 6;
+const d = {
+  name: 'KCSVC-NAME',
+  h1: 'KCSVC-H1',
+  accent: '',
+  summary: 'KCSVC-SUMMARY',
+  problem: 'KCSVC-PROBLEM',
+  steps: Array.from({ length: MAX }, (_, i) => ({ title: `KCSVC-ST${i}`, body: `KCSVC-SB${i}` })),
+  faq: Array.from({ length: MAX }, (_, i) => ({ q: `KCSVC-FQ${i}`, a: `KCSVC-FA${i}` })),
+};
+const path = '/services/upload-shell/';
+// Every neighbourhood's photo, for the proof block. The page keeps the one it names and removes the rest.
+const photos: Record<string, { name: string; src: string; og: string; alt: string; credit?: { author: string; source: string; license: string; licenseUrl: string } }> = {};
+for (const h of await getCollection('neighbourhoods', ({ data }) => !data.draft)) {
+  const pic = neighbourhoodPhoto(h.id);
+  photos[h.id] = {
+    name: h.data.name,
+    src: pic ? (await getImage({ src: pic, width: 880, height: 540, format: 'webp', fit: 'cover' })).src : '',
+    og: pic ? (await getImage({ src: pic, width: 1200, height: 630, format: 'jpg', fit: 'cover' })).src : '',
+    alt: photoAlt(h.id) ?? `${h.data.name}, Toronto`,
+    credit: pic ? (() => { const c = credits.find((x) => x.slug === h.id); return c?.source && c.licenseUrl ? { author: c.author, source: c.source, license: c.license, licenseUrl: c.licenseUrl } : undefined; })() : undefined,
+  };
+}
+const proof = { name: 'KCSVC-PNAME', text: 'KCSVC-PTEXT', url: 'KCSVC-PURL', src: 'KCSVC-PSRC', alt: 'KCSVC-PALT', credit: { author: 'KCSVC-PCA', source: 'KCSVC-PCS', license: 'KCSVC-PCL', licenseUrl: 'KCSVC-PCU' } };
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services/' },
+  { name: d.name, path },
+];
+const jsonLd = [breadcrumbList(crumbs), service({ name: d.name, description: 'KCSVC-DESC', path }), faqPage(d.faq)].filter(Boolean);
+---
+
+<Base title="KCSVC-TITLE" description="KCSVC-DESC" noindex={true} jsonLd={jsonLd}>
+  <Breadcrumbs crumbs={crumbs} />
+  <ServiceBody id="kcsvc-slug" d={d} proof={proof} shell={true}>KCSVC-BODY</ServiceBody>
+  <template data-kcsvc-photos={JSON.stringify(photos)}></template>
+</Base>

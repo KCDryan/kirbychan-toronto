@@ -26,7 +26,8 @@ interface Card {
   href: string;
 }
 
-const collection = (await getCollection('services', ({ data }) => !data.draft)).sort(
+// A page written at /uploadservice/ has no translation, so it is listed in English only.
+const collection = (await getCollection('services', ({ data }) => !data.draft && (lang === 'en' || !data.uploadVersion))).sort(
   (a, b) => a.data.order - b.data.order
 );
 

@@ -84,6 +84,14 @@ const services = defineCollection({
     steps: z.array(z.object({ title: z.string(), body: z.string() })).min(3),
     faq,
     draft: z.boolean().default(false),
+    // Only on pages written at /uploadservice/ (scripts/pull-uploads.mjs): the blog posts the page lists,
+    // the search phrase it was written for, and the version that marks the file as generated.
+    relatedPosts: z.array(z.string()).default([]),
+    keywords: z.array(z.string()).default([]),
+    uploadVersion: z.string().optional(),
+    // The proof block: a neighbourhood guide address and what the page says about it.
+    proofHood: z.string().optional(),
+    proof: z.string().optional(),
   }),
 });
 

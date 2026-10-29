@@ -1,0 +1,885 @@
+---
+/**
+ * Service pages, written by chatting, one screen at a time (the browser's Back button moves between them):
+ *   My service pages   every service page made here with Edit and Remove, and a big "Write a new service page" button
+ *   #new               chat with OneCut to write the page, then preview, publish or save a draft
+ *   #edit=<slug>       the same screen, starting from a saved page
+ *   #done              "Your page is on its way", with nothing left on screen to publish twice
+ * Uses the same shared password and OneCut connection as /upload/. The API is functions/api/uploadservice/.
+ */
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Write a service page" description="Write a service page for the Kirby Chan & Co. Toronto website." noindex crm={false}>
+  <div class="up wrap">
+    <p class="up__status" id="up-status" role="status" aria-live="polite"></p>
+
+    <section id="v-loading"><p class="up__lead">Loading…</p></section>
+
+    <section id="v-setup" hidden>
+      <h1>Service pages</h1>
+      <p class="up__lead">Uploads are not switched on yet. The website owner needs to set the upload password in Cloudflare.</p>
+    </section>
+
+    <section id="v-pro" hidden>
+      <h1>Connect your OneCut account first</h1>
+      <p class="up__lead">Writing service pages needs a OneCut Content Pro account connected to this website. You only do this once, on the blog page.</p>
+      <a class="btn btn--primary up__big" href="/upload/">Go to the blog page to connect</a>
+      <p>Not on Pro yet? <a href="https://onecutcontent.com/pricing" rel="noopener" target="_blank">See OneCut Content Pro</a>.</p>
+    </section>
+
+    <section id="v-login" hidden>
+      <h1>Service pages</h1>
+      <form id="up-login" class="up__box">
+        <label for="up-password">Password</label>
+        <input id="up-password" type="password" autocomplete="current-password" required />
+        <button class="btn btn--primary up__big" type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <section id="v-list" hidden>
+      <h1>My service pages</h1>
+      <a class="btn btn--primary up__big up__new" href="#new">+ Write a new service page</a>
+      <ul class="up__list" id="up-list"></ul>
+      <p class="up__signout"><button class="btn btn--ghost btn--sm" id="up-logout" type="button">Sign out</button></p>
+    </section>
+
+    <section id="v-chat" hidden>
+      <p><a class="up__back" href="#">← Back to my service pages</a></p>
+      <h1 id="chat-title">Write a new service page</h1>
+      <p class="up__lead">Tell me which service page you want. For example: a page for helping clients sell a pre-construction condo assignment. After the first draft you can ask for changes, like a shorter introduction or another question in the questions list.</p>
+
+      <div class="up__box">
+        <ol class="upsv__msgs" id="up-msgs" aria-live="polite"></ol>
+        <div class="up-prog upsv__prog" id="up-steps" role="status" aria-live="polite" hidden></div>
+        <form id="up-chat" class="upsv__form">
+          <label for="up-text">Your message</label>
+          <textarea id="up-text" rows="3" maxlength="1500" placeholder="Press Enter to send. Press Shift and Enter for a new line."></textarea>
+          <div class="upsv__row">
+            <span class="up__hint" id="up-count">0 of 1,500</span>
+            <button class="btn btn--primary" id="up-send" type="submit">Send</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="up-draftbox" hidden>
+        <div class="up__box">
+          <h2>Preview</h2>
+          <p class="up__hint">This is the draft so far. Ask for changes in the chat above.</p>
+          <div class="upsv__preview" id="up-preview"></div>
+        </div>
+
+        <div class="up__box">
+          <h2>How it will look in Google</h2>
+          <p><strong>Search title:</strong> <span id="seo-title"></span></p>
+          <p class="up__hint" id="seo-title-n"></p>
+          <p><strong>Search description:</strong> <span id="seo-desc"></span></p>
+          <p class="up__hint" id="seo-desc-n"></p>
+          <p><strong>Links to other pages on this website</strong></p>
+          <ul class="up__notes" id="seo-links"></ul>
+        </div>
+
+        <div class="up__box">
+          <h2>Publish</h2>
+          <label for="up-slug">Web address</label>
+          <input id="up-slug" maxlength="80" autocomplete="off" spellcheck="false" />
+          <p class="up__hint" id="up-slug-show"></p>
+          <button class="btn btn--primary up__big" id="up-publish" type="button">Publish</button>
+          <button class="btn btn--ghost" id="up-save" type="button">Save as draft</button>
+          <p class="up__hint">Publishing starts a rebuild of the website. The page is live about four minutes later.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-done" hidden>
+      <div class="up__box up__success">
+        <p class="up__tick" aria-hidden="true">✓</p>
+        <h1 id="done-title">Your page is on its way</h1>
+        <p class="up__lead" id="done-addr"></p>
+        <p class="up__lead" id="done-text"></p>
+        <a class="btn btn--primary up__big" id="done-view" target="_blank" rel="noopener">View the page</a>
+        <a class="btn btn--ghost up__big" href="#new" id="done-again">Write another</a>
+        <a class="btn btn--ghost up__big" href="#">Back to my service pages</a>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import { renderBody } from '../../lib/uploads';
+
+  type Step = { title: string; body: string };
+  type Faq = { q: string; a: string };
+  type Page = {
+    name: string; h1: string; accent: string; title: string; description: string; summary: string; problem: string;
+    steps: Step[]; body: string; faq: Faq[]; focus_keyword: string; related_posts: string[]; proof_hood: string; proof: string;
+  };
+  type Msg = { role: 'user' | 'assistant'; content: string };
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const input = (id: string) => $<HTMLInputElement>(id);
+  const status = $('up-status');
+  const say = (text: string, bad = false) => {
+    status.textContent = text;
+    status.classList.toggle('up__status--bad', bad);
+  };
+  const el = (tag: string, cls = '', text = '') => Object.assign(document.createElement(tag), { className: cls, textContent: text });
+  const api = async (action: string, body?: unknown) => {
+    const res = await fetch(`/api/uploadservice/${action}`, body === undefined ? { credentials: 'same-origin' } : { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    if (res.status === 401 && action !== 'login') show('v-login');
+    return { status: res.status, data: (await res.json().catch(() => ({}))) as Record<string, any> };
+  };
+  const VIEWS = ['v-loading', 'v-setup', 'v-pro', 'v-login', 'v-list', 'v-chat', 'v-done'];
+  const show = (view: string) => {
+    for (const v of VIEWS) $(v).hidden = v !== view;
+    window.scrollTo(0, 0);
+  };
+  const slugOf = (s: string) => s.toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80).replace(/-+$/, '');
+  const button = (text: string, cls: string, onclick: () => void) => {
+    const b = Object.assign(el('button', `btn ${cls}`, text) as HTMLButtonElement, { type: 'button' });
+    b.onclick = onclick;
+    return b;
+  };
+
+  // ---- Chat state, kept in memory only ----
+  let messages: Msg[] = [];
+  let draft: Page | null = null;
+  let editing = '';
+  let slugTouched = false;
+  let busy = false;
+  let signedIn = false;
+  let doneShown = false;
+
+  const MAX = 1500;
+  const refreshButtons = () => {
+    $<HTMLButtonElement>('up-send').disabled = busy;
+    input('up-text').disabled = busy;
+    for (const id of ['up-publish', 'up-save']) $<HTMLButtonElement>(id).disabled = busy || !draft;
+  };
+
+  function addMessage(m: Msg) {
+    const li = el('li', `upsv__msg upsv__msg--${m.role}`);
+    li.append(el('strong', 'upsv__who', m.role === 'user' ? 'You' : 'OneCut'), el('p', '', m.content));
+    $('up-msgs').append(li);
+    li.scrollIntoView({ block: 'nearest' });
+  }
+
+  function reset() {
+    messages = [];
+    draft = null;
+    editing = '';
+    slugTouched = false;
+    busy = false;
+    $('up-msgs').replaceChildren();
+    $('up-steps').hidden = true;
+    $('up-draftbox').hidden = true;
+    input('up-text').value = '';
+    input('up-slug').value = '';
+    $('up-count').textContent = `0 of 1,500`;
+    refreshButtons();
+  }
+
+  // ---- Preview of the current draft ----
+  function drawPreview() {
+    $('up-draftbox').hidden = !draft;
+    refreshButtons();
+    if (!draft) return;
+    const p = draft;
+    const box = $('up-preview');
+    const h1 = el('h3', 'upsv__h1');
+    const at = p.accent ? p.h1.indexOf(p.accent) : -1;
+    if (at >= 0) h1.append(p.h1.slice(0, at), el('span', 'upsv__accent', p.accent), p.h1.slice(at + p.accent.length));
+    else h1.textContent = p.h1;
+    const parts: HTMLElement[] = [h1, el('p', 'upsv__lede', p.summary), el('h4', '', `Introduction (${p.problem.split(/\s+/).length} words)`), el('p', '', p.problem)];
+    if (p.steps?.length) {
+      const ol = el('ol', 'upsv__steps');
+      for (const s of p.steps) {
+        const li = el('li');
+        li.append(el('strong', '', s.title), el('span', '', ` ${s.body}`));
+        ol.append(li);
+      }
+      parts.push(el('h4', '', 'How we handle it'), ol);
+    }
+    // renderBody output is already safe markdown rendering.
+    const body = el('div', 'upsv__body');
+    body.innerHTML = renderBody(p.body ?? '').html;
+    parts.push(body);
+    if (p.faq?.length) {
+      parts.push(el('h4', '', 'Questions'));
+      for (const f of p.faq) {
+        const d = el('div', 'upsv__faq');
+        d.append(el('strong', '', f.q), el('p', '', f.a));
+        parts.push(d);
+      }
+    }
+    if (p.proof) {
+      const hood = (p.proof_hood ?? '').replace(/^\/|-toronto\/$/g, '').replace(/-/g, ' ');
+      parts.push(el('h4', '', `Neighbourhood example: ${hood} (the photo is added on the page)`), el('p', '', p.proof));
+    }
+    box.replaceChildren(...parts);
+
+    $('seo-title').textContent = p.title;
+    const tn = [...p.title].length;
+    $('seo-title-n').textContent = `${tn} characters. Aim for 60 or fewer. ${tn <= 60 ? 'Good.' : 'A little long.'}`;
+    $('seo-desc').textContent = p.description;
+    const dn = [...p.description].length;
+    $('seo-desc-n').textContent = `${dn} characters. Aim for 140 to 168. ${dn >= 140 && dn <= 168 ? 'Good.' : 'Outside that range.'}`;
+    const links = [...new Set([...(p.body ?? '').matchAll(/\]\((\/[^)\s]*)\)/g)].map((m) => m[1]))];
+    $('seo-links').replaceChildren(...(links.length ? links.map((l) => el('li', '', l)) : [el('li', '', 'None yet. You can ask for links to related pages.')]));
+
+    if (!editing && !slugTouched) input('up-slug').value = slugOf(p.name);
+    showSlug();
+  }
+  const showSlug = () => ($('up-slug-show').textContent = `The page will be at /services/${slugOf(input('up-slug').value) || '…'}/`);
+
+  // ---- The writing steps panel, like the blog page ----
+  const ORIGIN: Record<string, string> = {
+    searches: 'chosen from what people actually search on Google',
+    'your keywords': 'the keyword you gave',
+    estimate: "our best estimate, as search data wasn't available just now",
+  };
+
+  async function send() {
+    if (busy) return;
+    const text = input('up-text').value.trim();
+    if (!text) return say('Please type what you would like first.', true);
+    if (text.length > MAX) return say('That message is too long. Please keep it under 1,500 characters.', true);
+    say('');
+    const first = !messages.length && !draft;
+    const changing = !!draft;
+    messages.push({ role: 'user', content: text });
+    addMessage({ role: 'user', content: text });
+    input('up-text').value = '';
+    $('up-count').textContent = `0 of 1,500`;
+    busy = true;
+    refreshButtons();
+
+    const steps = [...(first ? ['Researching keywords'] : []), changing ? 'Changing the page' : 'Writing the page', 'Checking the links'];
+    const events: Record<string, any>[] = [];
+    const startedAt = Date.now();
+    const panel = $('up-steps');
+    const draw = () => {
+      const fixing = events.some((x) => x.stage === 'Fixing a detail');
+      const list = fixing ? [...steps, 'Fixing a detail'] : steps;
+      const reported = events.filter((x) => list.includes(x.stage));
+      const current = reported.length ? list.indexOf(reported[reported.length - 1].stage) : 0;
+      const chosen = [...events].reverse().find((x) => x.stage === 'Keywords chosen' && x.focus);
+      const seconds = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+      const ol = el('ol', 'up-prog__list');
+      list.forEach((name, i) => {
+        const li = el('li', i < current ? 'is-done' : i === current ? 'is-now' : '');
+        li.append(el('span', 'up-prog__mark', i < current ? '✓' : ''), el('span', 'up-prog__text', name + (i === current ? '…' : '')));
+        if (i === current) li.append(el('span', 'up-prog__time', `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`));
+        ol.append(li);
+      });
+      const parts: HTMLElement[] = [ol];
+      if (chosen) {
+        const aim = el('p', 'up-prog__aim', 'Aimed at ');
+        aim.append(el('strong', '', `“${chosen.focus}”`), `, ${ORIGIN[chosen.from ?? 'estimate'] ?? ORIGIN.estimate}.`);
+        parts.push(aim);
+        if (chosen.related?.length) {
+          const tags = el('p', 'up-prog__tags');
+          tags.append(...chosen.related.slice(0, 6).map((k: string) => el('span', '', k)));
+          parts.push(tags);
+        }
+      }
+      parts.push(el('p', 'up-prog__note', "Usually about a minute. Keep this page open until it's done."));
+      panel.replaceChildren(...parts);
+    };
+    panel.hidden = false;
+    draw();
+    panel.scrollIntoView({ block: 'nearest' });
+    const clock = setInterval(draw, 1000);
+    const fail = (message: string) => {
+      clearInterval(clock);
+      panel.hidden = true;
+      // The message did not go through: take it out so the chat stays in step then put the words back.
+      messages.pop();
+      $('up-msgs').lastElementChild?.remove();
+      input('up-text').value = text;
+      busy = false;
+      refreshButtons();
+      say(message, true);
+    };
+
+    // The last 12 messages must start with one of yours.
+    let sent = messages.slice(-12);
+    while (sent.length && sent[0].role !== 'user') sent = sent.slice(1);
+    let res: Response;
+    try {
+      res = await fetch('/api/uploadservice/chat', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ messages: sent, draft }) });
+    } catch {
+      return fail('The connection dropped. Please try again.');
+    }
+    if (!res.ok || !res.body) {
+      const err = ((await res.json().catch(() => ({}))) as { error?: string }).error;
+      if (res.status === 401) show('v-login');
+      return fail(err || 'The page could not be written. Please try again.');
+    }
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buffer = '';
+    let error = '';
+    let reply = '';
+    let page: Page | null | undefined;
+    let finished = false;
+    for (;;) {
+      const { value, done } = await reader.read().catch(() => ({ value: undefined, done: true }));
+      buffer += value ?? '';
+      const lines = buffer.split('\n');
+      buffer = done ? '' : lines.pop()!;
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        let event: Record<string, any> = {};
+        try {
+          event = JSON.parse(line);
+        } catch {}
+        if (typeof event.stage === 'string') {
+          events.push(event);
+          draw();
+        }
+        if (event.error) error = String(event.error);
+        if (event.done) {
+          finished = true;
+          reply = String(event.reply ?? '');
+          page = event.page;
+        }
+      }
+      if (done) break;
+    }
+    if (error || !finished) return fail(error || 'The page did not finish. Please try again.');
+    clearInterval(clock);
+    panel.hidden = true;
+    const answer = reply || (page ? 'Here is the page.' : 'Done.');
+    messages.push({ role: 'assistant', content: answer });
+    addMessage({ role: 'assistant', content: answer });
+    if (page) {
+      draft = page;
+      drawPreview();
+    }
+    busy = false;
+    refreshButtons();
+    input('up-text').focus();
+  }
+
+  // ---- Publish ----
+  async function save(asDraft: boolean) {
+    if (busy || !draft) return;
+    const slug = slugOf(input('up-slug').value);
+    if (!slug) return say('Please type a web address for the page first.', true);
+    busy = true;
+    refreshButtons();
+    try {
+      say(asDraft ? 'Saving the draft…' : 'Publishing…');
+      let { status: code, data } = await api('publish', { page: draft, slug, draft: asDraft, replace: !!editing });
+      if (code === 409 && data.error === 'exists') {
+        const question = data.live
+          ? 'A page with this web address is already on the website. Replace it with this one?'
+          : 'You have a draft with this web address. Replace it with this one?';
+        if (!confirm(question)) return say('Nothing was changed. You can change the web address and try again.');
+        ({ data } = await api('publish', { page: draft, slug, draft: asDraft, replace: true }));
+      }
+      if (data.error) return say(data.error, true);
+      const isDraft = !!data.draft;
+      $('done-title').textContent = isDraft ? 'Draft saved' : 'Your page is live';
+      $('done-addr').textContent = data.url || `/services/${data.slug || slug}/`;
+      $('done-text').textContent = isDraft
+        ? 'Draft saved. It is not on the website.'
+        : data.rebuilding === false
+          ? 'The page is live now. The services list, the home page and the sitemap add it at the next automatic rebuild, every morning.'
+          : 'The page is live now. The services list, the home page and the sitemap add it when the website finishes rebuilding, in about four minutes.';
+      const view = $('done-view') as HTMLAnchorElement;
+      view.href = data.url || `/services/${data.slug || slug}/`;
+      view.hidden = isDraft;
+      doneShown = true;
+      reset();
+      say('');
+      // Replaces the chat screen in the history, so Back goes to the list, not to an empty chat.
+      location.replace('#done');
+      route();
+    } finally {
+      busy = false;
+      refreshButtons();
+    }
+  }
+
+  // ---- My service pages ----
+  async function list() {
+    show('v-list');
+    const ul = $('up-list');
+    ul.replaceChildren(el('li', 'up__empty', 'Loading your service pages…'));
+    const { data } = await api('list');
+    ul.replaceChildren();
+    for (const s of data.services ?? []) {
+      const li = document.createElement('li');
+      const text = el('div', 'up__item');
+      const name = s.live
+        ? Object.assign(el('a', '', s.name), { href: s.url, target: '_blank', rel: 'noopener' })
+        : el('strong', '', s.name);
+      const when = new Date(s.updated).toLocaleDateString('en-CA', { dateStyle: 'long' });
+      const state = el('span', `up__state ${s.live ? 'up__state--live' : ''}`, `${s.live ? 'Live' : 'Draft'} · ${when}`);
+      text.append(name, state, el('span', 'up__state', s.url));
+      const actions = el('div', 'up__actions');
+      actions.append(
+        button('Edit', 'btn--ghost', () => (location.hash = `edit=${s.slug}`)),
+        button('Remove', 'btn--danger', async () => {
+          const ask = s.live ? `Remove "${s.name}" from the website?` : `Delete the draft "${s.name}"?`;
+          if (!confirm(ask)) return;
+          const r = await api('unpublish', { slug: s.slug });
+          if (r.data.error) return say(r.data.error, true);
+          say(`"${s.name}" has been removed.`);
+          list();
+        })
+      );
+      li.append(text, actions);
+      ul.append(li);
+    }
+    if (!ul.children.length) ul.append(el('li', 'up__empty', 'No service pages yet. Press Write a new service page to start.'));
+  }
+
+  async function edit(slug: string) {
+    reset();
+    show('v-chat');
+    $('chat-title').textContent = 'Change a service page';
+    say('Opening the page…');
+    const { data } = await api('get', { slug });
+    if (data.error || !data.page) return say(data.error || 'That page could not be opened.', true);
+    editing = slug;
+    draft = data.page;
+    slugTouched = true;
+    input('up-slug').value = slug;
+    say('');
+    drawPreview();
+  }
+
+  // ---- Screens follow the address, so Back works ----
+  function route() {
+    if (!signedIn) return;
+    say('');
+    const h = location.hash.slice(1);
+    if (h === 'new') {
+      reset();
+      $('chat-title').textContent = 'Write a new service page';
+      show('v-chat');
+    } else if (h.startsWith('edit=')) edit(decodeURIComponent(h.slice(5)));
+    else if (h === 'done' && doneShown) show('v-done');
+    else {
+      reset();
+      list();
+    }
+  }
+
+  async function start() {
+    const { data } = await api('me');
+    if (!data.ready) return show('v-setup');
+    signedIn = !!data.signedIn;
+    if (!signedIn) return show('v-login');
+    if (data.needsPro || !data.connected) return show('v-pro');
+    route();
+  }
+
+  addEventListener('hashchange', route);
+  $('up-login').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    say('Signing in…');
+    const res = await fetch('/api/upload/login', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: input('up-password').value }) });
+    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    if (!res.ok || data.error) return say(data.error || 'That did not work. Please try again.', true);
+    input('up-password').value = '';
+    say('');
+    start();
+  });
+  $('up-chat').addEventListener('submit', (e) => {
+    e.preventDefault();
+    send();
+  });
+  input('up-text').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      send();
+    }
+  });
+  input('up-text').addEventListener('input', () => ($('up-count').textContent = `${input('up-text').value.length.toLocaleString('en-CA')} of 1,500`));
+  input('up-slug').addEventListener('input', () => {
+    slugTouched = true;
+    showSlug();
+  });
+  $('up-publish').addEventListener('click', () => save(false));
+  $('up-save').addEventListener('click', () => save(true));
+  $('up-logout').addEventListener('click', async () => {
+    await api('logout', {});
+    await fetch('/api/upload/logout', { method: 'POST', credentials: 'same-origin' });
+    signedIn = false;
+    show('v-login');
+  });
+  start();
+</script>
+
+<style is:global>
+  .up [hidden] {
+    display: none;
+  }
+  .up {
+    max-width: 920px;
+    padding-block: var(--sp-7) var(--sp-8);
+    font-size: 1.1rem;
+  }
+  .up h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--sp-3);
+  }
+  .up__box {
+    display: grid;
+    gap: var(--sp-3);
+    margin-top: var(--sp-6);
+    padding: var(--sp-6);
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+  }
+  .up__box > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .up label {
+    font-weight: 700;
+  }
+  .up input:not([type='file'], [type='checkbox']),
+  .up select,
+  .up textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font: inherit;
+    border: 2px solid var(--rule);
+    border-radius: var(--radius);
+    background: #fff;
+  }
+  .up input:focus,
+  .up select:focus,
+  .up textarea:focus {
+    outline: 3px solid var(--brand);
+    outline-offset: 1px;
+  }
+  .up__status {
+    margin-top: var(--sp-4);
+    padding: var(--sp-4) var(--sp-5);
+    border-radius: var(--radius);
+    background: var(--mist);
+    font-weight: 700;
+  }
+  .up__status:empty {
+    display: none;
+  }
+  .up__status--bad {
+    background: #fdecea;
+    color: #8a1c12;
+  }
+  .up__notes {
+    margin: 0;
+    padding-left: 1.2em;
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
+  }
+  .up__big {
+    min-height: 64px;
+    font-size: 1.1rem;
+  }
+  .up__list {
+    display: grid;
+    gap: var(--sp-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .up__hint {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .up h1 {
+    margin-bottom: var(--sp-5);
+  }
+  .up__lead {
+    font-size: 1.2rem;
+  }
+  .up__new {
+    width: 100%;
+    margin-bottom: var(--sp-6);
+  }
+  .up__back {
+    display: inline-block;
+    margin-bottom: var(--sp-3);
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .up__success {
+    justify-items: center;
+    text-align: center;
+    padding-block: var(--sp-8);
+  }
+  .up__success .btn {
+    width: min(100%, 420px);
+  }
+  .up__tick {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: #1f7a3f;
+    color: #fff;
+    font-size: 2.4rem;
+    line-height: 1;
+  }
+  .up__item {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .up__item a,
+  .up__item strong {
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .up__state {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .up__state--live {
+    color: #1f7a3f;
+  }
+  .up__actions {
+    display: flex;
+    gap: var(--sp-2);
+  }
+  .up__empty {
+    color: var(--text-muted);
+  }
+  .up__signout {
+    margin-top: var(--sp-6);
+  }
+  .up__list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    padding: var(--sp-5);
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+  }
+  .up__list li.up__empty {
+    display: block;
+  }
+  .up__signout .btn {
+    min-height: 44px;
+  }
+
+  /* Chat */
+  .upsv__msgs {
+    display: grid;
+    gap: var(--sp-3);
+    max-height: 420px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .upsv__msgs:empty {
+    display: none;
+  }
+  .upsv__msg {
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--radius);
+    background: var(--mist);
+    overflow-wrap: anywhere;
+  }
+  .upsv__msg--user {
+    background: #e8f4ec;
+  }
+  .upsv__msg p {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+  .upsv__who {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .upsv__prog {
+    margin-top: 0;
+  }
+  .upsv__form {
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .upsv__form textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+  }
+  .upsv__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+  }
+
+  /* Preview of the draft */
+  .upsv__preview {
+    display: grid;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    border: 2px solid var(--rule);
+    border-radius: var(--radius);
+    overflow-wrap: anywhere;
+  }
+  .upsv__preview > * {
+    margin: 0;
+  }
+  .upsv__h1 {
+    font-size: var(--step-3);
+  }
+  .upsv__accent {
+    color: var(--brand);
+  }
+  .upsv__lede {
+    font-size: 1.2rem;
+  }
+  .upsv__steps {
+    margin: 0;
+    padding-left: 1.4em;
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .upsv__body img {
+    max-width: 100%;
+    height: auto;
+  }
+  .upsv__body table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .upsv__body > * + * {
+    margin-top: var(--sp-3);
+  }
+  .upsv__faq p {
+    margin: 0;
+  }
+
+  /* Step panel, shared with the blog upload page */
+  .up-prog {
+    margin-top: var(--sp-4);
+    background: var(--mist);
+    padding: var(--sp-5);
+    border-radius: var(--radius-lg);
+  }
+  .up-prog__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-3);
+  }
+  .up-prog__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+  .up-prog__list li.is-done {
+    opacity: 1;
+  }
+  .up-prog__list li.is-now {
+    opacity: 1;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .up-prog__mark {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.15rem;
+    display: grid;
+    place-items: center;
+    color: #15803d;
+    font-weight: 700;
+  }
+  .up-prog__list li:not(.is-done):not(.is-now) .up-prog__mark::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--rule);
+  }
+  .up-prog__list li.is-now .up-prog__mark::before {
+    content: '';
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    border: 3px solid var(--rule);
+    border-top-color: var(--brand);
+    animation: up-spin 0.9s linear infinite;
+  }
+  @keyframes up-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .up-prog__list li.is-now .up-prog__mark::before {
+      animation: none;
+    }
+  }
+  .up-prog__text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .up-prog__time {
+    margin-left: auto;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+  }
+  .up-prog__aim {
+    margin-top: var(--sp-4);
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--rule);
+  }
+  .up-prog__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+  .up-prog__tags span {
+    padding: 0.1rem 0.6rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 0.9rem;
+  }
+  .up-prog__note {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .btn--danger {
+    background: #fff;
+    color: #8a1c12;
+    border-color: #e8b4ae;
+  }
+  .btn--danger:hover {
+    background: #fdecea;
+    color: #8a1c12;
+  }
+  @media (max-width: 480px) {
+    .up__box {
+      padding: var(--sp-4);
+    }
+  }
+</style>

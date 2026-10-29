@@ -14,6 +14,8 @@ interface Props {
   description: string;
   ogImage?: string;
   noindex?: boolean;
+  /** Off on the sign-in tools (/upload/, /uploadservice/): they are for the team, not visitors. */
+  crm?: boolean;
   ogType?: 'website' | 'article' | 'video.other';
   jsonLd?: unknown[];
   bodyClass?: string;
@@ -29,6 +31,7 @@ const {
   description,
   ogImage = DEFAULT_OG,
   noindex = false,
+  crm = true,
   ogType = 'website',
   jsonLd = [],
   bodyClass = '',
@@ -129,6 +132,6 @@ const graphs = [agent, isHome && website(), ...jsonLd].filter(Boolean);
     <Footer />
     {/* Kirbify CRM: copies name, email, phone and message from a submitted enquiry form into the team's
         CRM. It skips any form with a password field. Its address is allowed in public/_headers. */}
-    <script is:inline src="https://admin.kirbify.com/s/ks_SADBRbNyyo3ZVRD6bDZ5Io5t/site.js" async></script>
+    {crm && <script is:inline src="https://admin.kirbify.com/s/ks_SADBRbNyyo3ZVRD6bDZ5Io5t/site.js" async></script>}
   </body>
 </html>
