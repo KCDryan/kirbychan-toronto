@@ -63,7 +63,7 @@ The three topics above were all used, so these four were taken from `BLOG-TOPICS
 - **Target query:** downsizing from house to apartment. From the downsizing questions in `KEYWORDS.md` and the Sunday queue in `BLOG-TOPICS.md`. The pillar `/downsizing-toronto/` covers buying a condo, townhouse or bungalow, so the post takes the renting angle only.
 - **Gap:** nothing on the site explains what a downsizer signs up to as a tenant: the standard lease, the rent deposit cap, the rent increase guideline and the November 15, 2018 exemption, notice to leave and the landlord's own use rules changed on September 21, 2026. The care home post covers the landlord side of renting out a parent's house, not the tenant side.
 - **Pillar:** /downsizing-toronto/
-- **Required links:** /downsizing-toronto/, /services/downsizing/, /sellers/, /home-valuation/, /blog/condo-vs-retirement-residence-cost-toronto/, /blog/sell-first-or-buy-first-downsizing-toronto/
+- **Required links:** /downsizing-toronto/, /sellers/, /home-valuation/, /blog/condo-vs-retirement-residence-cost-toronto/, /blog/sell-first-or-buy-first-downsizing-toronto/
 - **Extras:** /blog/selling-a-house-in-ontario-taxes/, /blog/toronto-downsizing-costs/, /contact/
 - **Sources:** ontario.ca (Renting in Ontario: your rights, residential rent increases, guide to the standard lease), LTB brochures (A Guide to the Residential Tenancies Act, How a Landlord Can End a Tenancy, updated September 21, 2026), CRA principal residence, toronto.ca RentSafeTO for tenants.
 - **Do not:** quote average Toronto rents (no primary source opened), say that a given share of buildings is exempt from rent control or repeat the principal residence rules (link to the taxes post).
