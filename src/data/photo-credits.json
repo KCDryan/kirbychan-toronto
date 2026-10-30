@@ -322,5 +322,25 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Skyline_of_The_Queensway_Humber_Bay,_Toronto_2026.jpg",
     "title": "Skyline of The Queensway Humber Bay, Toronto 2026.jpg"
+  },
+  {
+    "slug": "toronto-home-appraisal",
+    "file": "blog/toronto-home-appraisal",
+    "shows": "Older brick and shingle houses with porches and balconies behind tall maple trees on a residential street in Toronto, in early autumn. Cropped to remove a house number, with one small number plaque blurred.",
+    "author": "Dillan Payne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Homes_on_Palmerston_Boulevard_in_Toronto,_October_12_2026.jpg",
+    "title": "Homes on Palmerston Boulevard in Toronto, October 12 2026.jpg"
+  },
+  {
+    "slug": "willowdale-real-estate",
+    "file": "blog/willowdale-real-estate",
+    "shows": "A new stone house under construction behind yellow scaffolding in North York, Toronto, with a forklift and a cement mixer on the lot in front. Cropped to 3:2, with the house number and a rental company label blurred.",
+    "author": "Raysonho @ Open Grid Scheduler / Grid Engine",
+    "license": "CC0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:NorthYorkHouseConstruction.jpg",
+    "title": "NorthYorkHouseConstruction.jpg"
   }
 ]

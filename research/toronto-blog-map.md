@@ -127,6 +127,34 @@ From the Monday queue in `BLOG-TOPICS.md` (first unused Monday topic; the down p
 - **Sources:** HCRA Directive 3 Floor Area Calculations; Condominium Act, 1998 ss. 2, 7, 8, 49, 72, 84; O. Reg. 48/01 s. 5; O. Reg. 49/01 ss. 5 and 6; CAO Fees and finances and What are common elements; MPAC condominium assessments; toronto.ca property tax rates and fees.
 - **Do not:** state a Toronto-wide or neighbourhood price per square foot, average or median, use sold data, re-explain the status certificate contents, the GDS condo fee rule, closing costs, land transfer tax or the down payment, or claim a measurement standard for resale listings (none found).
 
+## 1 more topic, drafted 2026-10-30
+
+From the Wednesday queue in `BLOG-TOPICS.md` (the Nov 11 slot is a Wednesday). Skipped: "What it costs to sell a house in Toronto" (overlaps `toronto-downsizing-costs`, per the 2026-10-19 log), "Seller disclosure when selling a house in Ontario" (its keyword "selling a house in ontario" belongs to `/sellers/`) and "Toronto home value estimators" ("toronto home value estimator" belongs to `/home-valuation/`, `KEYWORDS.md` target 6).
+
+### 10. Toronto home appraisal: what an appraiser looks at
+- **Used:** drafted 2026-10-30 as `toronto-home-appraisal` (draft, published date 2026-11-11, a Wednesday).
+- **Target query:** toronto home appraisal. From the Prices and value paragraph in `KEYWORDS.md` ("toronto home value" and "toronto home valuation" both return "toronto home appraisal") and the Wednesday queue in `BLOG-TOPICS.md`. `/home-valuation/` targets the valuation and estimator phrases and only mentions appraisals in one FAQ, so there is no overlap.
+- **Gap:** nothing on the site explains what an appraiser inspects and asks, the three approaches to value, that the lender is the appraiser's client when a mortgage appraisal is ordered (and who may see the report), the AACI and CRA designations or how an appraisal differs from the MPAC assessment and from an agent's valuation. The closing costs post lists the appraisal as a cost in one line.
+- **Pillar:** /sellers/
+- **Required links:** /sellers/, /home-valuation/, /toronto-house-prices/, /blog/toronto-property-tax/, /blog/closing-costs-buying-home-toronto/, /selling-an-estate-home-toronto/, /selling-a-home-after-separation-toronto/, /contact/
+- **Extras:** /blog/first-time-home-buyer-ontario-down-payment/, /blog/selling-parents-house-after-death-ontario-taxes/, /blog/selling-a-house-in-ontario-commission/, /blog/selling-a-house-in-ontario-taxes/, /upsizing-toronto/
+- **Sources:** Appraisal Institute of Canada (For Residential Property Owners, What Appraisers Do, CUSPAP, Find an Appraiser); CMHC How much will my home really cost and Purchase (lending value); MPAC Notices and notifications; toronto.ca Property assessment; CRA definitions for capital gains (fair market value).
+- **Do not:** quote appraisal fees in dollars or a Toronto-wide or area value, say appraisers are licensed or regulated by Ontario (no primary source found), promise a borrower a copy of a lender's report or give advice on which date an estate or separation must value a home at (send readers to their lawyer or accountant).
+
+## 1 more topic, drafted 2026-10-30 (second)
+
+From the Friday queue in `BLOG-TOPICS.md` (the Nov 13 slot is a Friday). Skipped: "Banbury-Don Mills or Bayview Village" (Don Mills is covered by `don-mills-real-estate-vs-leaside` and "homes for sale" is listing intent owned by `/homes-for-sale/`) and "Toronto house prices in 2026" (needs city-wide price figures and the head term belongs to `/toronto-house-prices/`).
+
+### 11. Willowdale real estate: buying a detached house to rebuild or extend
+- **Used:** drafted 2026-10-30 as `willowdale-real-estate` (draft, published date 2026-11-13, a Friday).
+- **Target query:** willowdale real estate. From `KEYWORDS.md` target 10 ("willowdale real estate and similar") and the Friday queue in `BLOG-TOPICS.md` ("Willowdale West or Lawrence Park North"). The Willowdale guide targets "living in willowdale, toronto", so there is no overlap. Lawrence Park is already compared in `leaside-vs-lawrence-park`, so the post covers Willowdale only.
+- **Gap:** nothing on the site explains the City steps for replacing or extending a house: which zoning by-law applies (569-2013 or a former North York by-law), the Zoning Applicable Law Certificate, Committee of Adjustment minor variances and consents with their 2026 fees, notice and the North York panel, or the demolition control conditions (two years to complete or $20,000 per unit). The High Park post covers multiplexes and suites and the Riverdale post covers trees, so this post links to them.
+- **Pillar:** /upsizing-toronto/
+- **Required links:** /willowdale-toronto/, /homes-for-sale/willowdale/, /upsizing-toronto/, /blog/toronto-subway-commute-by-neighbourhood/, /blog/riverdale-toronto-real-estate/, /blog/high-park-toronto-real-estate/, /home-valuation/, /contact/
+- **Extras:** /map-of-toronto/, /blog/closing-costs-buying-home-toronto/, /land-transfer-tax-calculator-toronto/, /new-construction-toronto/, /blog/leaside-vs-lawrence-park/, /bayview-village-toronto/
+- **Sources:** toronto.ca Committee of Adjustment (fees and forms, about, North York schedule), Zoning By-law 569-2013, Zoning Applicable Law Certificate, When Do I Need a Building Permit, Residential Demolition Permit with Replacement Building; Toronto Municipal Code Chapter 363 Article 6; City decision report for 104-114 Finch Ave East (Ward 18, 2025); TTC Sheppard-Yonge station.
+- **Do not:** quote TRREB prices, sales counts or Census figures (the guide carries them), state how often houses are rebuilt in Willowdale, give Committee of Adjustment processing times, permit fees or development charges (not verified), or say Lawrence Park is in the former City of Toronto (not verified).
+
 ## Next step
 
 Flip each draft to `draft: false` on its publish date, tick the topic in `BLOG-TOPICS.md` and add a line here marking it published.
