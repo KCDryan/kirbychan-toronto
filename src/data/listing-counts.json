@@ -1,66 +1,66 @@
 {
-  "updated": "2026-10-29T17:24:26.946Z",
+  "updated": "2026-10-30T16:59:55.369Z",
   "toronto": {
-    "total": 9923,
-    "bungalow": 692,
-    "condo": 5212,
-    "townhouse": 933,
-    "house": 3355
+    "total": 9885,
+    "bungalow": 693,
+    "condo": 5194,
+    "townhouse": 930,
+    "house": 3336
   },
   "areas": {
     "downtown-waterfront": {
-      "total": 846,
+      "total": 840,
       "bungalow": 0,
-      "condo": 810,
+      "condo": 802,
       "townhouse": 17,
       "house": 2
     },
     "willowdale": {
-      "total": 397,
+      "total": 399,
       "bungalow": 18,
-      "condo": 258,
+      "condo": 259,
       "townhouse": 30,
-      "house": 105
+      "house": 106
     },
     "bayview-village": {
-      "total": 191,
+      "total": 192,
       "bungalow": 13,
-      "condo": 125,
-      "townhouse": 18,
+      "condo": 127,
+      "townhouse": 17,
       "house": 47
     },
     "lawrence-park": {
-      "total": 101,
+      "total": 99,
       "bungalow": 1,
-      "condo": 22,
+      "condo": 21,
       "townhouse": 1,
-      "house": 75
+      "house": 74
     },
     "don-mills": {
-      "total": 173,
-      "bungalow": 15,
-      "condo": 90,
+      "total": 174,
+      "bungalow": 16,
+      "condo": 88,
       "townhouse": 6,
-      "house": 74
+      "house": 77
     },
     "the-annex": {
       "total": 210,
       "bungalow": 0,
-      "condo": 153,
+      "condo": 154,
       "townhouse": 16,
-      "house": 28
+      "house": 27
     },
     "rosedale": {
-      "total": 100,
+      "total": 98,
       "bungalow": 0,
-      "condo": 43,
-      "townhouse": 5,
-      "house": 40
+      "condo": 41,
+      "townhouse": 6,
+      "house": 39
     },
     "yonge-eglinton": {
-      "total": 248,
+      "total": 246,
       "bungalow": 0,
-      "condo": 221,
+      "condo": 219,
       "townhouse": 5,
       "house": 15
     },
@@ -72,35 +72,35 @@
       "house": 28
     },
     "mount-pleasant-east": {
-      "total": 52,
+      "total": 51,
       "bungalow": 0,
       "condo": 20,
       "townhouse": 1,
-      "house": 28
+      "house": 27
     },
     "riverdale": {
-      "total": 116,
+      "total": 111,
       "bungalow": 0,
-      "condo": 49,
-      "townhouse": 29,
-      "house": 31
+      "condo": 48,
+      "townhouse": 27,
+      "house": 29
     },
     "agincourt": {
-      "total": 120,
+      "total": 121,
       "bungalow": 3,
-      "condo": 59,
-      "townhouse": 17,
-      "house": 33
+      "condo": 58,
+      "townhouse": 18,
+      "house": 34
     },
     "guildwood": {
-      "total": 30,
+      "total": 29,
       "bungalow": 3,
-      "condo": 11,
+      "condo": 10,
       "townhouse": 3,
       "house": 16
     },
     "the-beaches": {
-      "total": 74,
+      "total": 75,
       "bungalow": 0,
       "condo": 20,
       "townhouse": 4,
@@ -114,25 +114,25 @@
       "house": 48
     },
     "mimico": {
-      "total": 302,
-      "bungalow": 7,
-      "condo": 241,
-      "townhouse": 17,
-      "house": 29
+      "total": 305,
+      "bungalow": 6,
+      "condo": 245,
+      "townhouse": 18,
+      "house": 28
     },
     "high-park": {
-      "total": 117,
+      "total": 116,
       "bungalow": 1,
-      "condo": 70,
+      "condo": 69,
       "townhouse": 1,
       "house": 33
     },
     "islington-village": {
-      "total": 262,
-      "bungalow": 24,
+      "total": 261,
+      "bungalow": 23,
       "condo": 165,
       "townhouse": 20,
-      "house": 70
+      "house": 69
     }
   },
   "complete": true
