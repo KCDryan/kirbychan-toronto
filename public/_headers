@@ -45,7 +45,14 @@
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 
+/uploadservice/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
 /blog/upload-shell/*
+  X-Robots-Tag: noindex, nofollow
+
+/services/upload-shell/*
   X-Robots-Tag: noindex, nofollow
 
 # MLS® listing search and the listing pages (functions/listing/[key].ts serves them with the headers of

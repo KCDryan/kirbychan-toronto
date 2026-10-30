@@ -1,0 +1,249 @@
+---
+/**
+ * The body of a service page, shared by the built page (src/pages/services/[slug].astro) and the empty
+ * shell (src/pages/services/upload-shell/index.astro) that functions/services/[[path]].ts fills with a
+ * page published at /uploadservice/, so a page that goes live before the next build looks the same.
+ */
+import type { CollectionEntry } from 'astro:content';
+import Accent from './Accent.astro';
+import FaqAccordion from './FaqAccordion.astro';
+import ServiceGrid from './ServiceGrid.astro';
+import BlogCard from './BlogCard.astro';
+import Cta from './Cta.astro';
+import { neighbourhoodPath } from '../lib/format';
+
+interface Props {
+  id: string;
+  d: { name: string; h1: string; accent: string; summary: string; problem: string; steps: { title: string; body: string }[]; faq: { q: string; a: string }[] };
+  uploadVersion?: string;
+  posts?: CollectionEntry<'blog'>[];
+  hoods?: CollectionEntry<'neighbourhoods'>[];
+  /** The neighbourhood proof block. `src` is the optimised photo, empty when the neighbourhood has none. */
+  proof?: { name: string; text: string; url: string; src: string; alt: string; credit?: { author: string; source: string; license: string; licenseUrl: string } };
+  shell?: boolean;
+}
+const { id, d, uploadVersion = '', posts = [], hoods = [], proof, shell = false } = Astro.props;
+---
+
+
+  <span hidden data-upload={uploadVersion}></span>
+  <section class="svc-hero">
+    <div class="wrap">
+      <p class="eyebrow">How we help</p>
+      <h1>
+        <Accent text={d.h1} accent={d.accent} />
+      </h1>
+      <p class="lede">{d.summary}</p>
+      <div class="page-hero__actions">
+        <a class="btn btn--primary" href="/contact/">Start a conversation</a>
+        <a class="btn btn--ghost" href="/neighbourhoods/">Explore neighbourhoods</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap svc-grid-2">
+      <div>
+        <h2>The problem</h2>
+      </div>
+      <p class="svc-problem">{d.problem}</p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Our approach</p>
+        <h2>How we handle it</h2>
+      </div>
+      <ol class="steps">
+        {
+          d.steps.map((step, i) => (
+            <li class="step">
+              <span class="step__num">Step {String(i + 1).padStart(2, '0')}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap-narrow prose">
+      <slot />
+    </div>
+  </section>
+
+  {
+    proof && (
+      <section class="section" data-proof>
+        <div class="wrap svc-proof">
+          {proof.src && (
+            <figure class="svc-proof__photo">
+              <img src={proof.src} alt={proof.alt} width="880" height="540" loading="lazy" decoding="async" />
+              {proof.credit && (
+                <figcaption>
+                  Photo: <a href={proof.credit.source} rel="noopener noreferrer" target="_blank">{proof.credit.author}</a>, <a href={proof.credit.licenseUrl} rel="noopener noreferrer license" target="_blank">{proof.credit.license}</a>, resized
+                </figcaption>
+              )}
+            </figure>
+          )}
+          <div>
+            <p class="eyebrow">A local example</p>
+            <h2>{proof.name}</h2>
+            <p>{proof.text}</p>
+            <p>
+              <a href={proof.url}>Read the {proof.name} guide</a>
+            </p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="wrap-narrow">
+      <FaqAccordion faq={d.faq} heading={`${d.name} questions`} accent="questions" />
+      <div class="disclaimer">
+        <p>
+          <strong>Not advice.</strong> This page is general information about how we work. It is
+          not legal, tax, mortgage or investment advice. Speak to a qualified professional about
+          your own circumstances before acting.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {
+    (posts.length > 0 || hoods.length > 0) && (
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">Go deeper</p>
+            <h2>Reading on {d.name.toLowerCase()}</h2>
+          </div>
+          {posts.length > 0 && (
+            <ul class="svc-posts" role="list">
+              {posts.map((p) => (
+                <li>
+                  <BlogCard
+                    slug={p.id}
+                    title={p.data.h1}
+                    subtitle={p.data.subtitle}
+                    category={p.data.category}
+                    published={p.data.published}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+          {hoods.length > 0 && (
+            <p class="svc-hoods">
+              Neighbourhood guides that cover this:{' '}
+              {hoods.map((h, i) => (
+                <>
+                  {i > 0 && ', '}
+                  <a href={neighbourhoodPath(h.id)}>{h.data.name}</a>
+                </>
+              ))}
+              .
+            </p>
+          )}
+        </div>
+      </section>
+    )
+  }
+
+  {shell && <template data-kcsvc-related></template>}
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Also relevant</p>
+        <h2>Other situations we handle</h2>
+      </div>
+      <ServiceGrid exclude={id} limit={4} />
+    </div>
+  </section>
+
+  <Cta />
+
+<style>
+  .svc-hero {
+    background:
+      radial-gradient(110% 80% at 90% 0%, rgba(30, 55, 101, 0.1), transparent 60%),
+      var(--paper);
+    padding-block: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  }
+  .svc-hero h1 {
+    max-width: 18ch;
+  }
+  .svc-hero .lede {
+    margin-top: var(--sp-5);
+    max-width: 56ch;
+  }
+  .svc-grid-2 {
+    display: grid;
+    gap: var(--sp-5);
+  }
+  .svc-grid-2 h2 {
+    font-size: var(--step-3);
+  }
+  .svc-posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--sp-5);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .svc-hoods {
+    margin-top: var(--sp-5);
+    color: var(--text-muted);
+  }
+  .svc-problem {
+    font-size: var(--step-1);
+    line-height: 1.65;
+    color: var(--text-muted);
+    max-width: 62ch;
+  }
+  @media (min-width: 860px) {
+    .svc-grid-2 {
+      grid-template-columns: 0.6fr 1.4fr;
+      gap: var(--sp-7);
+    }
+  }
+  .svc-proof {
+    display: grid;
+    gap: var(--sp-6);
+    align-items: center;
+  }
+  .svc-proof__photo {
+    margin: 0;
+  }
+  .svc-proof__photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 880 / 540;
+    object-fit: cover;
+    border-radius: var(--radius, 8px);
+  }
+  .svc-proof__photo figcaption {
+    margin-top: var(--sp-2);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+  .svc-proof h2 {
+    font-size: var(--step-3);
+    margin-bottom: var(--sp-3);
+  }
+  @media (min-width: 900px) {
+    .svc-proof {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-7);
+    }
+  }
+</style>

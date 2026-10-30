@@ -1,17 +1,15 @@
 ---
-import Accent from '../../components/Accent.astro';
 import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import ServiceBody from '../../components/ServiceBody.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import FaqAccordion from '../../components/FaqAccordion.astro';
-import ServiceGrid from '../../components/ServiceGrid.astro';
-import BlogCard from '../../components/BlogCard.astro';
 import { publishedPosts } from '../../lib/blog-posts';
-import { neighbourhoodPath } from '../../lib/format';
-import Cta from '../../components/Cta.astro';
 import { breadcrumbList, faqPage, service } from '../../lib/schema';
 import { hasGuide } from '../../lib/guides';
+import { getImage } from 'astro:assets';
+import { neighbourhoodPhoto, photoAlt } from '../../lib/photos';
+import credits from '../../data/photo-credits.json';
 
 export const getStaticPaths = (async () => {
   // Services with a pillar guide are served by the guide instead (301 in _redirects).
@@ -27,12 +25,32 @@ const path = `/services/${entry.id}/`;
 
 // Everything on the site that names this service, so the page links down to its
 // own cluster instead of only sideways to the other services.
-const posts = (await publishedPosts()).filter((p) => p.data.relatedServices.includes(entry.id)).slice(0, 6);
+const everyPost = await publishedPosts();
+// Posts a page written at /uploadservice/ chose, then any post that names this service.
+const chosen = d.relatedPosts.map((url) => everyPost.find((p) => `/blog/${p.id.split('/').pop()}/` === url)).filter((p): p is (typeof everyPost)[number] => Boolean(p));
+const posts = [...chosen, ...everyPost.filter((p) => p.data.relatedServices.includes(entry.id) && !chosen.includes(p))].slice(0, 6);
 const hoods = await getCollection(
   'neighbourhoods',
   (h) => !h.data.draft && h.data.relatedServices.includes(entry.id)
 );
 
+
+// The proof block: the neighbourhood guide a generated page names, with its photo.
+const hoodId = d.proofHood?.match(/^\/([a-z0-9-]+)-toronto\/$/)?.[1];
+const proofHood = hoodId ? (await getCollection('neighbourhoods')).find((h) => h.id === hoodId) : undefined;
+const proofPhoto = hoodId ? neighbourhoodPhoto(hoodId) : undefined;
+const proof =
+  proofHood && d.proof && d.proofHood
+    ? {
+        name: proofHood.data.name,
+        text: d.proof,
+        url: d.proofHood,
+        src: proofPhoto ? (await getImage({ src: proofPhoto, width: 880, height: 540, format: 'webp', fit: 'cover' })).src : '',
+        alt: (hoodId && photoAlt(hoodId)) || `${proofHood.data.name}, Toronto`,
+        credit: proofPhoto ? (() => { const c = credits.find((x) => x.slug === hoodId); return c?.source && c.licenseUrl ? { author: c.author, source: c.source, license: c.license, licenseUrl: c.licenseUrl } : undefined; })() : undefined,
+      }
+    : undefined;
+const shareImage = proofPhoto ? (await getImage({ src: proofPhoto, width: 1200, height: 630, format: 'jpg', fit: 'cover' })).src : undefined;
 
 const crumbs = [
   { name: 'Home', path: '/' },
@@ -47,167 +65,9 @@ const jsonLd = [
 ].filter(Boolean);
 ---
 
-<Base title={d.title} description={d.description} noindex={d.noindex} jsonLd={jsonLd}>
+<Base title={d.title} description={d.description} noindex={d.noindex} jsonLd={jsonLd} ogImage={shareImage}>
   <Breadcrumbs crumbs={crumbs} />
-
-  <section class="svc-hero">
-    <div class="wrap">
-      <p class="eyebrow">How we help</p>
-      <h1>
-        <Accent text={d.h1} accent={d.accent} />
-      </h1>
-      <p class="lede">{d.summary}</p>
-      <div class="page-hero__actions">
-        <a class="btn btn--primary" href="/contact/">Start a conversation</a>
-        <a class="btn btn--ghost" href="/neighbourhoods/">Explore neighbourhoods</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap svc-grid-2">
-      <div>
-        <h2>The problem</h2>
-      </div>
-      <p class="svc-problem">{d.problem}</p>
-    </div>
-  </section>
-
-  <section class="section section--alt">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Our approach</p>
-        <h2>How we handle it</h2>
-      </div>
-      <ol class="steps">
-        {
-          d.steps.map((step, i) => (
-            <li class="step">
-              <span class="step__num">Step {String(i + 1).padStart(2, '0')}</span>
-              <h3>{step.title}</h3>
-              <p>{step.body}</p>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap-narrow prose">
-      <Content />
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap-narrow">
-      <FaqAccordion faq={d.faq} heading={`${d.name} questions`} accent="questions" />
-      <div class="disclaimer">
-        <p>
-          <strong>Not advice.</strong> This page is general information about how we work. It is
-          not legal, tax, mortgage or investment advice. Speak to a qualified professional about
-          your own circumstances before acting.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  {
-    (posts.length > 0 || hoods.length > 0) && (
-      <section class="section">
-        <div class="wrap">
-          <div class="section-head">
-            <p class="eyebrow">Go deeper</p>
-            <h2>Reading on {d.name.toLowerCase()}</h2>
-          </div>
-          {posts.length > 0 && (
-            <ul class="svc-posts" role="list">
-              {posts.map((p) => (
-                <li>
-                  <BlogCard
-                    slug={p.id}
-                    title={p.data.h1}
-                    subtitle={p.data.subtitle}
-                    category={p.data.category}
-                    published={p.data.published}
-                  />
-                </li>
-              ))}
-            </ul>
-          )}
-          {hoods.length > 0 && (
-            <p class="svc-hoods">
-              Neighbourhood guides that cover this:{' '}
-              {hoods.map((h, i) => (
-                <>
-                  {i > 0 && ', '}
-                  <a href={neighbourhoodPath(h.id)}>{h.data.name}</a>
-                </>
-              ))}
-              .
-            </p>
-          )}
-        </div>
-      </section>
-    )
-  }
-
-  <section class="section section--alt">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Also relevant</p>
-        <h2>Other situations we handle</h2>
-      </div>
-      <ServiceGrid exclude={entry.id} limit={4} />
-    </div>
-  </section>
-
-  <Cta />
+  <ServiceBody id={entry.id} d={d} uploadVersion={d.uploadVersion} posts={posts} hoods={hoods} proof={proof}>
+    <Content />
+  </ServiceBody>
 </Base>
-
-<style>
-  .svc-hero {
-    background:
-      radial-gradient(110% 80% at 90% 0%, rgba(30, 55, 101, 0.1), transparent 60%),
-      var(--paper);
-    padding-block: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
-  }
-  .svc-hero h1 {
-    max-width: 18ch;
-  }
-  .svc-hero .lede {
-    margin-top: var(--sp-5);
-    max-width: 56ch;
-  }
-  .svc-grid-2 {
-    display: grid;
-    gap: var(--sp-5);
-  }
-  .svc-grid-2 h2 {
-    font-size: var(--step-3);
-  }
-  .svc-posts {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-    gap: var(--sp-5);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .svc-hoods {
-    margin-top: var(--sp-5);
-    color: var(--text-muted);
-  }
-  .svc-problem {
-    font-size: var(--step-1);
-    line-height: 1.65;
-    color: var(--text-muted);
-    max-width: 62ch;
-  }
-  @media (min-width: 860px) {
-    .svc-grid-2 {
-      grid-template-columns: 0.6fr 1.4fr;
-      gap: var(--sp-7);
-    }
-  }
-</style>

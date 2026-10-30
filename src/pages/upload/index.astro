@@ -12,7 +12,7 @@ import { BLOG_CATEGORIES } from '../../lib/blog';
 import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
 ---
 
-<Base title="Upload a blog post" description="Upload a blog post to the Kirby Chan & Co. Toronto website." noindex>
+<Base title="Upload a blog post" description="Upload a blog post to the Kirby Chan & Co. Toronto website." noindex crm={false}>
   <div class="up wrap">
     <p class="up__status" id="up-status" role="status" aria-live="polite"></p>
 
@@ -53,6 +53,7 @@ import { HOODS, ROLES, SERVICES } from '../../lib/post-links';
       <a class="btn btn--primary up__big up__new" id="up-write-link" href="#write" hidden>+ Write a new post</a>
       <a class="btn btn--primary up__big up__new" id="up-new-link" href="#new">+ Upload a new post</a>
       <ul class="up__list" id="up-list"></ul>
+      <p class="up__signout"><a href="/uploadservice/">Write a service page</a></p>
       <p class="up__signout"><button class="btn btn--ghost btn--sm" id="up-logout" type="button">Sign out</button></p>
     </section>
 
