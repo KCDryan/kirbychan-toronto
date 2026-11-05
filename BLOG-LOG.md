@@ -220,3 +220,8 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Result: not published. SEO/photo gate and source re-check passed, but `npm run verify` failed: broken internal link /services/estate-sales/ (no such service page; post body and relatedServices reference it)
 - The publish commit 12715e6 was pushed before the verify result was checked and was reverted in eb7b0d8 within about a minute; post is back to draft: true, published 2026-11-04. IndexNow not run
 - Needs owner attention: fix or remove the /services/estate-sales/ link (Claude Code), then publish
+
+## 2026-11-05, published probate-ontario-no-will (catch-up for Nov 4 scheduled run, which failed on usage)
+
+- Result: published after the link fix in c4349d6. verify passed. Live 200, in sitemap, own photo, first on /blog/
+- IndexNow: 200
