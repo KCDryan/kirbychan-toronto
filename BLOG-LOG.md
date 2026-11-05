@@ -214,3 +214,9 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Needs owner attention: BLOG-TOPICS.md not ticked (out of scope for this run). The post links /blog/high-park-toronto-real-estate/ (Nov 6 draft), which must be live before this post is published. Flip draft to false on the publish date
 
 - 2026-11-02: published don-mills-real-estate-vs-leaside. Overlap with leaside-vs-lawrence-park checked: shares some Leaside station and 2021 Census rows but targets "don mills real estate" and its Don Mills stations, housing stock and libraries are new, so not a heavy overlap. SEO and photo checks passed. Verify passed; live at https://kirbychantoronto.com/blog/don-mills-real-estate-vs-leaside/ (200, in sitemap, own photo shown, first on /blog/). Line 5 opening date (Feb 8, 2026), Metrolinx 19 km and 25 stations, tree permit rules (30 cm, 1.4 m) and TPL branch dates re-checked. 5 drafts left in the queue (fewer than 6).
+
+## 2026-11-05, probate-ontario-no-will not published (catch-up for Nov 4 scheduled run, which failed on usage)
+
+- Result: not published. SEO/photo gate and source re-check passed, but `npm run verify` failed: broken internal link /services/estate-sales/ (no such service page; post body and relatedServices reference it)
+- The publish commit 12715e6 was pushed before the verify result was checked and was reverted in eb7b0d8 within about a minute; post is back to draft: true, published 2026-11-04. IndexNow not run
+- Needs owner attention: fix or remove the /services/estate-sales/ link (Claude Code), then publish
