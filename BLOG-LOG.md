@@ -225,3 +225,9 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 
 - Result: published after the link fix in c4349d6. verify passed. Live 200, in sitemap, own photo, first on /blog/
 - IndexNow: 200
+
+## 2026-11-06, published high-park-toronto-real-estate (catch-up for Nov 6 scheduled run, which was interrupted)
+
+- Result: publish flip already on main in aa46085 from the interrupted run (draft: true removed; published 2026-11-06). Did not re-flip or re-push the post. Live at https://kirbychantoronto.com/blog/high-park-toronto-real-estate/ (200, in sitemap-0.xml, own og:image high-park-toronto-real-estate.*, first on /blog/)
+- IndexNow: 200
+- Drafts left in the queue: 3 (toronto-condo-prices-per-square-foot Nov 9, toronto-home-appraisal Nov 11, willowdale-real-estate Nov 13; Willowdale still waits until High Park is live, which it now is)
