@@ -155,6 +155,48 @@ From the Friday queue in `BLOG-TOPICS.md` (the Nov 13 slot is a Friday). Skipped
 - **Sources:** toronto.ca Committee of Adjustment (fees and forms, about, North York schedule), Zoning By-law 569-2013, Zoning Applicable Law Certificate, When Do I Need a Building Permit, Residential Demolition Permit with Replacement Building; Toronto Municipal Code Chapter 363 Article 6; City decision report for 104-114 Finch Ave East (Ward 18, 2025); TTC Sheppard-Yonge station.
 - **Do not:** quote TRREB prices, sales counts or Census figures (the guide carries them), state how often houses are rebuilt in Willowdale, give Committee of Adjustment processing times, permit fees or development charges (not verified), or say Lawrence Park is in the former City of Toronto (not verified).
 
+## 1 more topic, drafted 2026-11-06
+
+Assigned from Kirby's Nov 3 Toronto keyword queue (target query fixed by the brief; Wednesday theme, selling a home in Toronto). The Nov 16 slot is a Monday, the next Mon/Wed/Fri slot after the Nov 13 draft.
+
+### 12. Sell home in Toronto: the steps from agent to closing
+- **Used:** drafted 2026-11-06 as `sell-home-in-toronto` (draft, published date 2026-11-16, a Monday).
+- **Target query:** sell home in toronto. From Kirby's Nov 3 keyword queue. The head term "selling a house in toronto" belongs to `/sellers/`, which describes how the team runs a sale; this post is the owner's step by step checklist and links to `/sellers/` rather than repeating it. Commission, taxes and selling costs belong to `selling-a-house-in-ontario-commission`, `selling-a-house-in-ontario-taxes` and `toronto-downsizing-costs`, so the post links to them and does not repeat them.
+- **Gap:** nothing on the site puts a sale in order or covers RECO's advice on choosing an agent and on selling without one, the patent and latent defect rule (RECO Bulletin 7.4), the 2024 ban on consumer NOSIs for rented equipment, the mortgage prepayment penalty, the seller's choices on competing offers, RECO deposit insurance or the City of Toronto closing steps (lawyer's letter, final meter read, cancelling pre-authorized payments, who declares the Vacant Home Tax in the year of a sale).
+- **Pillar:** /sellers/
+- **Required links:** /sellers/, /home-valuation/, /blog/selling-a-house-in-ontario-commission/, /blog/selling-a-house-in-ontario-taxes/, /blog/toronto-downsizing-costs/, /blog/toronto-home-appraisal/, /blog/sell-first-or-buy-first-downsizing-toronto/, /contact/
+- **Extras:** /blog/condo-status-certificate-toronto/, /blog/toronto-property-tax/, /selling-an-estate-home-toronto/, /selling-a-home-after-separation-toronto/, /upsizing-toronto/, /downsizing-toronto/
+- **Sources:** reco.on.ca (How do I choose a real estate agent as a seller, Know the risks of representing yourself, Bulletin 7.4 facts a seller must disclose, Dealing with competing offers, Consumer deposit insurance FAQ); ontario.ca Notices of Security Interest (updated January 6, 2026); FCAC Mortgage fees: Prepayment penalties; toronto.ca Buying, Selling or Moving (August 13, 2026) and Vacant Home Tax (November 2, 2026).
+- **Do not:** quote sold data or any Toronto-wide or area price or sales total, quote commission rates or legal fees, re-explain the principal residence exemption or land transfer tax (link the taxes post), state the City's final read or ownership change fees in dollars (not on the page opened) or say how common rented equipment is.
+
+## 1 more topic, drafted 2026-11-06 (second)
+
+Assigned from Kirby's Nov 3 Toronto keyword queue (target query fixed by the brief). The Nov 18 slot is a Wednesday, the next Mon/Wed/Fri slot after the Nov 16 draft. `KEYWORDS.md` records that "toronto realtor" completes to the realtor.ca portal, so the intent is portal use, not choosing an agent.
+
+### 13. REALTOR.ca Toronto: how buyers and sellers use it
+- **Used:** drafted 2026-11-06 as `realtor-ca-toronto` (draft, published date 2026-11-18, a Wednesday).
+- **Target query:** realtor.ca toronto. Written as "REALTOR.ca Toronto", CREA's capitalization of the trademark. Educational only: the post says it is not produced, reviewed or endorsed by REALTOR.ca or CREA, uses "agent" rather than "realtor" as a common noun and carries CREA's trademark notice.
+- **Gap:** nothing on the site explains where portal listings come from (CREA: MLS® System feeds from every board; REALTOR.ca Canada Inc. since January 2025), what to verify on a Toronto listing (zoning map, school board lookup, tax, status certificate, land transfer tax, stops on the TTC map), RECO's rules when a buyer calls the listing agent (self-represented party, Bulletins 2.4 and 2.6) or how a seller's listing reaches the portal (CREA REALTOR® Co-operation Policy, January 3, 2024).
+- **Pillar:** /buyers/ (with /sellers/)
+- **Required links:** /buyers/, /sellers/, /homes-for-sale/, /home-valuation/, /blog/toronto-property-tax/, /blog/condo-status-certificate-toronto/, /land-transfer-tax-calculator-toronto/, /contact/
+- **Extras:** /first-time-home-buyers-toronto/, /map-of-toronto/, /blog/toronto-subway-commute-by-neighbourhood/, /blog/toronto-condo-prices-per-square-foot/, /blog/selling-a-house-in-ontario-commission/, /blog/sell-home-in-toronto/
+- **Sources:** crea.ca (REALTOR.ca for REALTORS®, members' vote of October 23, 2024, The Meaning of REALTOR® and MLS®, Co-operation Policy and exclusives); reco.on.ca (Know the risks of representing yourself, Bulletins 2.4 and 2.6, choosing an agent as a buyer and as a seller); toronto.ca Zoning By-law 569-2013 (modified September 28, 2026); TDSB find your school by address. REALTOR.ca itself returned 403 to every fetch, so the post makes no claim about the portal's search features.
+- **Do not:** imply any affiliation with or endorsement by REALTOR.ca or CREA, describe portal features that were not verified, compare the portal with other portals or brokerages, quote sold data or any Toronto-wide or area price or sales total, or use "realtor" as a generic word for an agent.
+
+## 1 more topic, drafted 2026-11-06 (third)
+
+Assigned from Kirby's Nov 3 Toronto keyword queue (target query fixed by the brief; neighbourhood guide angle). The Nov 20 slot is a Friday, the next Mon/Wed/Fri slot after the Nov 18 draft. `KEYWORDS.md` records "yonge and eglinton condos" and "is yonge and eglinton a good place to live" as real completions; the second is answered in the FAQ.
+
+### 14. Yonge and Eglinton: what the Midtown plan means for buyers
+- **Used:** drafted 2026-11-06 as `yonge-and-eglinton` (draft, published date 2026-11-20, a Friday).
+- **Target query:** yonge and eglinton. From Kirby's Nov 3 keyword queue. The guide `/yonge-eglinton-toronto/` targets "living in yonge and eglinton, toronto" and holds the TRREB prices, Census stock, transit and parks, so the post takes the City planning angle and links to the guide rather than repeating it. The subway commute and downsizing neighbourhood posts hold the stop counts and the apartment stock comparison.
+- **Gap:** nothing on the site explains the Yonge-Eglinton Secondary Plan (OPA 405: adopted July 2018, approved with modifications June 2019), its boundary and five Character Area groups, the policy 7.1 family-size unit mix for developments of more than 80 units, the Midtown Zoning Review stages (June 2022, May 2023, By-law 63-2024, By-law 595-2022 in force August 2024 except appeals), the eleven Public Realm Moves and the Eglinton Green Line setback, or how to check nearby applications in the Application Information Centre.
+- **Pillar:** /yonge-eglinton-toronto/ (with /buyers/)
+- **Required links:** /yonge-eglinton-toronto/, /homes-for-sale/yonge-eglinton/, /blog/toronto-subway-commute-by-neighbourhood/, /blog/toronto-neighbourhoods-for-downsizing/, /blog/condo-status-certificate-toronto/, /blog/toronto-condo-prices-per-square-foot/, /new-construction-toronto/, /buyers/, /home-valuation/, /contact/
+- **Extras:** /mount-pleasant-east-toronto/, /lawrence-park-toronto/, /map-of-toronto/, /blog/leaside-vs-lawrence-park/, /blog/willowdale-real-estate/, /first-time-home-buyers-toronto/
+- **Sources:** toronto.ca Ready, Set, Midtown (overview and parks and public realm), OPA 405 with the Province's June 5, 2019 modifications (backgroundfile-135950), Midtown in Focus overview, Midtown Zoning Review, Midtown Infrastructure Implementation Strategy, Heritage Conservation Districts, Application Information Centre; TTC Eglinton Station and the Line 5 opening notice (February 6, 2026); TPL Northern District branch.
+- **Do not:** quote TRREB prices, sold data or any Toronto-wide or area price or sales total (the guide carries prices), give commutes in minutes, quote heights in storeys or Character Area names whose wording changed between the Council and provincial versions, state the policy 7.4 affordable housing percentages as in force, or describe the area as suited to a type of buyer.
+
 ## Next step
 
 Flip each draft to `draft: false` on its publish date, tick the topic in `BLOG-TOPICS.md` and add a line here marking it published.

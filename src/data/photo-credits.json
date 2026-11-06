@@ -342,5 +342,35 @@
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "source": "https://commons.wikimedia.org/wiki/File:NorthYorkHouseConstruction.jpg",
     "title": "NorthYorkHouseConstruction.jpg"
+  },
+  {
+    "slug": "sell-home-in-toronto",
+    "file": "blog/sell-home-in-toronto",
+    "shows": "A residential street in Toronto with brick and stone houses, front lawns and a wooded hillside behind, on an overcast summer day. Resized to 1920 by 1280, with a parked car's licence plate and a house number plaque blurred.",
+    "author": "Chicken4War",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Houses_on_South_Kingsway,_Toronto_2026.jpg",
+    "title": "Houses on South Kingsway, Toronto 2026.jpg"
+  },
+  {
+    "slug": "realtor-ca-toronto",
+    "file": "blog/realtor-ca-toronto",
+    "shows": "Red brick houses with front lawns, porches and spring tulips on a residential street in Mimico, Toronto, with an apartment tower behind. Resized to 1920 by 1280, with two parked cars' licence plates and a small lawn sign blurred.",
+    "author": "Dillan Payne (PascalHD)",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Homes_on_Harold_Street_in_Mimico,_Toronto,_May_16_2026.jpg",
+    "title": "Homes on Harold Street in Mimico, Toronto, May 16 2026.jpg"
+  },
+  {
+    "slug": "yonge-and-eglinton",
+    "file": "blog/yonge-and-eglinton",
+    "shows": "An aerial view of the Yonge and Eglinton towers in Midtown Toronto on a clear autumn day, with low-rise houses, tree-lined streets and a mid-rise building in the foreground. Cropped from 4:3 to 3:2 and resized to 1920 by 1280.",
+    "author": "Canmenwalker",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Yonge%E2%80%93Eglinton_aerial_view_2024.jpg",
+    "title": "Yonge - Eglinton aerial view 2024.jpg"
   }
 ]
