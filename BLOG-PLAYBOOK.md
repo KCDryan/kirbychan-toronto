@@ -72,6 +72,26 @@ because the run fires in the early afternoon UTC and the Toronto day can differ.
    today's theme has nothing left worth writing, publish nothing, say so in `BLOG-LOG.md` and push
    only the log. Nobody is counting the streak.
 
+### 3a. Make every post specific to Toronto
+
+Every post must be about Toronto, the city, or the named Toronto neighbourhood it covers. This applies
+to new drafts and to any queued draft you revise.
+
+1. Name Toronto, and the relevant neighbourhood where there is one, in the title, in at least one H2,
+   in the worked examples and in the closing CTA. Link the neighbourhood guide when you name one.
+2. Build the post on City of Toronto rules and primary sources: toronto.ca for municipal steps (Vacant
+   Home Tax, municipal land transfer tax, zoning, permits, property tax) and TRREB for market figures.
+   Use Ontario sources only where the rule is provincial, and then show how it applies in Toronto (the
+   City step, office, form or deadline that follows from it).
+3. Do not write a generic Ontario or GTA post with "Toronto" swapped in. The test: if a find-and-replace
+   of "Toronto" could move the draft to Markham or North York, it is not specific enough. Add the
+   Toronto municipal step or the neighbourhood detail, or pick another topic.
+4. Good: the City of Toronto Vacant Home Tax, the Toronto municipal land transfer tax, the Midtown
+   (Yonge-Eglinton) Secondary Plan, a guide to a named Toronto neighbourhood. Bad: a province-wide
+   explainer with no Toronto municipal step and no Toronto neighbourhood.
+5. A post about a Toronto neighbourhood that sits in North York or Scarborough, such as Willowdale or
+   Agincourt, uses City of Toronto rules. Never turn it into a post about a neighbouring city.
+
 ## 4. Research and sources
 
 Every number, rate, threshold, date, deadline, law, programme rule, fee, schedule or statistic in
@@ -236,7 +256,11 @@ After writing, go through the post line by line, including the takeaway and ever
 5. Commutes are stated as stops counted on the TTC map, never as minutes.
 6. Check place facts against the neighbourhood guides in `src/content/neighbourhoods/`. If a post
    and a guide disagree, the post must match the guide or leave the claim out.
-7. Read the whole post once more purely for house style and the banned phrases in section 5.
+7. Apply the Toronto test in section 3a: Toronto or the neighbourhood is named in the title, an H2,
+   the examples and the CTA, there is at least one City of Toronto step or a named Toronto
+   neighbourhood backed by a primary source, and a find-and-replace could not move the post to
+   another city's site. If it fails, revise before publishing.
+8. Read the whole post once more purely for house style and the banned phrases in section 5.
 
 ## 9. Topic list and log
 
