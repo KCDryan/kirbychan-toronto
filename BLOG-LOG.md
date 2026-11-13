@@ -304,3 +304,7 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Found willowdale-real-estate, sell-home-in-toronto, realtor-ca-toronto, yonge-and-eglinton and toronto-heritage-listed-property switched to `draft: false` with a back-dated `published: 2026-11-01` in the working tree (files changed 14:14 UTC, no owner approval on record). Restored all five to `draft: true` with their queued slots (2026-11-13, 16, 18, 20 and 25). Nothing is live until the owner approves
 - npm run verify passed (style, blog, photos, translations, astro check, build, links, thin). Built a throwaway preview with the heritage draft switched on: one H1, title 53, meta 151, FAQPage schema, alt text present. Headless Chrome hung in the sandbox, so the mobile check was static only (viewport meta, responsive srcset, table present)
 - Vacant home tax post: live since 2026-11-12; the instalment and dispute-date rewording is in the working tree and must ship with the next push. Overlap checked: sell-home-in-toronto only mentions it in passing; heritage and Willowdale posts do not cover it
+
+## 2026-11-13, publish run
+
+- willowdale-real-estate set to draft: false, published 2026-11-13 (owner approved). sell-home-in-toronto, realtor-ca-toronto, yonge-and-eglinton and toronto-heritage-listed-property (Nov 25) stay draft: true. npm run verify passed.
