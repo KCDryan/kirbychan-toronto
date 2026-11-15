@@ -1,26 +1,26 @@
 {
-  "updated": "2026-11-14T17:01:35.456Z",
+  "updated": "2026-11-15T17:41:30.261Z",
   "toronto": {
-    "total": 9487,
-    "bungalow": 672,
-    "condo": 4994,
-    "townhouse": 895,
-    "house": 3189
+    "total": 9474,
+    "bungalow": 668,
+    "condo": 4991,
+    "townhouse": 892,
+    "house": 3181
   },
   "areas": {
     "downtown-waterfront": {
-      "total": 811,
+      "total": 809,
       "bungalow": 0,
-      "condo": 774,
-      "townhouse": 16,
+      "condo": 773,
+      "townhouse": 15,
       "house": 3
     },
     "willowdale": {
-      "total": 379,
-      "bungalow": 13,
+      "total": 378,
+      "bungalow": 12,
       "condo": 249,
       "townhouse": 32,
-      "house": 95
+      "house": 94
     },
     "bayview-village": {
       "total": 180,
@@ -37,16 +37,16 @@
       "house": 71
     },
     "rosedale": {
-      "total": 100,
+      "total": 99,
       "bungalow": 0,
       "condo": 39,
       "townhouse": 7,
-      "house": 42
+      "house": 41
     },
     "the-annex": {
       "total": 205,
       "bungalow": 0,
-      "condo": 153,
+      "condo": 152,
       "townhouse": 15,
       "house": 25
     },
@@ -65,25 +65,25 @@
       "house": 76
     },
     "leaside": {
-      "total": 35,
+      "total": 34,
       "bungalow": 1,
       "condo": 6,
       "townhouse": 2,
-      "house": 27
+      "house": 26
     },
     "mount-pleasant-east": {
-      "total": 53,
+      "total": 52,
       "bungalow": 0,
       "condo": 21,
       "townhouse": 1,
-      "house": 28
+      "house": 27
     },
     "riverdale": {
-      "total": 100,
+      "total": 99,
       "bungalow": 0,
       "condo": 44,
       "townhouse": 27,
-      "house": 24
+      "house": 23
     },
     "guildwood": {
       "total": 29,
@@ -107,32 +107,32 @@
       "house": 44
     },
     "agincourt": {
-      "total": 106,
+      "total": 107,
       "bungalow": 5,
       "condo": 52,
       "townhouse": 14,
-      "house": 32
+      "house": 33
     },
     "mimico": {
-      "total": 280,
+      "total": 282,
       "bungalow": 6,
-      "condo": 218,
+      "condo": 219,
       "townhouse": 18,
       "house": 29
     },
     "islington-village": {
-      "total": 240,
+      "total": 239,
       "bungalow": 22,
       "condo": 154,
-      "townhouse": 16,
+      "townhouse": 15,
       "house": 64
     },
     "high-park": {
-      "total": 110,
+      "total": 111,
       "bungalow": 1,
       "condo": 70,
       "townhouse": 2,
-      "house": 25
+      "house": 26
     }
   },
   "complete": true
