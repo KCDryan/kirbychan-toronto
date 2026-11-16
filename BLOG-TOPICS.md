@@ -79,6 +79,7 @@ status certificates already have posts. Link to them rather than covering them a
 - [ ] Buying a first condo in Toronto: what to check in the listing and the building | condos | toronto condo for sale
 - [ ] The minimum down payment in Ontario and where it can come from | buying | first time home buyer ontario down payment
 - [ ] Are Toronto condo prices falling? What TRREB's figures show | market | toronto condo prices falling
+- [x] Buying a house with a legal basement apartment in Toronto | buying | legal basement apartment toronto | legal-basement-apartment-toronto
 
 ## Tuesday: estates and probate in Toronto
 
