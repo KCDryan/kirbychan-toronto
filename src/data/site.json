@@ -41,5 +41,34 @@
   "requireOneCutPro": true,
   "oneCutOnly": true,
   "markhamSite": "https://kirbychanmarkham.com/",
-  "indexListings": true
+  "indexListings": true,
+  "blogPeople": [
+    {
+      "photo": "kirby-portrait",
+      "alt": "Portrait of Kirby Chan, Broker",
+      "name": "Kirby Chan",
+      "title": "Broker",
+      "href": "/about/",
+      "phone": "416-305-8008",
+      "phoneHref": "tel:+14163058008"
+    },
+    {
+      "photo": "kirby-office-casual",
+      "alt": "Kirby Chan, Broker, at the office",
+      "name": "Kirby Chan",
+      "title": "Broker",
+      "href": "/about/",
+      "phone": "416-305-8008",
+      "phoneHref": "tel:+14163058008"
+    },
+    {
+      "photo": "home-hero-suit",
+      "alt": "Kirby Chan, Broker, standing in a dark suit",
+      "name": "Kirby Chan",
+      "title": "Broker",
+      "href": "/about/",
+      "phone": "416-305-8008",
+      "phoneHref": "tel:+14163058008"
+    }
+  ]
 }
