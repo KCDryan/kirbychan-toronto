@@ -100,6 +100,7 @@ page opened during the run. Posts may set `guide: selling-an-estate-home-toronto
 - [ ] How real estate commission works when you sell in Ontario | selling | selling a house in ontario commission
 - [ ] Toronto home value estimators: what the online figures miss | selling | toronto home value estimator
 - [ ] Toronto home appraisal: what an appraiser looks at | selling | toronto home appraisal
+- [x] Selling a Toronto house with an open building permit | selling | open building permit toronto | open-building-permit-toronto-selling-house
 
 ## Thursday: relocating to Toronto
 
