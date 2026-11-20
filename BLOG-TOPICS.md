@@ -124,6 +124,7 @@ buy first.
 - [ ] Banbury-Don Mills or Bayview Village: detached houses in North York compared | neighbourhoods | banbury don mills homes for sale
 - [ ] Willowdale West or Lawrence Park North: detached houses on Line 1 compared | neighbourhoods | willowdale real estate
 - [ ] Toronto house prices in 2026: detached and semi-detached month by month | market | toronto house prices 2026
+- [x] Toronto basement flooding subsidy: what a move up buyer checks on a house | buying | basement flooding subsidy toronto | basement-flooding-subsidy-toronto
 
 ## Saturday: writer's choice
 
