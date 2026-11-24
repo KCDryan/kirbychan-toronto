@@ -351,3 +351,11 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Re-checked 2026-11-23 on toronto.ca Vacant Home Tax (modified November 19, 2026): 2026 declaration due April 30, 2027; three per cent of CVA; no declaration means treated as vacant; transfer of ownership exemption when the sale closes in the declared tax year; seller declares when the sale is after the tax year; new owner responsible for previous owner's unpaid charges. All match the post. Source label updated to November 19. Buy, sell or move page returns 200
 - Vacant Home Tax article (toronto-vacant-home-tax-declaration, live since 2026-11-12, updated 2026-11-18): re-read against the same page; no change needed. It was still listed in the untracked scripts/publish-queue.json for 2026-11-23, but it has no draft flag, so nothing would republish
 - Reserves re-dated so none clash: toronto-heritage-listed-property 2026-11-25 (must go before January 1, 2027), realtor-ca-toronto 2026-11-27, yonge-and-eglinton 2026-11-30. Their facts need the recheck items in the queue file on their publish day
+
+## 2026-11-24, Search Console refresh: toronto-vacant-home-tax-declaration, toronto-property-tax
+
+- Evidence: GSC Performance export (Web, last 3 months, data Oct 2 to Nov 22, 2026). VHT page 321 impressions, 0 clicks, position 11.46; queries "vacant home tax toronto declaration online 2027" 73 impressions at 9.67. Property tax page 94 impressions, 2 clicks, position 14.62; query "do you pay property tax on condos" 19 impressions at 27.47. Query and page tables are not joined.
+- Changes: VHT title and meta now name April 30, 2027 and online filing; new "Filing the declaration online" section and FAQ. Property tax: condo FAQ; Vacant Home Tax section cut to a summary linking the VHT guide (removed past 2025 instalment dates); relief step no longer points to the passed Nov 2, 2026 deadline.
+- Sources checked: toronto.ca Vacant Home Tax (modified November 23, 2026). All facts unchanged.
+- Reserves untouched: toronto-heritage-listed-property (11-25), realtor-ca-toronto (11-27), yonge-and-eglinton (11-30).
+- Needs owner attention: none
