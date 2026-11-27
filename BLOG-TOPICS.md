@@ -125,6 +125,7 @@ buy first.
 - [ ] Willowdale West or Lawrence Park North: detached houses on Line 1 compared | neighbourhoods | willowdale real estate
 - [ ] Toronto house prices in 2026: detached and semi-detached month by month | market | toronto house prices 2026
 - [x] Toronto basement flooding subsidy: what a move up buyer checks on a house | buying | basement flooding subsidy toronto | basement-flooding-subsidy-toronto
+- [ ] Toronto private tree permit: what a move up buyer checks before planning an addition | buying | toronto private tree permit | toronto-private-tree-permit (reserve, 2026-12-04)
 
 ## Saturday: writer's choice
 

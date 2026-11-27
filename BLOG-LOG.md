@@ -359,3 +359,12 @@ One entry per blog run, newest at the bottom. See `BLOG-PLAYBOOK.md`, section 9.
 - Sources checked: toronto.ca Vacant Home Tax (modified November 23, 2026). All facts unchanged.
 - Reserves untouched: toronto-heritage-listed-property (11-25), realtor-ca-toronto (11-27), yonge-and-eglinton (11-30).
 - Needs owner attention: none
+
+## 2026-11-27, published realtor-ca-toronto (Friday routine run with Claude Code)
+
+- Released the reserve draft realtor-ca-toronto (slot 2026-11-27). No post dated today was live beforehand (sitemap and URL checked: 404 before publish). Draft flag removed; published date already 2026-11-27. Keyphrase: realtor.ca toronto
+- Re-checked 2026-11-27: CREA REALTOR.ca for REALTORS® (only portal combining MLS® System feeds from every board; January 2025 transition to REALTOR.ca Canada Inc., wholly owned taxable subsidiary); CREA Co-operation Policy release (in effect January 3, 2024; up to three days; exclusives allowed within the brokerage); RECO Know the risks of representing yourself (Information and Disclosure to Self-represented Party form before any assistance); RECO Bulletin 2.6 (customer relationships not permitted from December 1, 2023). All match. All CREA, RECO and toronto.ca source links returned 200; the TDSB page returns 403 to scripts (bot block), left as is
+- New reserve: toronto-private-tree-permit for Friday 2026-12-04 (moving up). Keyphrase: toronto private tree permit. Sources opened 2026-11-27 on toronto.ca: Tree & Ravine Protection; When to Apply (30 cm at 1.4 m, multi-stem rule, boundary trees, protection zone table); How to Apply (application items, six-metre neighbour rule, fees on form, updated annually); Tree Bylaw Review (September 1, 2026 changes: Distinctive Tree over 61 cm, stump 40 cm, new-planting protection, 5:1 ratios, fine guidelines Q1 2027); Garden Suites. Left out: the dollar fee (form PDF not machine-readable today; recheck before publishing). No other site covers private tree permits; garden suites stay with the High Park post (linked)
+- Photo: Tree over Jose F. Porto Lane, Toronto, June 2026.jpg by Qviri, CC BY-SA 4.0, Wikimedia Commons; cropped 3:2, 1920 by 1280, about 400 KB. A parked car's plate is small and not legible at display sizes
+- Reserves: yonge-and-eglinton 2026-11-30, toronto-home-value-estimator 2026-12-02, toronto-private-tree-permit 2026-12-04
+- Needs owner attention: yonge-and-eglinton's queue recheck items (Midtown zoning appeal status, policy 7.1 unit mix, Eglinton bus routes) must be re-read on Nov 30 before it goes out
